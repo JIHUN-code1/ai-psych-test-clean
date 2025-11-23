@@ -1,12 +1,17 @@
 {
-  "name": "ai-psych-test",
+  "name": "ai-psych-test-clean",
   "version": "1.0.0",
+  "description": "AI 심리테스트 자동 생성기 (Render 배포용)",
   "main": "server.js",
-  "type": "commonjs",
   "scripts": {
     "start": "node server.js"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
-    "express": "^4.21.2"
+    "dotenv": "^16.4.0",
+    "express": "^4.19.2",
+    "openai": "^4.70.0"
   }
 }
