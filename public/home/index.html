@@ -1,705 +1,792 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>심리테스트마켓 심마켓 - 오늘의 심리테스트</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
-      background: #f4f5ff;
-      color: #111827;
-    }
-    a { color: inherit; text-decoration: none; }
+  <head>
+    <meta charset="UTF-8" />
+    <title>심리테스트마켓 심마켓 - AI 심리테스트 마켓</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="AI 심리테스트 마켓 심마켓 - 연애, TMI, 성격, 금전 감각까지 한 번에! 최신/인기 심리테스트를 한 곳에서 즐겨보세요."
+    />
 
-    .page {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 20px 16px 40px;
-    }
-
-    /* 헤더 */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .brand-logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 20%, #f9a8d4, #6366f1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 900;
-      font-size: 18px;
-      box-shadow: 0 8px 20px rgba(99,102,241,0.35);
-    }
-    .brand-text-title {
-      font-size: 18px;
-      font-weight: 800;
-    }
-    .brand-text-sub {
-      font-size: 12px;
-      color: #6b7280;
-    }
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .badge-beta {
-      font-size: 11px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: #eef2ff;
-      color: #4f46e5;
-      border: 1px solid #e0e7ff;
-    }
-    .btn-small {
-      font-size: 12px;
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      background: white;
-      border: 1px solid #e5e7eb;
-    }
-    .btn-small.primary {
-      background: linear-gradient(135deg, #4f46e5, #ec4899);
-      color: #fff;
-      border: none;
-      box-shadow: 0 8px 18px rgba(99,102,241,0.35);
-    }
-
-    /* 히어로 배너 & 슬라이더 */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      border-radius: 26px;
-      padding: 22px 20px 24px;
-      background: radial-gradient(circle at 10% 0%, #f97316, #6366f1 40%, #1d4ed8 90%);
-      color: white;
-      box-shadow: 0 18px 40px rgba(79,70,229,0.4);
-      margin-bottom: 24px;
-    }
-    .hero-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-    }
-    .hero-title {
-      font-size: 22px;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-    .hero-sub {
-      font-size: 13px;
-      opacity: 0.92;
-      max-width: 360px;
-      line-height: 1.5;
-    }
-    .hero-actions {
-      margin-top: 14px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .hero-pill {
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.16);
-      font-size: 11px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      backdrop-filter: blur(8px);
-    }
-    .hero-pill span {
-      padding: 2px 7px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.35);
-      font-size: 10px;
-    }
-    .hero-btn {
-      margin-top: 14px;
-      padding: 9px 18px;
-      border-radius: 999px;
-      border: none;
-      background: white;
-      color: #4f46e5;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .hero-btn span.icon {
-      width: 18px;
-      height: 18px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, #6366f1, #ec4899);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 11px;
-    }
-
-    .hero-slider {
-      position: absolute;
-      right: 20px;
-      bottom: 16px;
-      width: 270px;
-      max-width: 45%;
-    }
-    .hero-slide {
-      position: absolute;
-      inset: 0;
-      border-radius: 18px;
-      overflow: hidden;
-      background-size: cover;
-      background-position: center;
-      opacity: 0;
-      transform: translateX(12px) scale(0.96);
-      transition: all 0.6s ease;
-      box-shadow: 0 12px 25px rgba(15,23,42,0.6);
-    }
-    .hero-slide.active {
-      opacity: 1;
-      transform: translateX(0) scale(1);
-    }
-    .hero-slide-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(15,23,42,0.9), rgba(15,23,42,0.0));
-    }
-    .hero-slide-content {
-      position: absolute;
-      left: 14px;
-      right: 14px;
-      bottom: 12px;
-      color: #f9fafb;
-      font-size: 11px;
-    }
-    .hero-slide-title {
-      font-weight: 700;
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-    .hero-slide-tags {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-      margin-top: 4px;
-    }
-    .hero-slide-tag {
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: rgba(248,250,252,0.16);
-      font-size: 10px;
-    }
-    .hero-dots {
-      position: absolute;
-      right: 20px;
-      top: 14px;
-      display: flex;
-      gap: 4px;
-    }
-    .hero-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.35);
-    }
-    .hero-dot.active {
-      width: 12px;
-      background: white;
-    }
-
-    /* 카테고리 탭 */
-    .category-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .category-tabs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .category-chip {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      background: white;
-      border: 1px solid #e5e7eb;
-      color: #4b5563;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .category-chip.active {
-      background: #4f46e5;
-      color: white;
-      border-color: transparent;
-      box-shadow: 0 8px 18px rgba(79,70,229,0.4);
-    }
-    .category-right {
-      font-size: 12px;
-      color: #6b7280;
-    }
-
-    /* 섹션 공통 */
-    .section {
-      margin-top: 24px;
-    }
-    .section-title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .section-title {
-      font-size: 15px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .section-title span.emoji {
-      font-size: 16px;
-    }
-    .section-sub {
-      font-size: 11px;
-      color: #9ca3af;
-    }
-    .section-link {
-      font-size: 11px;
-      color: #6366f1;
-      cursor: pointer;
-    }
-
-    /* 카드 리스트 */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-    }
-    .test-card {
-      background: white;
-      border-radius: 18px;
-      padding: 10px;
-      box-shadow: 0 8px 18px rgba(148,163,184,0.25);
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, translate 0.18s ease;
-      min-height: 150px;
-      position: relative;
-      overflow: hidden;
-    }
-    .test-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 0 0, rgba(129,140,248,0.12), transparent 60%);
-      opacity: 0;
-      transition: opacity 0.18s ease;
-    }
-    .test-card:hover {
-      transform: translateY(-4px) scale(1.01);
-      box-shadow: 0 14px 30px rgba(148,163,184,0.4);
-    }
-    .test-card:hover::before {
-      opacity: 1;
-    }
-    .test-thumb {
-      border-radius: 14px;
-      overflow: hidden;
-      height: 110px;
-      margin-bottom: 8px;
-      position: relative;
-      background: #e5e7eb;
-    }
-    .test-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .test-thumb-badge {
-      position: absolute;
-      left: 8px;
-      top: 8px;
-      padding: 3px 7px;
-      border-radius: 999px;
-      font-size: 10px;
-      background: rgba(15,23,42,0.82);
-      color: #fbbf24;
-    }
-    .test-title {
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .test-summary {
-      font-size: 11px;
-      color: #6b7280;
-      margin-bottom: 6px;
-      line-height: 1.4;
-    }
-    .test-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 10px;
-      color: #9ca3af;
-      margin-top: auto;
-    }
-    .test-tags {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-    }
-    .tag-pill {
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: #eef2ff;
-      color: #4f46e5;
-      font-size: 10px;
-    }
-    .test-cta {
-      font-size: 10px;
-      color: #4f46e5;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .empty-state {
-      font-size: 12px;
-      color: #9ca3af;
-      padding: 14px;
-      border-radius: 14px;
-      background: #f9fafb;
-    }
-
-    /* 반응형 */
-    @media (max-width: 900px) {
-      .hero {
-        padding-bottom: 160px;
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
-      .hero-slider {
-        position: absolute;
-        right: 16px;
-        left: 16px;
-        bottom: 14px;
-        width: auto;
-        max-width: none;
-        height: 140px;
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: radial-gradient(circle at top left, #eef2ff 0, #fdf2ff 40%, #f9fafb 100%);
+        color: #111827;
+        min-height: 100vh;
       }
-    }
-    @media (max-width: 768px) {
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .page {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 20px 16px 40px;
+      }
+
+      /* 헤더 */
       .header {
-        flex-direction: column;
-        align-items: flex-start;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+
+      .logo-box {
+        display: flex;
+        align-items: center;
         gap: 10px;
       }
-      .hero {
-        padding: 18px 16px 160px;
-        border-radius: 22px;
-      }
-      .hero-title {
-        font-size: 19px;
-      }
-      .hero-slider {
-        height: 130px;
-      }
-      .card-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-    @media (max-width: 540px) {
-      .card-grid {
-        grid-template-columns: repeat(1, minmax(0, 1fr));
-      }
-      .page {
-        padding-inline: 12px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="page">
-    <!-- 헤더 -->
-    <header class="header">
-      <div class="brand">
-        <div class="brand-logo">심</div>
-        <div>
-          <div class="brand-text-title">심리테스트마켓 · 심마켓</div>
-          <div class="brand-text-sub">오늘 기분에 맞는 심리테스트를 골라보세요.</div>
-        </div>
-      </div>
-      <div class="header-right">
-        <span class="badge-beta">Beta</span>
-        <button class="btn-small" onclick="location.href='index.html'">AI 자동 생성기</button>
-        <button class="btn-small primary" onclick="location.href='admin.html'">관리자 페이지</button>
-      </div>
-    </header>
 
-    <!-- 히어로 & 배너 슬라이더 -->
-    <section class="hero">
-      <div class="hero-top">
-        <div>
-          <div class="hero-title">오늘 밤, 어떤 테스트로 놀아볼까요?</div>
-          <div class="hero-sub">
-            연애 온도, TMI 성격, 금전 감각까지! 심마켓에서는 매일 새 심리테스트가 올라옵니다.
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+        background: conic-gradient(from 200deg, #6366f1, #ec4899, #f97316, #22c55e, #6366f1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 20px;
+        font-weight: 900;
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+      }
+
+      .logo-text-main {
+        font-weight: 800;
+        font-size: 20px;
+      }
+
+      .logo-text-sub {
+        font-size: 12px;
+        color: #6b7280;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .badge-beta {
+        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: #eef2ff;
+        color: #4f46e5;
+        border: 1px solid #c7d2fe;
+      }
+
+      .btn-small {
+        font-size: 13px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        color: #111827;
+      }
+
+      .btn-small.primary {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        color: #ffffff;
+        border: none;
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
+      }
+
+      .btn-small:hover {
+        filter: brightness(1.02);
+        transform: translateY(-1px);
+      }
+
+      /* 상단 배너 / 히어로 */
+      .hero {
+        position: relative;
+        border-radius: 24px;
+        padding: 22px 20px 22px;
+        margin-bottom: 22px;
+        overflow: hidden;
+        background: radial-gradient(circle at 0% 0%, #f97316 0, transparent 45%),
+          radial-gradient(circle at 80% 0%, #22c55e 0, transparent 45%),
+          radial-gradient(circle at 0% 80%, #6366f1 0, transparent 45%),
+          linear-gradient(120deg, #0f172a, #1f2937);
+        color: #e5e7eb;
+      }
+
+      .hero-inner {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .hero-left {
+        max-width: 70%;
+      }
+
+      .hero-badge-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+
+      .hero-badge {
+        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.65);
+        color: #e5e7eb;
+        border: 1px solid rgba(148, 163, 184, 0.5);
+      }
+
+      .hero-title {
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1.4;
+        margin-bottom: 6px;
+      }
+
+      .hero-title span {
+        background: linear-gradient(135deg, #f97316, #facc15, #22c55e);
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+
+      .hero-sub {
+        font-size: 13px;
+        color: #cbd5f5;
+        margin-bottom: 14px;
+      }
+
+      .hero-cta-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .btn-hero-main {
+        padding: 9px 18px;
+        border-radius: 999px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        color: white;
+        box-shadow: 0 12px 30px rgba(99, 102, 241, 0.65);
+      }
+
+      .btn-hero-sub {
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.8);
+        background: rgba(15, 23, 42, 0.3);
+        font-size: 12px;
+        color: #e5e7eb;
+      }
+
+      .hero-right {
+        min-width: 150px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-end;
+        font-size: 11px;
+        gap: 4px;
+      }
+
+      .hero-metric {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(148, 163, 184, 0.7);
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .hero-metric-label {
+        color: #9ca3af;
+      }
+
+      .hero-metric-value {
+        font-weight: 600;
+        color: #fef9c3;
+      }
+
+      /* 카테고리 탭 */
+      .category-tabs {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        margin-bottom: 16px;
+      }
+
+      .category-chip {
+        flex-shrink: 0;
+        padding: 7px 14px;
+        border-radius: 999px;
+        font-size: 13px;
+        border: 1px solid #e5e7eb;
+        background: #f9fafb;
+        color: #4b5563;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .category-chip.active {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        color: white;
+        border-color: transparent;
+        box-shadow: 0 8px 22px rgba(99, 102, 241, 0.35);
+      }
+
+      /* 섹션 공통 */
+      .section {
+        margin-bottom: 24px;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+
+      .section-title {
+        font-size: 17px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .section-title span.dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #f97316, #ec4899);
+      }
+
+      .section-sub {
+        font-size: 12px;
+        color: #9ca3af;
+      }
+
+      .section-link {
+        font-size: 12px;
+        color: #6366f1;
+        cursor: pointer;
+      }
+
+      /* 카드 리스트 */
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .test-card {
+        border-radius: 16px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        position: relative;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      }
+
+      .test-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 35px rgba(15, 23, 42, 0.12);
+        border-color: #c4b5fd;
+      }
+
+      .test-card-image-wrap {
+        position: relative;
+        height: 150px;
+        overflow: hidden;
+      }
+
+      .test-card-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      .test-card:hover .test-card-image {
+        transform: scale(1.04);
+      }
+
+      .test-card-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        background: rgba(15, 23, 42, 0.75);
+        color: #fef9c3;
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(148, 163, 184, 0.7);
+      }
+
+      .test-card-body {
+        padding: 10px 11px 11px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+      }
+
+      .test-card-title {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.4;
+        min-height: 38px;
+      }
+
+      .test-card-desc {
+        font-size: 12px;
+        color: #6b7280;
+        min-height: 36px;
+      }
+
+      .test-card-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 2px;
+      }
+
+      .test-tag {
+        font-size: 11px;
+        padding: 2px 6px;
+        border-radius: 999px;
+        background: #f3f4ff;
+        color: #4f46e5;
+      }
+
+      .test-card-meta-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 4px;
+      }
+
+      .test-card-meta {
+        font-size: 11px;
+        color: #9ca3af;
+      }
+
+      .btn-card-play {
+        font-size: 12px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: none;
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 8px 18px rgba(99, 102, 241, 0.3);
+      }
+
+      /* 빈 상태 */
+      .empty-state {
+        padding: 18px 14px;
+        border-radius: 16px;
+        background: #f9fafb;
+        border: 1px dashed #e5e7eb;
+        font-size: 13px;
+        color: #6b7280;
+      }
+
+      /* 푸터 */
+      .footer {
+        margin-top: 24px;
+        font-size: 11px;
+        color: #9ca3af;
+        text-align: center;
+      }
+
+      .footer a {
+        color: #6366f1;
+      }
+
+      /* 반응형 */
+      @media (max-width: 900px) {
+        .card-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .hero-inner {
+          flex-direction: column;
+        }
+
+        .hero-left {
+          max-width: 100%;
+        }
+
+        .hero-right {
+          align-items: flex-start;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .page {
+          padding: 16px 12px 32px;
+        }
+
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .card-grid {
+          grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+
+        .hero {
+          padding: 18px 14px 18px;
+        }
+
+        .hero-title {
+          font-size: 18px;
+        }
+
+        .hero-sub {
+          font-size: 12px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page">
+      <!-- 헤더 -->
+      <header class="header">
+        <div class="logo-box">
+          <div class="logo-icon">심</div>
+          <div>
+            <div class="logo-text-main">심리테스트마켓 심마켓</div>
+            <div class="logo-text-sub">오늘 기분에 맞는 심리테스트 골라보는 공간</div>
           </div>
-          <div class="hero-actions">
-            <div class="hero-pill"><span>HOT</span>지금 가장 많이 풀리는 테스트 모음</div>
-            <div class="hero-pill"><span>NEW</span>따끈따끈 오늘 막 올라온 테스트</div>
-          </div>
-          <button class="hero-btn" onclick="scrollToLatest()">
-            <span class="icon">▶</span>
-            오늘의 인기/최신 테스트 보기
+        </div>
+        <div class="header-actions">
+          <span class="badge-beta">Beta</span>
+          <button
+            class="btn-small"
+            onclick="window.location.href='/'"
+            title="AI 심리테스트 자동 생성기로 이동"
+          >
+            AI 자동 생성기
+          </button>
+          <button
+            class="btn-small primary"
+            onclick="window.location.href='/admin'"
+            title="관리자 페이지"
+          >
+            관리자 페이지
           </button>
         </div>
-      </div>
+      </header>
 
-      <div class="hero-dots" id="heroDots"></div>
-
-      <div class="hero-slider" id="heroSlider">
-        <!-- JS에서 슬라이드 삽입 -->
-      </div>
-    </section>
-
-    <!-- 카테고리 탭 -->
-    <section class="category-row">
-      <div class="category-tabs" id="categoryTabs">
-        <button class="category-chip active" data-value="all">전체</button>
-        <button class="category-chip" data-value="연애">연애</button>
-        <button class="category-chip" data-value="성격">성격</button>
-        <button class="category-chip" data-value="금전/소비">금전/소비</button>
-        <button class="category-chip" data-value="직장/커리어">직장/커리어</button>
-        <button class="category-chip" data-value="우정/대인관계">우정/대인관계</button>
-        <button class="category-chip" data-value="라이프스타일">라이프스타일</button>
-      </div>
-      <div class="category-right" id="categoryInfo">
-        전체 카테고리의 심리테스트를 보여주는 중
-      </div>
-    </section>
-
-    <!-- 지금 뜨는 인기 TOP -->
-    <section class="section" id="hotSection">
-      <div class="section-title-row">
-        <div>
-          <div class="section-title">
-            <span class="emoji">🔥</span> 지금 뜨는 인기 TOP
+      <!-- 히어로 배너 -->
+      <section class="hero">
+        <div class="hero-inner">
+          <div class="hero-left">
+            <div class="hero-badge-row">
+              <div class="hero-badge">오늘 밤, 어떤 테스트로 놀아볼까요?</div>
+              <div class="hero-badge">연애 / TMI / 성격 / 금전 감각</div>
+            </div>
+            <h1 class="hero-title">
+              오늘은 <span>#심마켓</span>에서<br />깔끔하게 골라 즐겨요.
+            </h1>
+            <p class="hero-sub">
+              관리자가 올린 고퀄리티 심리테스트와 AI 자동 생성 테스트까지 한 번에.  
+              기분·상황·관계에 딱 맞는 테스트를 카드 고르듯 가볍게 플레이해보세요.
+            </p>
+            <div class="hero-cta-row">
+              <button class="btn-hero-main" onclick="scrollToSection('popular-section')">
+                지금 인기 TOP 테스트 보기
+              </button>
+              <button class="btn-hero-sub" onclick="scrollToSection('latest-section')">
+                따끈따끈 최신 테스트만 모아보기
+              </button>
+            </div>
           </div>
-          <div class="section-sub">최근 며칠 사이 가장 많이 선택된 핫 테스트들을 모았어요.</div>
-        </div>
-        <div class="section-link" onclick="scrollToLatest()">최신 테스트 먼저 보기</div>
-      </div>
-      <div class="card-grid" id="hotList"></div>
-    </section>
-
-    <!-- 따끈따끈 최신 테스트 -->
-    <section class="section" id="latestSection">
-      <div class="section-title-row">
-        <div>
-          <div class="section-title">
-            <span class="emoji">✨</span> 따끈따끈 최신 테스트
+          <div class="hero-right">
+            <div class="hero-metric">
+              <span class="hero-metric-label">등록된 테스트</span>
+              <span class="hero-metric-value" id="metric-total">-</span>
+            </div>
+            <div class="hero-metric">
+              <span class="hero-metric-label">오늘 업데이트</span>
+              <span class="hero-metric-value" id="metric-today">-</span>
+            </div>
           </div>
-          <div class="section-sub">최근 등록된 심리테스트 순서대로 보여드려요.</div>
         </div>
-        <div class="section-link" onclick="location.href='index.html'">AI로 새 심리테스트 만들기</div>
+      </section>
+
+      <!-- 카테고리 탭 (UI만, 필터는 추후 확장 가능) -->
+      <div class="category-tabs">
+        <button class="category-chip active" data-cat="all">전체</button>
+        <button class="category-chip" data-cat="연애">연애/썸/연락</button>
+        <button class="category-chip" data-cat="성격">성격/MBTI 감성</button>
+        <button class="category-chip" data-cat="금전">금전/소비 성향</button>
+        <button class="category-chip" data-cat="직장">직장/커리어</button>
+        <button class="category-chip" data-cat="우정">우정/대인관계</button>
+        <button class="category-chip" data-cat="라이프">라이프스타일</button>
       </div>
-      <div class="card-grid" id="latestList"></div>
-    </section>
-  </div>
 
-  <script>
-    let allTests = [];
+      <!-- 인기 테스트 섹션 -->
+      <section class="section" id="popular-section">
+        <div class="section-header">
+          <div>
+            <div class="section-title">
+              <span class="dot"></span>
+              <span>지금 뜨는 인기 TOP</span>
+            </div>
+            <div class="section-sub" id="popular-sub">
+              최근 일주일 동안 플레이 수가 많은 테스트 모음
+            </div>
+          </div>
+          <div class="section-link" onclick="scrollToSection('latest-section')">
+            최신 테스트 먼저 보고 싶다면 →
+          </div>
+        </div>
 
-    // ====== 배너 슬라이드 데이터 (예시) ======
-    const bannerPresets = [
-      {
-        title: "나의 연애 온도는 몇 도일까?",
-        desc: "설레는 데이트에서 당신의 숨은 스타일을 찾아보는 연애 온도 체크 테스트.",
-        tags: ["연애", "MBTI 연애", "데이트"],
-        bg: "linear-gradient(135deg,#f97316,#ec4899)"
-      },
-      {
-        title: "과소비? 플렉스? 금전 감각 체크",
-        desc: "통장 잔고는 울고 있지만 나는 행복하다?! 당신의 소비 성향을 가볍게 점검해보세요.",
-        tags: ["금전/소비", "재테크", "현실점검"],
-        bg: "linear-gradient(135deg,#22c55e,#0ea5e9)"
-      },
-      {
-        title: "TMI 성격 유형 테스트",
-        desc: "친구가 보면 더 소름 돋는 TMI 성격 분석. 나도 몰랐던 내 생활 패턴까지 콕콕!",
-        tags: ["성격", "TMI", "라이프스타일"],
-        bg: "linear-gradient(135deg,#6366f1,#14b8a6)"
+        <div id="popular-list" class="card-grid"></div>
+        <div id="popular-empty" class="empty-state" style="display: none">
+          아직 등록된 인기 테스트가 없습니다. 관리자가 심리테스트를 추가하면 이곳에 자동으로
+          표시됩니다.
+        </div>
+      </section>
+
+      <!-- 최신 테스트 섹션 -->
+      <section class="section" id="latest-section">
+        <div class="section-header">
+          <div>
+            <div class="section-title">
+              <span class="dot"></span>
+              <span>따끈따끈 최신 테스트</span>
+            </div>
+            <div class="section-sub">
+              방금 막 올라온 신규 심리테스트를 빠르게 즐겨보세요.
+            </div>
+          </div>
+          <div class="section-link" onclick="scrollToSection('popular-section')">
+            다시 인기 TOP으로 올라가기 ↑
+          </div>
+        </div>
+
+        <div id="latest-list" class="card-grid"></div>
+        <div id="latest-empty" class="empty-state" style="display: none">
+          아직 등록된 테스트가 없습니다. 먼저 관리자 페이지에서 테스트를 등록해 주세요.
+        </div>
+      </section>
+
+      <!-- 푸터 -->
+      <footer class="footer">
+        © 심리테스트마켓 심마켓 · 문의:
+        <a href="mailto:ainam0727@gmail.com">ainam0727@gmail.com</a> ·  
+        이 서비스는 엔터테인먼트용이며, 결과는 과몰입 금지!
+      </footer>
+    </div>
+
+    <script>
+      const popularListEl = document.getElementById('popular-list');
+      const latestListEl = document.getElementById('latest-list');
+      const popularEmptyEl = document.getElementById('popular-empty');
+      const latestEmptyEl = document.getElementById('latest-empty');
+
+      const metricTotalEl = document.getElementById('metric-total');
+      const metricTodayEl = document.getElementById('metric-today');
+
+      const categoryChips = document.querySelectorAll('.category-chip');
+
+      let popularTests = [];
+      let latestTests = [];
+      let selectedCategory = 'all';
+
+      function scrollToSection(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    ];
 
-    function initHeroSlider() {
-      const slider = document.getElementById('heroSlider');
-      const dotsWrap = document.getElementById('heroDots');
+      function formatDateLabel(iso) {
+        if (!iso) return '';
+        const d = new Date(iso);
+        if (Number.isNaN(d.getTime())) return '';
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}. ${m}. ${day}`;
+      }
 
-      bannerPresets.forEach((b, idx) => {
-        const slide = document.createElement('div');
-        slide.className = 'hero-slide' + (idx === 0 ? ' active' : '');
-        slide.style.backgroundImage = b.bg;
-        slide.innerHTML = `
-          <div class="hero-slide-overlay"></div>
-          <div class="hero-slide-content">
-            <div class="hero-slide-title">${b.title}</div>
-            <div class="hero-slide-desc">${b.desc}</div>
-            <div class="hero-slide-tags">
-              ${b.tags.map(t => `<span class="hero-slide-tag">#${t}</span>`).join('')}
+      function buildTestCard(test) {
+        const card = document.createElement('article');
+        card.className = 'test-card';
+
+        const imageUrl =
+          test.imageUrl ||
+          'https://images.pexels.com/photos/3760852/pexels-photo-3760852.jpeg?auto=compress&cs=tinysrgb&w=800';
+
+        const createdLabel = formatDateLabel(test.createdAt);
+
+        const tags = Array.isArray(test.tags) ? test.tags : [];
+
+        card.innerHTML = `
+          <div class="test-card-image-wrap">
+            <img src="${imageUrl}" alt="${test.title || '심리테스트'}" class="test-card-image" />
+            <div class="test-card-badge">
+              ${test.category || '심리테스트'} · ${test.views || 0}명 참여
+            </div>
+          </div>
+          <div class="test-card-body">
+            <h3 class="test-card-title">${test.title || '제목 없는 심리테스트'}</h3>
+            <p class="test-card-desc">${
+              test.description ||
+              '가볍게 즐길 수 있는 심마켓 전용 심리테스트입니다. 지금 바로 테스트를 풀어보세요!'
+            }</p>
+            <div class="test-card-tags">
+              ${
+                tags.length
+                  ? tags
+                      .slice(0, 3)
+                      .map((t) => `<span class="test-tag">#${t}</span>`)
+                      .join('')
+                  : ''
+              }
+            </div>
+            <div class="test-card-meta-row">
+              <div class="test-card-meta">
+                ${createdLabel ? createdLabel + ' · ' : ''}${test.views || 0}명 참여
+              </div>
+              <button class="btn-card-play" type="button">테스트 풀기</button>
             </div>
           </div>
         `;
-        slider.appendChild(slide);
 
-        const dot = document.createElement('div');
-        dot.className = 'hero-dot' + (idx === 0 ? ' active' : '');
-        dotsWrap.appendChild(dot);
-      });
+        const playUrl = test.playUrl || '/';
+        const goPlay = () => {
+          // 조회수 증가 API 호출 (실패해도 그냥 무시)
+          if (test.id) {
+            fetch(`/api/tests/${test.id}/view`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+            }).catch(() => {});
+          }
+          window.open(playUrl, '_blank');
+        };
 
-      let current = 0;
-      setInterval(() => {
-        const slides = slider.querySelectorAll('.hero-slide');
-        const dots = dotsWrap.querySelectorAll('.hero-dot');
-        if (!slides.length) return;
-        slides[current].classList.remove('active');
-        dots[current].classList.remove('active');
-        current = (current + 1) % slides.length;
-        slides[current].classList.add('active');
-        dots[current].classList.add('active');
-      }, 3800);
-    }
-
-    function createCard(test, options = {}) {
-      const card = document.createElement('article');
-      card.className = 'test-card';
-
-      const thumbUrl = test.thumbnail || 'https://images.pexels.com/photos/853406/pexels-photo-853406.jpeg?auto=compress&cs=tinysrgb&w=800';
-      const badge = options.badge || (test.isHot ? 'HOT' : '');
-
-      card.innerHTML = `
-        <div class="test-thumb">
-          <img src="${thumbUrl}" alt="">
-          ${badge ? `<div class="test-thumb-badge">${badge}</div>` : ''}
-        </div>
-        <div class="test-title">${test.title}</div>
-        <div class="test-summary">${test.summary || '가볍게 즐기는 엔터테인먼트 심리테스트입니다.'}</div>
-        <div class="test-meta">
-          <div class="test-tags">
-            ${(test.tags || []).slice(0, 3).map(tag => `<span class="tag-pill">#${tag}</span>`).join('')}
-          </div>
-          <div class="test-cta">테스트 풀기 ▷</div>
-        </div>
-      `;
-
-      card.addEventListener('click', () => {
-        const url = test.playUrl || `/index.html?testId=${test.id}`;
-        window.location.href = url;
-      });
-
-      return card;
-    }
-
-    function renderSections() {
-      const hotList = document.getElementById('hotList');
-      const latestList = document.getElementById('latestList');
-      hotList.innerHTML = '';
-      latestList.innerHTML = '';
-
-      const selectedCategory = document.querySelector('.category-chip.active')?.dataset.value || 'all';
-
-      const filtered = allTests.filter(t => {
-        if (selectedCategory === 'all') return true;
-        return (t.category || '').includes(selectedCategory);
-      });
-
-      const hot = filtered.filter(t => t.isHot);
-      const latest = filtered.slice().sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-      if (!hot.length) {
-        hotList.innerHTML = `<div class="empty-state">아직 HOT로 지정된 테스트가 없습니다. 관리자 페이지에서 핫 테스트로 설정해 보세요.</div>`;
-      } else {
-        hot.slice(0, 6).forEach(t => hotList.appendChild(createCard(t, { badge: 'HOT' })));
-      }
-
-      if (!latest.length) {
-        latestList.innerHTML = `<div class="empty-state">등록된 심리테스트가 없습니다. 먼저 관리자 페이지에서 테스트를 추가해 주세요.</div>`;
-      } else {
-        latest.slice(0, 6).forEach((t, idx) => {
-          latestList.appendChild(createCard(t, { badge: idx === 0 ? 'NEW' : '' }));
+        card.addEventListener('click', (e) => {
+          // 버튼 외 영역 클릭도 모두 이동
+          if (e.target.tagName.toLowerCase() === 'button') return; // 버튼에서 다시 처리
+          goPlay();
         });
+
+        card.querySelector('.btn-card-play').addEventListener('click', (e) => {
+          e.stopPropagation();
+          goPlay();
+        });
+
+        return card;
       }
 
-      const info = document.getElementById('categoryInfo');
-      if (selectedCategory === 'all') {
-        info.textContent = `전체 카테고리의 심리테스트 ${filtered.length}개`;
-      } else {
-        info.textContent = `${selectedCategory} 카테고리 심리테스트 ${filtered.length}개`;
-      }
-    }
+      function renderLists() {
+        // 카테고리 필터
+        const filterFn =
+          selectedCategory === 'all'
+            ? () => true
+            : (t) => (t.category || '').includes(selectedCategory);
 
-    function initCategoryTabs() {
-      const tabs = document.querySelectorAll('.category-chip');
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          tabs.forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          renderSections();
+        // 인기
+        popularListEl.innerHTML = '';
+        const filteredPopular = popularTests.filter(filterFn);
+        if (!filteredPopular.length) {
+          popularEmptyEl.style.display = 'block';
+        } else {
+          popularEmptyEl.style.display = 'none';
+          filteredPopular.forEach((t) => popularListEl.appendChild(buildTestCard(t)));
+        }
+
+        // 최신
+        latestListEl.innerHTML = '';
+        const filteredLatest = latestTests.filter(filterFn);
+        if (!filteredLatest.length) {
+          latestEmptyEl.style.display = 'block';
+        } else {
+          latestEmptyEl.style.display = 'none';
+          filteredLatest.forEach((t) => latestListEl.appendChild(buildTestCard(t)));
+        }
+      }
+
+      async function fetchTests() {
+        try {
+          const [popularRes, latestRes] = await Promise.all([
+            fetch('/api/tests?sort=popular&limit=6'),
+            fetch('/api/tests?sort=latest&limit=6'),
+          ]);
+
+          const popularJson = await popularRes.json();
+          const latestJson = await latestRes.json();
+
+          popularTests = Array.isArray(popularJson.tests) ? popularJson.tests : [];
+          latestTests = Array.isArray(latestJson.tests) ? latestJson.tests : [];
+
+          // 메트릭
+          const merged = Array.from(new Map([...latestTests, ...popularTests].map((t) => [t.id, t])).values());
+          const totalCount = merged.length;
+          metricTotalEl.textContent = totalCount ? `${totalCount}개` : '-';
+
+          const today = new Date();
+          const todayStr = today.toISOString().slice(0, 10);
+          const todayCount = merged.filter((t) =>
+            String(t.createdAt || '').startsWith(todayStr)
+          ).length;
+          metricTodayEl.textContent = todayCount ? `${todayCount}개` : '0개';
+
+          renderLists();
+        } catch (e) {
+          console.error('fetchTests error:', e);
+          popularEmptyEl.style.display = 'block';
+          latestEmptyEl.style.display = 'block';
+        }
+      }
+
+      // 카테고리 클릭
+      categoryChips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+          categoryChips.forEach((c) => c.classList.remove('active'));
+          chip.classList.add('active');
+          selectedCategory = chip.dataset.cat || 'all';
+          renderLists();
         });
       });
-    }
 
-    function scrollToLatest() {
-      const el = document.getElementById('latestSection');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    async function loadTests() {
-      try {
-        const res = await fetch('/api/tests');
-        const data = await res.json();
-        allTests = Array.isArray(data) ? data : [];
-        renderSections();
-      } catch (e) {
-        console.error(e);
-        document.getElementById('hotList').innerHTML =
-          '<div class="empty-state">테스트 목록을 불러오는 중 오류가 발생했습니다.</div>';
-        document.getElementById('latestList').innerHTML =
-          '<div class="empty-state">잠시 후 새로고침 해 주세요.</div>';
-      }
-    }
-
-    // init
-    initHeroSlider();
-    initCategoryTabs();
-    loadTests();
-  </script>
-</body>
+      // 초기 로드
+      fetchTests();
+    </script>
+  </body>
 </html>
