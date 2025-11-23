@@ -107,7 +107,7 @@
       text-align: center;
     }
 
-    /* ✅ 저장된 테스트 목록 스타일 */
+    /* 저장된 테스트 목록 */
     .saved-tests-box {
       margin-top: 28px;
       padding: 16px 16px 8px;
@@ -164,7 +164,7 @@
       background:#f3f4ff;
     }
 
-    /* ✅ 테스트 풀이 UI */
+    /* 테스트 풀이 UI */
     .quiz-box {
       margin-top: 32px;
       padding: 20px 18px 18px;
@@ -239,6 +239,17 @@
       font-size: 13px;
       color: #374151;
       line-height: 1.5;
+      white-space: pre-wrap;
+    }
+    .quiz-ai-result {
+      margin-top: 12px;
+      padding: 12px 12px 10px;
+      border-radius: 14px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      font-size: 13px;
+      color: #7c2d12;
+      white-space: pre-wrap;
     }
 
     @media (min-width: 768px) {
@@ -269,7 +280,6 @@
       <button class="primary" id="generateBtn">테스트 생성하기</button>
       <button class="outline" id="regenerateBtn">다시 생성하기</button>
       <button class="outline" id="copyBtn">결과 복사하기</button>
-      <!-- ✅ 새 버튼: 테스트 풀기 -->
       <button class="outline" id="startQuizBtn">테스트 풀기</button>
     </div>
 
@@ -279,7 +289,7 @@
       위에서 카테고리를 선택하고 <b>테스트 생성하기</b>를 눌러 주세요.
     </div>
 
-    <!-- ✅ 테스트 풀이 섹션 -->
+    <!-- 테스트 풀이 섹션 -->
     <div id="quizSection" class="quiz-box" style="display:none;">
       <div class="quiz-header">
         <span class="quiz-title">테스트 풀이 모드</span>
@@ -292,12 +302,13 @@
       <div class="quiz-footer">
         <button class="outline" id="quizPrevBtn">이전</button>
         <button class="outline" id="quizNextBtn">다음</button>
-        <button class="primary" id="quizSubmitBtn">결과 요약 보기</button>
+        <button class="primary" id="quizSubmitBtn">결과 요약 & AI 해석 보기</button>
       </div>
       <div class="quiz-result" id="quizResult" style="display:none;"></div>
+      <div class="quiz-ai-result" id="quizAiResult" style="display:none;"></div>
     </div>
 
-    <!-- ✅ 저장된 테스트 목록 -->
+    <!-- 저장된 테스트 목록 -->
     <div id="savedTestsSection" class="saved-tests-box"></div>
   </div>
 
@@ -315,10 +326,7 @@
         createdAt: new Date().toLocaleString()
       };
 
-      // 가장 최근 것이 위로 오도록 앞에 추가
       saved.unshift(newTest);
-
-      // 최대 20개까지만 저장
       if (saved.length > 20) {
         saved.pop();
       }
@@ -360,6 +368,8 @@
           .join("");
     }
 
+    let currentTestCategory = null;
+
     function openSavedTest(id) {
       const list = loadSavedTests();
       const t = list.find((x) => x.id === id);
@@ -374,6 +384,7 @@
       resultBox.style.display = 'block';
       placeholder.style.display = 'none';
       resultBox.textContent = t.content;
+      currentTestCategory = t.category || null;
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -397,12 +408,12 @@
     const quizNextBtn = document.getElementById('quizNextBtn');
     const quizSubmitBtn = document.getElementById('quizSubmitBtn');
     const quizResultEl = document.getElementById('quizResult');
+    const quizAiResultEl = document.getElementById('quizAiResult');
 
-    let parsedQuestions = [];  // {question, choices: []}
+    let parsedQuestions = [];
     let currentQuestionIndex = 0;
-    let userAnswers = [];      // 각 문항의 선택 인덱스 (0~3)
+    let userAnswers = [];  // 각 문항의 선택 인덱스 (0~3)
 
-    // 간단한 파서: "1."으로 시작하는 줄은 질문, "A)"~"D)"로 시작하는 줄은 보기
     function parseTestTextToQuestions(text) {
       const lines = text
         .split('\n')
@@ -413,7 +424,6 @@
       let current = null;
 
       for (const line of lines) {
-        // 결과 해석 이후는 무시
         if (line.includes('결과 해석') || line.includes('결과 유형') || line.startsWith('[결과')) {
           break;
         }
@@ -422,7 +432,6 @@
         const aMatch = /^([A-D])[)\.\-]\s*(.*)/.exec(line);
 
         if (qMatch) {
-          // 이전 질문 저장
           if (current && current.choices.length > 0) {
             questions.push(current);
           }
@@ -461,13 +470,12 @@
 
         btn.addEventListener('click', () => {
           userAnswers[currentQuestionIndex] = idx;
-          renderQuizQuestion(); // 선택 상태 다시 그리기
+          renderQuizQuestion();
         });
 
         quizChoicesEl.appendChild(btn);
       });
 
-      // 버튼 활성/비활성
       quizPrevBtn.disabled = currentQuestionIndex === 0;
       quizNextBtn.disabled = currentQuestionIndex === parsedQuestions.length - 1;
     }
@@ -490,6 +498,8 @@
       userAnswers = new Array(qs.length).fill(null);
       currentQuestionIndex = 0;
       quizResultEl.style.display = 'none';
+      quizAiResultEl.style.display = 'none';
+      quizAiResultEl.textContent = '';
 
       quizSection.style.display = 'block';
       renderQuizQuestion();
@@ -516,13 +526,39 @@
       }
     });
 
+    async function requestAiAnalysis(summary) {
+      try {
+        const resultBox = document.getElementById('result');
+        const testText = resultBox.textContent;
+
+        quizAiResultEl.style.display = 'block';
+        quizAiResultEl.textContent = 'AI가 당신의 결과를 분석하는 중입니다... (1~3초 정도 걸릴 수 있어요)';
+
+        const res = await fetch('/api/analyze-result', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            category: currentTestCategory || selectedCategory,
+            testText,
+            summary
+          })
+        });
+
+        if (!res.ok) {
+          throw new Error('결과 해석 API 오류');
+        }
+
+        const data = await res.json();
+        const text = typeof data.result === 'string' ? data.result : JSON.stringify(data.result, null, 2);
+        quizAiResultEl.innerHTML = '<b>AI 엔터테인먼트 해석</b>\n\n' + text;
+      } catch (err) {
+        console.error(err);
+        quizAiResultEl.textContent = 'AI 해석 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+      }
+    }
+
     quizSubmitBtn.addEventListener('click', () => {
       if (!parsedQuestions.length) return;
-
-      const unanswered = userAnswers.filter(v => v === null).length;
-      if (unanswered > 0 && !confirm(`답을 고르지 않은 문항이 ${unanswered}개 있습니다. 그대로 결과를 보시겠어요?`)) {
-        return;
-      }
 
       const counts = { A: 0, B: 0, C: 0, D: 0 };
 
@@ -538,6 +574,13 @@
 
       const entries = Object.entries(counts);
       const totalAnswered = entries.reduce((sum, [, v]) => sum + v, 0);
+
+      const unanswered = parsedQuestions.length - totalAnswered;
+      if (unanswered > 0) {
+        const ok = confirm(`답을 고르지 않은 문항이 ${unanswered}개 있습니다. 그대로 결과를 보시겠어요?`);
+        if (!ok) return;
+      }
+
       let bestLetter = null;
       let bestCount = -1;
       for (const [letter, count] of entries) {
@@ -547,14 +590,23 @@
         }
       }
 
+      const summaryText =
+        '선택 결과 요약\n' +
+        `총 ${parsedQuestions.length}문항 중 ${totalAnswered}문항에 답변했습니다.\n` +
+        `A 선택: ${counts.A}개, B 선택: ${counts.B}개, C 선택: ${counts.C}개, D 선택: ${counts.D}개\n\n` +
+        `가장 많이 선택한 유형: ${bestLetter || '-'} 타입\n` +
+        '상세 해석은 아래 AI 엔터테인먼트 분석을 참고해 주세요.';
+
       quizResultEl.style.display = 'block';
-      quizResultEl.innerHTML = `
-        <b>선택 결과 요약</b><br/>
-        총 ${parsedQuestions.length}문항 중 ${totalAnswered}문항에 답변했습니다.<br/>
-        A 선택: ${counts.A}개, B 선택: ${counts.B}개, C 선택: ${counts.C}개, D 선택: ${counts.D}개<br/><br/>
-        <b>가장 많이 선택한 유형: ${bestLetter || '-'} 타입</b><br/>
-        상세 해석은 다음 단계에서 AI 결과 분석과 연동할 예정입니다.
-      `;
+      quizResultEl.textContent = summaryText;
+
+      const summaryForServer = {
+        totalQuestions: parsedQuestions.length,
+        totalAnswered,
+        counts
+      };
+
+      requestAiAnalysis(summaryForServer);
     });
 
     /***********************
@@ -582,7 +634,11 @@
       resultBox.style.display = 'block';
       resultBox.textContent = 'AI가 심리테스트를 만드는 중입니다...\n(잠시만 기다려 주세요)';
       placeholder.style.display = 'none';
-      quizSection.style.display = 'none'; // 새로 생성할 때는 풀이 영역 숨기기
+      quizSection.style.display = 'none';
+
+      quizResultEl.style.display = 'none';
+      quizAiResultEl.style.display = 'none';
+      quizAiResultEl.textContent = '';
 
       try {
         const res = await fetch('/api/generate-test', {
@@ -604,8 +660,8 @@
 
         resultBox.textContent = text;
         lastPayload = text;
+        currentTestCategory = category;
 
-        // ✅ 생성된 테스트를 저장하고 목록 다시 표시
         saveTest(category, text);
         renderSavedTests();
       } catch (err) {
@@ -632,7 +688,6 @@
       }
     });
 
-    // 페이지 처음 로드될 때 저장된 테스트 목록 렌더링
     renderSavedTests();
   </script>
 </body>
