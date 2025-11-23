@@ -1,5 +1,4 @@
 // server.js
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -8,11 +7,6 @@ const OpenAI = require('openai');
 const app = express();
 const port = process.env.PORT || 10000;
 
-// --- OpenAI 클라이언트 ---
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 // --- 미들웨어 설정 ---
 app.use(cors());
 app.use(express.json());
@@ -20,135 +14,149 @@ app.use(express.json());
 // 정적 파일 제공 (public 폴더)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ------------ AI 심리테스트 생성 API ------------
-// POST /api/generate-test
-// body: { category: "연애 심리테스트" | ... }
+// 루트("/")로 들어오면 index.html 내려주기
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// --- OpenAI 클라이언트 설정 ---
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// 공통: 에러 로깅 헬퍼
+function logError(context, err) {
+  console.error(`❌ [${context}]`, err?.response?.data || err?.message || err);
+}
+
+// AI 심리 테스트 자동 생성 API
 app.post('/api/generate-test', async (req, res) => {
   try {
-    const { category } = req.body || {};
+    const { category } = req.body;
 
-    if (!category) {
-      return res.status(400).json({ error: 'category 필드가 필요합니다.' });
-    }
+    const systemPrompt = `
+당신은 재미있는 한국어 심리테스트를 만드는 전문 작가입니다.
+엔터테인먼트용이지만, 질문과 보기, 결과가 자연스럽고 설득력 있게 느껴져야 합니다.
 
-    const prompt = `
-당신은 재미있는 심리테스트를 만드는 작가입니다.
-아래 조건을 만족하는 한국어 심리테스트를 만들어 주세요.
+출력 형식은 반드시 아래 예시를 꼭 지켜주세요. (형식을 벗어나지 말 것!)
 
-[카테고리]
-${category}
+[제목]
+(한 줄 제목)
 
-[조건]
-- 총 7문항
-- 각 문항마다 보기 4개 (A, B, C, D)
-- 질문은 일상/연애/소비/직장 등 실제 상황을 떠올릴 수 있게 구체적이고, 살짝 웃기거나 공감되는 톤이면 좋음
-- 너무 무겁지 않고, 엔터테인먼트 예능 느낌으로 가볍게 즐길 수 있는 스타일
-- 질문은 번호로, 보기에는 항상 A) B) C) D) 형식을 사용
+[설명]
+(테스트를 소개하는 1~2문장)
 
-[출력 형식 예시]
-1. 질문 내용...
-A) 보기1
-B) 보기2
-C) 보기3
-D) 보기4
+[질문]
+1. 첫 번째 질문 문장?
+A) 보기 1
+B) 보기 2
+C) 보기 3
+D) 보기 4
 
-2. 질문 내용...
-A) ...
-B) ...
-C) ...
-D) ...
+2. 두 번째 질문 문장?
+A) 보기 1
+B) 보기 2
+C) 보기 3
+D) 보기 4
 
-(중략)
+(총 6~8문항 정도 생성)
 
-[마지막에 아래처럼 간단한 결과 유형 4개도 추가]
-[결과 유형]
-A 타입: ~~~
-B 타입: ~~~
-C 타입: ~~~
-D 타입: ~~~
+[결과 해석]
+A 타입: (A를 많이 고른 사람에 대한 성향 설명, 5~7문장)
+B 타입: (B를 많이 고른 사람에 대한 성향 설명, 5~7문장)
+C 타입: (C를 많이 고른 사람에 대한 성향 설명, 5~7문장)
+D 타입: (D를 많이 고른 사람에 대한 성향 설명, 5~7문장)
+
+주의:
+- "A 선택 1점, B 선택 2점" 이런 점수 표기는 넣지 마세요.
+- 오직 A/B/C/D 유형으로만 결과를 나눠 주세요.
+- 가능한 한 질문과 결과 모두 카테고리와 잘 맞게 작성하세요.
 `;
 
-    const completion = await openai.responses.create({
+    const userPrompt = `
+카테고리: ${category}
+
+위 카테고리에 어울리는 심리테스트를 하나 만들어 주세요.
+설명과 결과는 너무 무겁지 않게, 가볍고 재밌는 엔터테인먼트 톤으로 써 주세요.
+`;
+
+    const completion = await client.responses.create({
       model: 'gpt-4.1-mini',
-      input: prompt,
+      input: [
+        {
+          role: 'system',
+          content: systemPrompt,
+        },
+        {
+          role: 'user',
+          content: userPrompt,
+        },
+      ],
       max_output_tokens: 1200,
     });
 
     const text = completion.output[0].content[0].text;
     res.json({ test: text });
   } catch (error) {
-    console.error('[/api/generate-test] error:', error);
-    res.status(500).json({ error: error.message || 'OpenAI 호출 중 오류가 발생했습니다.' });
+    logError('generate-test', error);
+    res.status(500).json({ error: '심리테스트 생성 중 오류가 발생했습니다.' });
   }
 });
 
-// ------------ AI 결과 해석 API ------------
-// POST /api/analyze-result
-// body: { category, testText, summary: { totalQuestions, totalAnswered, counts: {A,B,C,D} } }
+// AI 엔터테인먼트 해석 API
 app.post('/api/analyze-result', async (req, res) => {
   try {
-    const { category, testText, summary } = req.body || {};
-    if (!testText || !summary) {
-      return res.status(400).json({ error: 'testText와 summary가 필요합니다.' });
-    }
+    const { category, testText, summary } = req.body;
 
-    const safeCategory = category || '심리테스트';
+    const systemPrompt = `
+당신은 연애·성격·금전·직장 등 다양한 주제의 심리테스트를
+엔터테인먼트 스타일로 해석해 주는 한국어 심리 분석가입니다.
 
-    const prompt = `
-당신은 예능 프로그램에서 심리테스트 결과를 재미있게 풀어주는 MC입니다.
-아래 정보를 기반으로 사용자를 위한 "엔터테인먼트 스타일" 결과 리포트를 작성하세요.
+톤 & 스타일:
+- 심각한 상담 느낌 X, 친구처럼 재밌게 말해주는 느낌
+- 가끔 가벼운 농담, 공감 멘트 OK
+- 하지만 선 넘는 비하 / 혐오 / 위험한 조언은 절대 금지
+- "의학적 진단이 아니다" 정도의 가벼운 안내는 한 줄 정도만
 
-[카테고리]
-${safeCategory}
-
-[원본 심리테스트 텍스트]
-""" 
-${testText}
-"""
-
-[사용자 선택 요약]
-- 총 문항 수: ${summary.totalQuestions}
-- 실제 답변한 문항 수: ${summary.totalAnswered}
-- A 선택: ${summary.counts?.A ?? 0}개
-- B 선택: ${summary.counts?.B ?? 0}개
-- C 선택: ${summary.counts?.C ?? 0}개
-- D 선택: ${summary.counts?.D ?? 0}개
-
-[요청 스타일]
-- 너무 진지한 상담이 아니라, "예능/엔터테인먼트" 느낌의 가벼운 해석
-- 하지만 사용자가 알아들을 수 있는 나름 그럴듯한 분석도 포함
-- 반말/존댓말 섞어서 친근한 MC 톤 (예: "자, 그러면 결과 한번 볼까요?" 느낌)
-- 사용자를 놀리진 말고, 귀엽게 놀리는 정도까지만
-
-[결과 구성]
-1) 한 줄 타이틀 (예: "당신은 계획형 욜로 소비러!")
-2) 한 줄 캐치프레이즈 (짧게)
-3) 전체 성향 요약 (2~3문장)
-4) 상세 분석 (4~6문장)
-   - 인간관계/연애/소비/직장 등 카테고리에 맞춰 포인트 언급
-5) 이런 사람과 잘 맞아요 / 이런 상황에서 빛나요 (각 2~3줄)
-6) 마지막에 가볍게 웃기면서 "재미로만 참고하세요" 한 줄
-
-문단 사이에는 빈 줄을 넣어 가독성을 좋게 해 주세요.
+출력 형식:
+1) 한 줄 요약 타이틀 (예: "당신은 차분한 분석가형, C타입!")
+2) 전체 성향 설명 (3~5문단)
+3) 연애/대인관계에서의 모습
+4) 일/학업/일상에서의 모습
+5) 이런 사람과 잘 맞아요
+6) 이런 상황에서 빛납니다
+7) 마지막에 한 줄 정도로 "너무 심각하게 받아들이지 말고 재미로만 보세요~" 같은 멘트
 `;
 
-    const completion = await openai.responses.create({
+    const userPrompt = `
+[테스트 카테고리]
+${category}
+
+[테스트 전체 내용]
+${testText}
+
+[사용자 선택 요약(JSON)]
+${JSON.stringify(summary, null, 2)}
+
+위 정보를 바탕으로, 사용자의 "전체적인 성향"을 A/B/C/D 점수에 맞춰 재밌게 해석해 주세요.
+사용자가 가장 많이 고른 선택지(예: C가 제일 많음)를 중심으로 스토리를 만들어 주세요.
+`;
+
+    const completion = await client.responses.create({
       model: 'gpt-4.1-mini',
-      input: prompt,
+      input: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
       max_output_tokens: 900,
     });
 
     const text = completion.output[0].content[0].text;
     res.json({ result: text });
   } catch (error) {
-    console.error('[/api/analyze-result] error:', error);
-    res.status(500).json({ error: error.message || 'OpenAI 호출 중 오류가 발생했습니다.' });
+    logError('analyze-result', error);
+    res.status(500).json({ error: '결과 해석 생성 중 오류가 발생했습니다.' });
   }
-});
-
-// SPA 지원을 위해 나머지 모든 경로는 index.html 반환
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // 서버 시작
