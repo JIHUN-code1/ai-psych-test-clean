@@ -107,6 +107,18 @@
       text-align: center;
     }
 
+    /* 공유 링크 안내 배너 */
+    .share-notice {
+      display: none;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      font-size: 12px;
+      color: #4338ca;
+    }
+
     /* 저장된 테스트 목록 */
     .saved-tests-box {
       margin-top: 28px;
@@ -334,6 +346,11 @@
       카테고리를 고르고 버튼만 누르면, AI가 질문·보기·결과까지 한 번에 만들어 줍니다.
     </p>
 
+    <!-- 공유 링크 안내 -->
+    <div id="shareNotice" class="share-notice">
+      공유 링크로 불러온 심리테스트입니다. 바로 테스트를 풀어보거나, 새로 생성해서 사용해도 좋아요!
+    </div>
+
     <!-- 카테고리 탭 -->
     <div class="tabs" id="categoryTabs">
       <div class="tab active" data-value="연애 심리테스트">연애 심리테스트</div>
@@ -349,6 +366,7 @@
       <button class="primary" id="generateBtn">테스트 생성하기</button>
       <button class="outline" id="regenerateBtn">다시 생성하기</button>
       <button class="outline" id="copyBtn">결과 복사하기</button>
+      <button class="outline" id="shareLinkBtn">공유 링크 복사</button>
       <button class="outline" id="startQuizBtn">테스트 풀기</button>
     </div>
 
@@ -569,13 +587,13 @@
       const resultBox = document.getElementById('result');
       const text = resultBox.textContent.trim();
       if (!text) {
-        alert('먼저 테스트를 생성한 뒤 이용해 주세요.');
+        alert('먼저 테스트를 생성하거나, 공유 링크/저장된 테스트를 불러온 뒤 이용해 주세요.');
         return;
       }
 
       const qs = parseTestTextToQuestions(text);
       if (!qs.length) {
-        alert('현재 생성된 텍스트에서 문항을 찾지 못했습니다. 다시 생성 후 시도해 주세요.');
+        alert('현재 텍스트에서 문항을 찾지 못했습니다. 다시 생성 후 시도해 주세요.');
         return;
       }
 
@@ -765,14 +783,16 @@
     });
 
     /***********************
-     *  기존 생성/복사 기능
+     *  기존 생성/복사 기능 + 공유 링크
      ***********************/
     const tabs = document.querySelectorAll('.tab');
     const generateBtn = document.getElementById('generateBtn');
     const regenerateBtn = document.getElementById('regenerateBtn');
     const copyBtn = document.getElementById('copyBtn');
+    const shareLinkBtn = document.getElementById('shareLinkBtn');
     const resultBox = document.getElementById('result');
     const placeholder = document.getElementById('placeholder');
+    const shareNotice = document.getElementById('shareNotice');
 
     let selectedCategory = '연애 심리테스트';
     let lastPayload = null;
@@ -789,6 +809,7 @@
       resultBox.style.display = 'block';
       resultBox.textContent = 'AI가 심리테스트를 만드는 중입니다...\n(잠시만 기다려 주세요)';
       placeholder.style.display = 'none';
+      shareNotice.style.display = 'none';
       quizSection.style.display = 'none';
 
       quizResultEl.style.display = 'none';
@@ -845,7 +866,75 @@
       }
     });
 
+    // 공유 링크 생성용 Base64 유틸
+    function encodeBase64(str) {
+      return btoa(unescape(encodeURIComponent(str)));
+    }
+    function decodeBase64(str) {
+      return decodeURIComponent(escape(atob(str)));
+    }
+
+    // 공유 링크 복사
+    shareLinkBtn.addEventListener('click', async () => {
+      const text = resultBox.textContent.trim();
+      if (!text) {
+        alert('먼저 테스트를 생성하거나, 저장된 테스트/공유 링크로 불러온 뒤 사용해 주세요.');
+        return;
+      }
+      const payload = {
+        category: currentTestCategory || selectedCategory,
+        test: text
+      };
+
+      try {
+        const json = JSON.stringify(payload);
+        const encoded = encodeBase64(json);
+        const url = `${location.origin}${location.pathname}?t=${encodeURIComponent(encoded)}`;
+
+        await navigator.clipboard.writeText(url);
+        alert('공유 링크가 클립보드에 복사되었습니다!\n친구에게 보내서 바로 테스트를 풀게 할 수 있어요.');
+      } catch (e) {
+        console.error(e);
+        alert('링크 복사 중 오류가 발생했습니다.');
+      }
+    });
+
+    // URL 파라미터에서 t 값을 읽어와 공유 테스트 로드
+    function tryLoadSharedTest() {
+      const params = new URLSearchParams(location.search);
+      const t = params.get('t');
+      if (!t) return;
+
+      try {
+        const decoded = decodeBase64(decodeURIComponent(t));
+        const obj = JSON.parse(decoded);
+
+        if (!obj || !obj.test) return;
+
+        resultBox.style.display = 'block';
+        placeholder.style.display = 'none';
+        resultBox.textContent = obj.test;
+        currentTestCategory = obj.category || null;
+        shareNotice.style.display = 'block';
+
+        // 탭도 카테고리에 맞춰서 하이라이트 (있으면)
+        if (obj.category) {
+          tabs.forEach(tab => {
+            if (tab.dataset.value === obj.category) {
+              tabs.forEach(t => t.classList.remove('active'));
+              tab.classList.add('active');
+              selectedCategory = obj.category;
+            }
+          });
+        }
+      } catch (e) {
+        console.error('공유 링크 파싱 오류', e);
+      }
+    }
+
+    // 초기 실행
     renderSavedTests();
+    tryLoadSharedTest();
   </script>
 </body>
 </html>
