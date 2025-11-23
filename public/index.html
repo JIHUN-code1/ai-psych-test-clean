@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI 심리테스트 자동 생성기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5ff;
+      padding: 40px 16px;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      padding: 32px 24px 40px;
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 24px;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+    }
+    .tab {
+      flex-shrink: 0;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      font-size: 13px;
+      color: #4b5563;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .tab.active {
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.3);
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    button.primary, button.outline {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    button.primary {
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      color: white;
+      box-shadow: 0 8px 20px rgba(99,102,241,0.35);
+    }
+    button.primary:hover { transform: translateY(-1px); }
+    button.outline {
+      background: white;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+    }
+    button.outline:hover { background:#f9fafb; }
+    .result-box {
+      margin-top: 20px;
+      padding: 20px 16px;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      max-height: 520px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #111827;
+    }
+    .placeholder {
+      margin-top: 32px;
+      font-size: 14px;
+      color: #9ca3af;
+      text-align: center;
+    }
+    @media (min-width: 768px) {
+      .container { padding: 32px 32px 40px; }
+      h1 { font-size: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI 심리테스트 자동 생성기</h1>
+    <p class="subtitle">
+      카테고리를 고르고 버튼만 누르면, AI가 질문·보기·결과까지 한 번에 만들어 줍니다.
+    </p>
+
+    <!-- 카테고리 탭 -->
+    <div class="tabs" id="categoryTabs">
+      <div class="tab active" data-value="연애 심리테스트">연애 심리테스트</div>
+      <div class="tab" data-value="성격 심리테스트">성격 심리테스트</div>
+      <div class="tab" data-value="금전/소비 성향 심리테스트">금전/소비 성향 심리테스트</div>
+      <div class="tab" data-value="직장/커리어 심리테스트">직장/커리어 심리테스트</div>
+      <div class="tab" data-value="우정/대인관계 심리테스트">우정/대인관계 심리테스트</div>
+      <div class="tab" data-value="라이프스타일 심리테스트">라이프스타일 심리테스트</div>
+    </div>
+
+    <!-- 버튼들 -->
+    <div class="controls">
+      <button class="primary" id="generateBtn">테스트 생성하기</button>
+      <button class="outline" id="regenerateBtn">다시 생성하기</button>
+      <button class="outline" id="copyBtn">결과 복사하기</button>
+    </div>
+
+    <!-- 결과 영역 -->
+    <div id="result" class="result-box" style="display:none;"></div>
+    <div id="placeholder" class="placeholder">
+      위에서 카테고리를 선택하고 <b>테스트 생성하기</b>를 눌러 주세요.
+    </div>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const generateBtn = document.getElementById('generateBtn');
+    const regenerateBtn = document.getElementById('regenerateBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const resultBox = document.getElementById('result');
+    const placeholder = document.getElementById('placeholder');
+
+    let selectedCategory = '연애 심리테스트';
+    let lastPayload = null;
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        selectedCategory = tab.dataset.value;
+      });
+    });
+
+    async function callApi(category) {
+      resultBox.style.display = 'block';
+      resultBox.textContent = 'AI가 심리테스트를 만드는 중입니다...\n(잠시만 기다려 주세요)';
+      placeholder.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/generate-test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category })
+        });
+
+        if (!res.ok) {
+          throw new Error('API 요청 실패');
+        }
+
+        const data = await res.json();
+        // 백엔드에서 { test: "..." } 형태로 내려주므로 그대로 표시
+        resultBox.textContent = typeof data.test === 'string'
+          ? data.test
+          : JSON.stringify(data.test, null, 2);
+
+        lastPayload = data.test;
+      } catch (err) {
+        console.error(err);
+        resultBox.textContent = '오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+      }
+    }
+
+    generateBtn.addEventListener('click', () => {
+      callApi(selectedCategory);
+    });
+
+    regenerateBtn.addEventListener('click', () => {
+      callApi(selectedCategory);
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      if (!resultBox.textContent.trim()) return;
+      try {
+        await navigator.clipboard.writeText(resultBox.textContent);
+        alert('결과가 클립보드에 복사되었습니다!');
+      } catch (e) {
+        alert('복사 중 오류가 발생했습니다. (모바일/브라우저 설정을 확인해 주세요)');
+      }
+    });
+  </script>
+</body>
+</html>
