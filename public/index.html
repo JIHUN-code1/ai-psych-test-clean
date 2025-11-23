@@ -355,6 +355,23 @@
   </style>
 </head>
 <body>
+  <!-- 상단 브랜딩 바 -->
+  <div style="max-width:960px;margin:0 auto 12px auto;display:flex;justify-content:space-between;align-items:center;padding:0 4px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div style="width:26px;height:26px;border-radius:999px;background:linear-gradient(135deg,#6366f1,#ec4899);display:flex;align-items:center;justify-content:center;color:white;font-size:15px;font-weight:800;">
+        ψ
+      </div>
+      <div style="display:flex;flex-direction:column;">
+        <span style="font-size:13px;font-weight:700;color:#111827;">AI 심리테스트 스튜디오</span>
+        <span style="font-size:11px;color:#9ca3af;">나만의 테스트를 만들고 친구와 공유해 보세요</span>
+      </div>
+    </div>
+    <span style="font-size:11px;padding:4px 8px;border-radius:999px;background:#eef2ff;color:#4f46e5;border:1px solid #c7d2fe;">
+      Beta 서비스
+    </span>
+  </div>
+
+  <!-- 메인 카드 -->
   <div class="container">
     <h1>AI 심리테스트 자동 생성기</h1>
     <p class="subtitle">
@@ -420,7 +437,27 @@
 
     <!-- 저장된 테스트 목록 -->
     <div id="savedTestsSection" class="saved-tests-box"></div>
-  </div>
+
+    <!-- 이용 안내 & 푸터 -->
+    <div style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;">
+      <div style="font-size:11px;line-height:1.6;color:#6b7280;">
+        <div style="font-weight:600;color:#4b5563;margin-bottom:4px;">서비스 이용 안내</div>
+        <ul style="padding-left:14px;margin-bottom:6px;">
+          <li>본 서비스는 <b>엔터테인먼트 목적의 심리테스트</b>로, 실제 심리 상담·의학적 진단을 대체하지 않습니다.</li>
+          <li>질문·결과·해석 내용은 AI가 자동으로 생성하며, <b>정확성·타당성이 보장되지 않습니다.</b></li>
+          <li>이용 과정에서 이름·연락처 등의 민감한 개인정보는 요구하지 않으며, <b>브라우저 로컬 저장소(localStorage)에만 테스트 내용이 저장</b>됩니다.</li>
+          <li>테스트 공유 링크를 통해 전달되는 내용은 사용자가 생성한 테스트 텍스트에 한정됩니다.</li>
+        </ul>
+        <div style="margin-bottom:2px;">
+          심리적으로 힘든 상황이 지속된다면, 가까운 전문 상담 기관·정신건강의학과 등 <b>전문가의 도움</b>을 꼭 받아 보세요.
+        </div>
+        <div style="margin-top:6px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
+          <span>문의: <a href="mailto:ainam0727@gmail.com" style="color:#4f46e5;text-decoration:none;">ainam0727@gmail.com</a></span>
+          <span style="color:#9ca3af;">© 2025 AI Psych Test Studio. All rights reserved.</span>
+        </div>
+      </div>
+    </div>
+  </div> <!-- .container 끝 -->
 
   <!-- html2canvas (카드 → PNG 변환용) -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
