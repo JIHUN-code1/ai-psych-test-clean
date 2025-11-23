@@ -105,6 +105,64 @@
       color: #9ca3af;
       text-align: center;
     }
+
+    /* ✅ 저장된 테스트 목록 스타일 */
+    .saved-tests-box {
+      margin-top: 28px;
+      padding: 16px 16px 8px;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+      background: #fdfdff;
+    }
+    .saved-tests-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 10px;
+    }
+    .saved-item {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .saved-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .saved-item-category {
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+    }
+    .saved-item-date {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .saved-item-buttons {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .saved-item-buttons button {
+      flex: none;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: white;
+      cursor: pointer;
+    }
+    .saved-item-buttons button:hover {
+      background:#f3f4ff;
+    }
+
     @media (min-width: 768px) {
       .container { padding: 32px 32px 40px; }
       h1 { font-size: 30px; }
@@ -140,9 +198,98 @@
     <div id="placeholder" class="placeholder">
       위에서 카테고리를 선택하고 <b>테스트 생성하기</b>를 눌러 주세요.
     </div>
+
+    <!-- ✅ 저장된 테스트 목록 -->
+    <div id="savedTestsSection" class="saved-tests-box"></div>
   </div>
 
   <script>
+    /***********************
+     *  저장/불러오기 관련 함수
+     ***********************/
+    function saveTest(category, content) {
+      const saved = JSON.parse(localStorage.getItem("aiPsychTests") || "[]");
+
+      const newTest = {
+        id: `test_${Date.now()}`,
+        category,
+        content,
+        createdAt: new Date().toLocaleString()
+      };
+
+      // 가장 최근 것이 위로 오도록 앞에 추가
+      saved.unshift(newTest);
+
+      // 최대 20개까지만 저장
+      if (saved.length > 20) {
+        saved.pop();
+      }
+
+      localStorage.setItem("aiPsychTests", JSON.stringify(saved));
+    }
+
+    function loadSavedTests() {
+      return JSON.parse(localStorage.getItem("aiPsychTests") || "[]");
+    }
+
+    function renderSavedTests() {
+      const list = loadSavedTests();
+      const box = document.getElementById("savedTestsSection");
+      if (!box) return;
+
+      if (list.length === 0) {
+        box.innerHTML = '<div class="saved-tests-title">저장된 테스트</div><p style="font-size:12px; color:#9ca3af;">아직 저장된 테스트가 없습니다.</p>';
+        return;
+      }
+
+      box.innerHTML =
+        '<div class="saved-tests-title">저장된 테스트</div>' +
+        list
+          .map(
+            (t) => `
+          <div class="saved-item">
+            <div class="saved-item-header">
+              <span class="saved-item-category">${t.category}</span>
+              <span class="saved-item-date">${t.createdAt}</span>
+            </div>
+            <div class="saved-item-buttons">
+              <button onclick="openSavedTest('${t.id}')">열기</button>
+              <button onclick="deleteSavedTest('${t.id}')">삭제</button>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+    }
+
+    function openSavedTest(id) {
+      const list = loadSavedTests();
+      const t = list.find((x) => x.id === id);
+      if (!t) {
+        alert("저장된 테스트를 찾을 수 없습니다.");
+        return;
+      }
+
+      const resultBox = document.getElementById('result');
+      const placeholder = document.getElementById('placeholder');
+
+      resultBox.style.display = 'block';
+      placeholder.style.display = 'none';
+      resultBox.textContent = t.content;
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function deleteSavedTest(id) {
+      let list = loadSavedTests();
+      list = list.filter((x) => x.id !== id);
+      localStorage.setItem("aiPsychTests", JSON.stringify(list));
+      renderSavedTests();
+    }
+
+    /***********************
+     *  기존 기능 (API 호출 등)
+     ***********************/
     const tabs = document.querySelectorAll('.tab');
     const generateBtn = document.getElementById('generateBtn');
     const regenerateBtn = document.getElementById('regenerateBtn');
@@ -178,12 +325,18 @@
         }
 
         const data = await res.json();
-        // 백엔드에서 { test: "..." } 형태로 내려주므로 그대로 표시
-        resultBox.textContent = typeof data.test === 'string'
-          ? data.test
-          : JSON.stringify(data.test, null, 2);
 
-        lastPayload = data.test;
+        const text =
+          typeof data.test === 'string'
+            ? data.test
+            : JSON.stringify(data.test, null, 2);
+
+        resultBox.textContent = text;
+        lastPayload = text;
+
+        // ✅ 생성된 테스트를 저장하고 목록 다시 표시
+        saveTest(category, text);
+        renderSavedTests();
       } catch (err) {
         console.error(err);
         resultBox.textContent = '오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
@@ -207,6 +360,9 @@
         alert('복사 중 오류가 발생했습니다. (모바일/브라우저 설정을 확인해 주세요)');
       }
     });
+
+    // 페이지 처음 로드될 때 저장된 테스트 목록 렌더링
+    renderSavedTests();
   </script>
 </body>
 </html>
