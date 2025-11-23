@@ -1,7 +1,7 @@
 {
   "name": "ai-psych-test-clean",
   "version": "1.0.0",
-  "description": "AI 심리테스트 자동 생성기 (Render 배포용)",
+  "description": "AI 심리테스트 자동 생성기 + 심리테스트마켓(심마켓)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -13,6 +13,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.0",
     "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
     "openai": "^4.70.0"
   }
 }

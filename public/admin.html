@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>심마켓 관리자 페이지</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+      background: #f4f5ff;
+      color: #111827;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #f9a8d4, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 900;
+      font-size: 17px;
+      box-shadow: 0 8px 18px rgba(99,102,241,0.35);
+    }
+    .title-main {
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .title-sub {
+      font-size: 12px;
+      color: #6b7280;
+    }
+    .header-right {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 12px;
+      border: 1px solid #e5e7eb;
+      background: white;
+      cursor: pointer;
+    }
+    .btn.primary {
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      color: white;
+      border: none;
+      box-shadow: 0 8px 18px rgba(79,70,229,0.35);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: 18px;
+    }
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 16px 16px 18px;
+      box-shadow: 0 8px 18px rgba(148,163,184,0.25);
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-sub {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 12px;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+    .form-label {
+      font-size: 12px;
+      margin-bottom: 4px;
+      color: #4b5563;
+    }
+    .form-control,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      padding: 7px 9px;
+      font-size: 12px;
+      outline: none;
+    }
+    .form-control:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 1px rgba(79,70,229,0.2);
+    }
+    .form-textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .row-inline {
+      display: flex;
+      gap: 8px;
+    }
+    .row-inline > * {
+      flex: 1;
+    }
+
+    .image-preview {
+      margin-top: 6px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #e5e7eb;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #6b7280;
+    }
+    .image-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      margin-top: 4px;
+      margin-bottom: 6px;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      font-size: 11px;
+      color: #9ca3af;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-submit {
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 12px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      color: white;
+      box-shadow: 0 8px 18px rgba(79,70,229,0.35);
+    }
+
+    .test-list {
+      margin-top: 10px;
+      max-height: 420px;
+      overflow: auto;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+    }
+    .test-row {
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr 0.7fr 0.6fr;
+      gap: 6px;
+      padding: 8px 10px;
+      font-size: 11px;
+      align-items: center;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .test-row.header {
+      background: #eef2ff;
+      font-weight: 600;
+    }
+    .test-row:last-child {
+      border-bottom: none;
+    }
+    .badge-hot {
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #fee2e2;
+      color: #b91c1c;
+      font-size: 10px;
+      margin-left: 4px;
+    }
+    .badge-cat {
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4f46e5;
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .test-actions {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .btn-xs {
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 10px;
+      border: 1px solid #e5e7eb;
+      background: white;
+      cursor: pointer;
+    }
+    .btn-xs.danger {
+      border-color: #fecaca;
+      color: #b91c1c;
+      background: #fef2f2;
+    }
+    .empty-row {
+      padding: 10px;
+      font-size: 11px;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    .hint {
+      font-size: 10px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    @media (max-width: 700px) {
+      .test-row {
+        grid-template-columns: 1.2fr 0.9fr;
+        grid-template-rows: auto auto;
+        row-gap: 4px;
+      }
+      .test-row > div:nth-child(3),
+      .test-row > div:nth-child(4) {
+        justify-self: flex-start;
+      }
+      .test-actions {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">심</div>
+        <div>
+          <div class="title-main">심마켓 관리자</div>
+          <div class="title-sub">심리테스트 등록 · 이미지 업로드 · HOT 지정까지 한번에 관리</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="btn" onclick="location.href='home.html'">사용자 홈(마켓) 보기</button>
+        <button class="btn" onclick="location.href='index.html'">AI 심리테스트 생성기</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- 왼쪽: 등록 폼 -->
+      <section class="card">
+        <div class="card-title">새 심리테스트 등록</div>
+        <div class="card-sub">
+          AI로 생성된 결과를 붙여넣거나, 직접 만든 심리테스트를 메타 정보와 함께 등록합니다.
+        </div>
+
+        <form id="testForm">
+          <div class="form-group">
+            <div class="form-label">제목</div>
+            <input class="form-control" id="title" placeholder="예) 나의 연애 온도 4단계 테스트" required />
+          </div>
+
+          <div class="form-group row-inline">
+            <div>
+              <div class="form-label">카테고리</div>
+              <select class="form-select" id="category" required>
+                <option value="">선택하세요</option>
+                <option value="연애">연애</option>
+                <option value="성격">성격</option>
+                <option value="금전/소비">금전/소비</option>
+                <option value="직장/커리어">직장/커리어</option>
+                <option value="우정/대인관계">우정/대인관계</option>
+                <option value="라이프스타일">라이프스타일</option>
+              </select>
+            </div>
+            <div>
+              <div class="form-label">대표 태그 (쉼표 구분)</div>
+              <input class="form-control" id="tags" placeholder="예) 연애, MBTI, 데이트" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label">한 줄/짧은 설명</div>
+            <textarea class="form-textarea" id="summary" placeholder="예) 설레는 데이트에서 드러나는 당신의 숨은 연애 스타일을 4가지 유형으로 분석해 드립니다."></textarea>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label">테스트 풀기 링크 (선택)</div>
+            <input class="form-control" id="playUrl" placeholder="비워두면 /index.html?testId=ID 로 자동 연결됩니다." />
+            <div class="hint">나중에 별도의 플레이 페이지를 만들면 이곳에 직접 URL을 넣어도 됩니다.</div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label">대표 이미지</div>
+            <input type="file" id="imageFile" accept="image/*" class="form-control" />
+            <input type="hidden" id="imageUrl" />
+            <div class="image-preview" id="imagePreview">이미지 미리보기</div>
+            <div class="hint">이미지를 선택하면 자동으로 업로드 후 미리보기가 표시됩니다.</div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label">테스트 본문 텍스트 (선택)</div>
+            <textarea class="form-textarea" id="content" placeholder="Q1~Q8, 결과 유형 설명 등 전체 텍스트를 그대로 붙여넣어 주세요. 나중에 풀기 전용 페이지에서 활용할 수 있습니다."></textarea>
+          </div>
+
+          <div class="checkbox-row">
+            <input type="checkbox" id="isHot" />
+            <label for="isHot">지금 뜨는 HOT 테스트로 표시</label>
+          </div>
+
+          <div class="card-footer">
+            <div>문의: <a href="mailto:ainam0727@gmail.com">ainam0727@gmail.com</a></div>
+            <button type="submit" class="btn-submit">테스트 등록하기</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 오른쪽: 목록 -->
+      <section class="card">
+        <div class="card-title">등록된 테스트 목록</div>
+        <div class="card-sub">최신 순으로 정렬되며, HOT 지정 시 메인 인기 영역에 노출됩니다.</div>
+
+        <div class="test-list" id="testList">
+          <div class="empty-row">불러오는 중...</div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    let tests = [];
+
+    async function uploadImage(file) {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const res = await fetch('/api/admin/upload-image', {
+        method: 'POST',
+        body: formData
+      });
+      if (!res.ok) throw new Error('이미지 업로드 실패');
+      return res.json();
+    }
+
+    async function loadTests() {
+      const list = document.getElementById('testList');
+      list.innerHTML = '<div class="empty-row">불러오는 중...</div>';
+      try {
+        const res = await fetch('/api/admin/tests');
+        const data = await res.json();
+        tests = Array.isArray(data) ? data : [];
+        renderTestList();
+      } catch (e) {
+        console.error(e);
+        list.innerHTML = '<div class="empty-row">목록을 불러오는 중 오류가 발생했습니다.</div>';
+      }
+    }
+
+    function renderTestList() {
+      const list = document.getElementById('testList');
+      if (!tests.length) {
+        list.innerHTML = '<div class="empty-row">아직 등록된 테스트가 없습니다. 왼쪽에서 새 테스트를 등록해 주세요.</div>';
+        return;
+      }
+
+      const wrap = document.createElement('div');
+      wrap.innerHTML = '';
+
+      const header = document.createElement('div');
+      header.className = 'test-row header';
+      header.innerHTML = `
+        <div>제목</div>
+        <div>카테고리/태그</div>
+        <div>등록일</div>
+        <div>관리</div>
+      `;
+      wrap.appendChild(header);
+
+      tests.forEach(t => {
+        const row = document.createElement('div');
+        row.className = 'test-row';
+        const date = t.createdAt ? new Date(t.createdAt) : null;
+        const dateStr = date ? `${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')}` : '-';
+
+        row.innerHTML = `
+          <div>
+            ${t.title}
+            ${t.isHot ? '<span class="badge-hot">HOT</span>' : ''}
+          </div>
+          <div>
+            <span class="badge-cat">${t.category || '미지정'}</span>
+            ${(t.tags || []).slice(0,3).map(tag => `<span class="badge-cat" style="background:#f9fafb;color:#6b7280;border:1px solid #e5e7eb;">#${tag}</span>`).join('')}
+          </div>
+          <div>${dateStr}</div>
+          <div class="test-actions">
+            <button class="btn-xs" onclick="toggleHot('${t.id}', ${t.isHot ? 'false' : 'true'})">${t.isHot ? 'HOT 해제' : 'HOT 지정'}</button>
+            <button class="btn-xs danger" onclick="deleteTest('${t.id}')">삭제</button>
+          </div>
+        `;
+        wrap.appendChild(row);
+      });
+
+      list.innerHTML = '';
+      list.appendChild(wrap);
+    }
+
+    async function toggleHot(id, next) {
+      try {
+        await fetch(`/api/admin/tests/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isHot: next === true || next === 'true' })
+        });
+        await loadTests();
+      } catch (e) {
+        alert('HOT 상태 변경 중 오류가 발생했습니다.');
+      }
+    }
+
+    async function deleteTest(id) {
+      if (!confirm('해당 테스트를 삭제하시겠습니까?')) return;
+      try {
+        await fetch(`/api/admin/tests/${id}`, { method: 'DELETE' });
+        await loadTests();
+      } catch (e) {
+        alert('삭제 중 오류가 발생했습니다.');
+      }
+    }
+
+    document.getElementById('imageFile').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      const preview = document.getElementById('imagePreview');
+      const hiddenUrl = document.getElementById('imageUrl');
+      if (!file) {
+        hiddenUrl.value = '';
+        preview.textContent = '이미지 미리보기';
+        return;
+      }
+
+      preview.textContent = '업로드 중...';
+      try {
+        const { url } = await uploadImage(file);
+        hiddenUrl.value = url;
+        preview.innerHTML = `<img src="${url}" alt="미리보기" />`;
+      } catch (err) {
+        console.error(err);
+        alert('이미지 업로드에 실패했습니다.');
+        preview.textContent = '이미지 업로드 실패';
+      }
+    });
+
+    document.getElementById('testForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('title').value.trim();
+      const category = document.getElementById('category').value;
+      const tags = document.getElementById('tags').value.trim();
+      const summary = document.getElementById('summary').value.trim();
+      const playUrl = document.getElementById('playUrl').value.trim();
+      const imageUrl = document.getElementById('imageUrl').value.trim();
+      const content = document.getElementById('content').value.trim();
+      const isHot = document.getElementById('isHot').checked;
+
+      if (!title || !category) {
+        alert('제목과 카테고리는 필수입니다.');
+        return;
+      }
+
+      try {
+        const payload = {
+          title,
+          category,
+          summary,
+          playUrl,
+          imageUrl,
+          content,
+          isHot,
+          tags
+        };
+
+        const res = await fetch('/api/admin/tests', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error();
+        // 폼 초기화
+        e.target.reset();
+        document.getElementById('imagePreview').textContent = '이미지 미리보기';
+        document.getElementById('imageUrl').value = '';
+        await loadTests();
+        alert('테스트가 등록되었습니다.');
+      } catch (err) {
+        console.error(err);
+        alert('테스트 등록 중 오류가 발생했습니다.');
+      }
+    });
+
+    loadTests();
+  </script>
+</body>
+</html>
