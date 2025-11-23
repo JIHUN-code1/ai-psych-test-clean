@@ -2,552 +2,509 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>심마켓 관리자 페이지</title>
+  <title>심마켓 관리자 - AI 심리테스트 마켓</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
-      background: #f4f5ff;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR", system-ui, sans-serif;
+      background: radial-gradient(circle at top, #eef2ff 0, #f9fafb 40%, #f5f3ff 100%);
+      min-height: 100vh;
+      padding: 32px 16px;
       color: #111827;
     }
-    a { text-decoration: none; color: inherit; }
-
-    .page {
-      max-width: 1120px;
+    .wrap {
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 20px 16px 40px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 24px;
+      box-shadow: 0 22px 60px rgba(15,23,42,0.18);
+      padding: 24px 28px 32px;
+      backdrop-filter: blur(18px);
     }
-
-    .header {
+    header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-      gap: 12px;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
     }
-    .header-left {
+    .logo-area {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .logo {
+    .logo-circle {
       width: 34px;
       height: 34px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 20%, #f9a8d4, #6366f1);
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 0, #f9fafb 0, #4f46e5 40%, #ec4899 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
-      font-weight: 900;
-      font-size: 17px;
-      box-shadow: 0 8px 18px rgba(99,102,241,0.35);
+      color: white;
+      font-weight: 800;
+      font-size: 16px;
+      box-shadow: 0 10px 26px rgba(79,70,229,0.55);
     }
-    .title-main {
-      font-size: 18px;
+    .logo-text-main {
+      font-size: 20px;
       font-weight: 800;
     }
-    .title-sub {
+    .logo-text-sub {
       font-size: 12px;
       color: #6b7280;
     }
     .header-right {
       display: flex;
       gap: 8px;
-      flex-wrap: wrap;
+      align-items: center;
     }
-    .btn {
+    .header-button {
+      font-size: 13px;
       border-radius: 999px;
-      padding: 7px 14px;
-      font-size: 12px;
       border: 1px solid #e5e7eb;
-      background: white;
+      padding: 7px 13px;
+      background: #f9fafb;
       cursor: pointer;
     }
-    .btn.primary {
+    .header-button.primary {
       background: linear-gradient(135deg, #4f46e5, #ec4899);
       color: white;
       border: none;
-      box-shadow: 0 8px 18px rgba(79,70,229,0.35);
+      box-shadow: 0 12px 30px rgba(79,70,229,0.6);
     }
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-      gap: 18px;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 24px;
     }
-    @media (max-width: 900px) {
+    @media (max-width: 960px) {
       .layout {
         grid-template-columns: minmax(0, 1fr);
       }
+      body { padding: 16px; }
+      .wrap { padding: 18px 16px 24px; }
     }
 
     .card {
-      background: white;
-      border-radius: 18px;
-      padding: 16px 16px 18px;
-      box-shadow: 0 8px 18px rgba(148,163,184,0.25);
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 18px 18px 20px;
+      border: 1px solid #eef2ff;
+      box-shadow: 0 10px 30px rgba(15,23,42,0.06);
     }
-    .card-title {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 4px;
+    .card-title-row {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 6px;
-    }
-    .card-sub {
-      font-size: 11px;
-      color: #9ca3af;
       margin-bottom: 12px;
-    }
-
-    .form-group {
-      margin-bottom: 10px;
-    }
-    .form-label {
-      font-size: 12px;
-      margin-bottom: 4px;
-      color: #4b5563;
-    }
-    .form-control,
-    .form-select,
-    .form-textarea {
-      width: 100%;
-      border-radius: 10px;
-      border: 1px solid #e5e7eb;
-      padding: 7px 9px;
-      font-size: 12px;
-      outline: none;
-    }
-    .form-control:focus,
-    .form-select:focus,
-    .form-textarea:focus {
-      border-color: #4f46e5;
-      box-shadow: 0 0 0 1px rgba(79,70,229,0.2);
-    }
-    .form-textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-
-    .row-inline {
-      display: flex;
       gap: 8px;
     }
-    .row-inline > * {
-      flex: 1;
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .badge-soft {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4f46e5;
     }
 
-    .image-preview {
-      margin-top: 6px;
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: inline-block;
+    }
+    .field {
+      margin-bottom: 12px;
+    }
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
       border-radius: 12px;
-      overflow: hidden;
-      background: #e5e7eb;
-      height: 120px;
+      border: 1px solid #e5e7eb;
+      padding: 9px 11px;
+      font-size: 13px;
+      outline: none;
+      background: #f9fafb;
+      transition: border-color 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    }
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #6366f1;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.12);
+    }
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+    .hint {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    .file-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .file-btn {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .preview-box {
+      border-radius: 14px;
+      border: 1px dashed #e5e7eb;
+      background: #f9fafb;
+      height: 160px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
-      color: #6b7280;
+      font-size: 12px;
+      color: #9ca3af;
+      overflow: hidden;
+      margin-top: 8px;
     }
-    .image-preview img {
+    .preview-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
     }
 
     .checkbox-row {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 12px;
-      margin-top: 4px;
-      margin-bottom: 6px;
+      margin-top: 6px;
+    }
+    .checkbox-row input {
+      width: auto;
     }
 
-    .card-footer {
+    .submit-row {
+      margin-top: 12px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 10px;
-      font-size: 11px;
-      color: #9ca3af;
-      gap: 8px;
-      flex-wrap: wrap;
+      justify-content: flex-end;
     }
-
-    .btn-submit {
+    .submit-btn {
+      padding: 9px 18px;
       border-radius: 999px;
-      padding: 8px 16px;
-      font-size: 12px;
       border: none;
-      cursor: pointer;
+      font-size: 14px;
+      color: #fff;
       background: linear-gradient(135deg, #4f46e5, #ec4899);
-      color: white;
-      box-shadow: 0 8px 18px rgba(79,70,229,0.35);
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(79,70,229,0.5);
     }
 
     .test-list {
-      margin-top: 10px;
-      max-height: 420px;
-      overflow: auto;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+      max-height: 520px;
+      overflow-y: auto;
+    }
+    .test-item {
+      border-radius: 16px;
       background: #f9fafb;
-    }
-    .test-row {
-      display: grid;
-      grid-template-columns: 1.3fr 0.9fr 0.7fr 0.6fr;
-      gap: 6px;
-      padding: 8px 10px;
-      font-size: 11px;
+      border: 1px solid #e5e7eb;
+      padding: 11px 11px 12px;
+      display: flex;
+      gap: 10px;
       align-items: center;
-      border-bottom: 1px solid #e5e7eb;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
     }
-    .test-row.header {
-      background: #eef2ff;
+    .test-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 30px rgba(15,23,42,0.12);
+      background: #ffffff;
+    }
+    .thumb {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      background: radial-gradient(circle at 10% 0, #eef2ff 0, #818cf8 40%, #f97316 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .test-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .test-title {
+      font-size: 14px;
       font-weight: 600;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .test-row:last-child {
-      border-bottom: none;
+    .test-meta {
+      font-size: 11px;
+      color: #9ca3af;
     }
-    .badge-hot {
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: #fee2e2;
-      color: #b91c1c;
-      font-size: 10px;
-      margin-left: 4px;
-    }
-    .badge-cat {
-      padding: 2px 6px;
+    .tag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      padding: 2px 7px;
       border-radius: 999px;
       background: #eef2ff;
       color: #4f46e5;
-      font-size: 10px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .test-actions {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    .btn-xs {
-      border-radius: 999px;
-      padding: 3px 8px;
-      font-size: 10px;
-      border: 1px solid #e5e7eb;
-      background: white;
-      cursor: pointer;
-    }
-    .btn-xs.danger {
-      border-color: #fecaca;
-      color: #b91c1c;
-      background: #fef2f2;
-    }
-    .empty-row {
-      padding: 10px;
-      font-size: 11px;
-      color: #6b7280;
-      text-align: center;
-    }
-
-    .hint {
-      font-size: 10px;
-      color: #9ca3af;
-      margin-top: 2px;
-    }
-
-    @media (max-width: 700px) {
-      .test-row {
-        grid-template-columns: 1.2fr 0.9fr;
-        grid-template-rows: auto auto;
-        row-gap: 4px;
-      }
-      .test-row > div:nth-child(3),
-      .test-row > div:nth-child(4) {
-        justify-self: flex-start;
-      }
-      .test-actions {
-        justify-content: flex-start;
-      }
+      margin-top: 4px;
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <header class="header">
-      <div class="header-left">
-        <div class="logo">심</div>
-        <div>
-          <div class="title-main">심마켓 관리자</div>
-          <div class="title-sub">심리테스트 등록 · 이미지 업로드 · HOT 지정까지 한번에 관리</div>
-        </div>
+<div class="wrap">
+  <header>
+    <div class="logo-area">
+      <div class="logo-circle">심</div>
+      <div>
+        <div class="logo-text-main">심마켓 관리자</div>
+        <div class="logo-text-sub">AI 심리테스트 등록 · 이미지 업로드 · HOT 지정</div>
       </div>
-      <div class="header-right">
-        <button class="btn" onclick="location.href='home.html'">사용자 홈(마켓) 보기</button>
-        <button class="btn" onclick="location.href='index.html'">AI 심리테스트 생성기</button>
-      </div>
-    </header>
-
-    <div class="layout">
-      <!-- 왼쪽: 등록 폼 -->
-      <section class="card">
-        <div class="card-title">새 심리테스트 등록</div>
-        <div class="card-sub">
-          AI로 생성된 결과를 붙여넣거나, 직접 만든 심리테스트를 메타 정보와 함께 등록합니다.
-        </div>
-
-        <form id="testForm">
-          <div class="form-group">
-            <div class="form-label">제목</div>
-            <input class="form-control" id="title" placeholder="예) 나의 연애 온도 4단계 테스트" required />
-          </div>
-
-          <div class="form-group row-inline">
-            <div>
-              <div class="form-label">카테고리</div>
-              <select class="form-select" id="category" required>
-                <option value="">선택하세요</option>
-                <option value="연애">연애</option>
-                <option value="성격">성격</option>
-                <option value="금전/소비">금전/소비</option>
-                <option value="직장/커리어">직장/커리어</option>
-                <option value="우정/대인관계">우정/대인관계</option>
-                <option value="라이프스타일">라이프스타일</option>
-              </select>
-            </div>
-            <div>
-              <div class="form-label">대표 태그 (쉼표 구분)</div>
-              <input class="form-control" id="tags" placeholder="예) 연애, MBTI, 데이트" />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="form-label">한 줄/짧은 설명</div>
-            <textarea class="form-textarea" id="summary" placeholder="예) 설레는 데이트에서 드러나는 당신의 숨은 연애 스타일을 4가지 유형으로 분석해 드립니다."></textarea>
-          </div>
-
-          <div class="form-group">
-            <div class="form-label">테스트 풀기 링크 (선택)</div>
-            <input class="form-control" id="playUrl" placeholder="비워두면 /index.html?testId=ID 로 자동 연결됩니다." />
-            <div class="hint">나중에 별도의 플레이 페이지를 만들면 이곳에 직접 URL을 넣어도 됩니다.</div>
-          </div>
-
-          <div class="form-group">
-            <div class="form-label">대표 이미지</div>
-            <input type="file" id="imageFile" accept="image/*" class="form-control" />
-            <input type="hidden" id="imageUrl" />
-            <div class="image-preview" id="imagePreview">이미지 미리보기</div>
-            <div class="hint">이미지를 선택하면 자동으로 업로드 후 미리보기가 표시됩니다.</div>
-          </div>
-
-          <div class="form-group">
-            <div class="form-label">테스트 본문 텍스트 (선택)</div>
-            <textarea class="form-textarea" id="content" placeholder="Q1~Q8, 결과 유형 설명 등 전체 텍스트를 그대로 붙여넣어 주세요. 나중에 풀기 전용 페이지에서 활용할 수 있습니다."></textarea>
-          </div>
-
-          <div class="checkbox-row">
-            <input type="checkbox" id="isHot" />
-            <label for="isHot">지금 뜨는 HOT 테스트로 표시</label>
-          </div>
-
-          <div class="card-footer">
-            <div>문의: <a href="mailto:ainam0727@gmail.com">ainam0727@gmail.com</a></div>
-            <button type="submit" class="btn-submit">테스트 등록하기</button>
-          </div>
-        </form>
-      </section>
-
-      <!-- 오른쪽: 목록 -->
-      <section class="card">
-        <div class="card-title">등록된 테스트 목록</div>
-        <div class="card-sub">최신 순으로 정렬되며, HOT 지정 시 메인 인기 영역에 노출됩니다.</div>
-
-        <div class="test-list" id="testList">
-          <div class="empty-row">불러오는 중...</div>
-        </div>
-      </section>
     </div>
+    <div class="header-right">
+      <button class="header-button" onclick="window.location.href='home'">사용자 홈(마켓) 보기</button>
+      <button class="header-button primary" onclick="window.location.href='index.html'">AI 심리테스트 생성기</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- 좌측: 새 테스트 등록 -->
+    <section class="card">
+      <div class="card-title-row">
+        <div class="card-title">새 심리테스트 등록</div>
+        <span class="badge-soft">AI 자동 생성 결과를 복붙해도 OK</span>
+      </div>
+
+      <div class="field">
+        <label>제목</label>
+        <input type="text" id="title" placeholder="예) 나의 연애 온도 4단계 테스트" />
+      </div>
+
+      <div class="field" style="display:flex; gap:8px;">
+        <div style="flex:1;">
+          <label>카테고리</label>
+          <select id="category">
+            <option value="연애">연애</option>
+            <option value="성격">성격/MBTI</option>
+            <option value="금전">금전/소비</option>
+            <option value="직장">직장/커리어</option>
+            <option value="우정">우정/대인관계</option>
+            <option value="라이프스타일">라이프스타일</option>
+          </select>
+        </div>
+        <div style="flex:1;">
+          <label>대표 태그 (쉽표 구분)</label>
+          <input type="text" id="tag" placeholder="예) 연애, 온도" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>한 줄/짧은 설명</label>
+        <textarea id="description" placeholder="예) 나의 연애 스타일을 온도로 표현해 보는 테스트입니다."></textarea>
+      </div>
+
+      <div class="field">
+        <label>테스트 본문 텍스트 (선택)</label>
+        <textarea id="content" placeholder="01~08, 결과 유형 설명 등 전체 텍스트를 그대로 붙여 넣어 주세요."></textarea>
+        <div class="hint">나중에 별도 풀이 전용 페이지에서 활용할 수 있습니다.</div>
+      </div>
+
+      <div class="field">
+        <label>대표 이미지 (선택)</label>
+        <div class="file-row">
+          <button class="file-btn" type="button" onclick="document.getElementById('imageInput').click()">파일 선택</button>
+          <span id="fileName" class="hint">선택된 파일 없음 (선택 사항)</span>
+        </div>
+        <input type="file" id="imageInput" accept="image/*" style="display:none;" />
+        <div class="preview-box" id="imagePreview">이미지 미리보기</div>
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="hotFlag" />
+        <label for="hotFlag" style="margin:0; font-weight:500; font-size:12px;">지금 또는 HOT 테스트로 표시</label>
+      </div>
+
+      <div class="hint" style="margin-top:4px;">문의: ainam0727@gmail.com</div>
+
+      <div class="submit-row">
+        <button class="submit-btn" id="saveBtn">테스트 등록하기</button>
+      </div>
+    </section>
+
+    <!-- 우측: 최근 등록/HOT 목록 -->
+    <section class="card">
+      <div class="card-title-row">
+        <div class="card-title">최근 등록된 테스트</div>
+        <span class="badge-soft" id="listInfo">불러오는 중...</span>
+      </div>
+
+      <div class="test-list" id="testList">
+        <!-- JS로 채움 -->
+      </div>
+    </section>
   </div>
+</div>
 
-  <script>
-    let tests = [];
+<script>
+  const imageInput = document.getElementById('imageInput');
+  const fileNameSpan = document.getElementById('fileName');
+  const imagePreview = document.getElementById('imagePreview');
+  let imageBase64 = '';
 
-    async function uploadImage(file) {
-      const formData = new FormData();
-      formData.append('image', file);
-
-      const res = await fetch('/api/admin/upload-image', {
-        method: 'POST',
-        body: formData
-      });
-      if (!res.ok) throw new Error('이미지 업로드 실패');
-      return res.json();
+  imageInput.addEventListener('change', () => {
+    const file = imageInput.files[0];
+    if (!file) {
+      fileNameSpan.textContent = '선택된 파일 없음 (선택 사항)';
+      imagePreview.innerHTML = '이미지 미리보기';
+      imageBase64 = '';
+      return;
     }
+    fileNameSpan.textContent = file.name;
 
-    async function loadTests() {
-      const list = document.getElementById('testList');
-      list.innerHTML = '<div class="empty-row">불러오는 중...</div>';
-      try {
-        const res = await fetch('/api/admin/tests');
-        const data = await res.json();
-        tests = Array.isArray(data) ? data : [];
-        renderTestList();
-      } catch (e) {
-        console.error(e);
-        list.innerHTML = '<div class="empty-row">목록을 불러오는 중 오류가 발생했습니다.</div>';
-      }
-    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imageBase64 = e.target.result;
+      imagePreview.innerHTML = '<img src="' + imageBase64 + '" alt="preview" />';
+    };
+    reader.readAsDataURL(file);
+  });
 
-    function renderTestList() {
-      const list = document.getElementById('testList');
-      if (!tests.length) {
-        list.innerHTML = '<div class="empty-row">아직 등록된 테스트가 없습니다. 왼쪽에서 새 테스트를 등록해 주세요.</div>';
+  async function loadTests() {
+    const listEl = document.getElementById('testList');
+    const infoEl = document.getElementById('listInfo');
+    listEl.innerHTML = '불러오는 중...';
+
+    try {
+      const res = await fetch('/api/tests');
+      const data = await res.json();
+
+      if (!data.success) {
+        listEl.innerHTML = '목록을 불러오는 중 오류가 발생했습니다.';
+        infoEl.textContent = '오류';
         return;
       }
 
-      const wrap = document.createElement('div');
-      wrap.innerHTML = '';
+      const tests = data.tests || [];
+      infoEl.textContent = `${tests.length}개 등록됨`;
+      if (!tests.length) {
+        listEl.innerHTML = '<div class="hint">아직 등록된 테스트가 없습니다.</div>';
+        return;
+      }
 
-      const header = document.createElement('div');
-      header.className = 'test-row header';
-      header.innerHTML = `
-        <div>제목</div>
-        <div>카테고리/태그</div>
-        <div>등록일</div>
-        <div>관리</div>
-      `;
-      wrap.appendChild(header);
-
-      tests.forEach(t => {
-        const row = document.createElement('div');
-        row.className = 'test-row';
-        const date = t.createdAt ? new Date(t.createdAt) : null;
-        const dateStr = date ? `${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')}` : '-';
-
-        row.innerHTML = `
-          <div>
-            ${t.title}
-            ${t.isHot ? '<span class="badge-hot">HOT</span>' : ''}
-          </div>
-          <div>
-            <span class="badge-cat">${t.category || '미지정'}</span>
-            ${(t.tags || []).slice(0,3).map(tag => `<span class="badge-cat" style="background:#f9fafb;color:#6b7280;border:1px solid #e5e7eb;">#${tag}</span>`).join('')}
-          </div>
-          <div>${dateStr}</div>
-          <div class="test-actions">
-            <button class="btn-xs" onclick="toggleHot('${t.id}', ${t.isHot ? 'false' : 'true'})">${t.isHot ? 'HOT 해제' : 'HOT 지정'}</button>
-            <button class="btn-xs danger" onclick="deleteTest('${t.id}')">삭제</button>
+      listEl.innerHTML = '';
+      tests.slice(0, 30).forEach((t) => {
+        const div = document.createElement('div');
+        div.className = 'test-item';
+        div.innerHTML = `
+          <div class="thumb">🧠</div>
+          <div class="test-info">
+            <div class="test-title">${t.title || ''}</div>
+            <div class="test-meta">
+              ${t.category || '기타'} · ${t.createdAt ? t.createdAt.substring(0,10) : ''}
+            </div>
+            ${t.tag ? `<div class="tag-chip"># ${t.tag}</div>` : ''}
           </div>
         `;
-        wrap.appendChild(row);
+        div.onclick = () => {
+          const url = 'index.html?testId=' + encodeURIComponent(t.id);
+          window.open(url, '_blank');
+        };
+        listEl.appendChild(div);
+      });
+    } catch (e) {
+      console.error(e);
+      listEl.innerHTML = '목록을 불러오는 중 오류가 발생했습니다.';
+      infoEl.textContent = '오류';
+    }
+  }
+
+  async function saveTest() {
+    const title = document.getElementById('title').value.trim();
+    const category = document.getElementById('category').value;
+    const tag = document.getElementById('tag').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const content = document.getElementById('content').value.trim();
+    const hot = document.getElementById('hotFlag').checked;
+
+    if (!title) {
+      alert('제목을 입력해 주세요.');
+      return;
+    }
+
+    const payload = {
+      title,
+      category,
+      tag,
+      description,
+      content,
+      image: imageBase64, // 없어도 ''로 전송
+      hot
+    };
+
+    try {
+      const res = await fetch('/api/tests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
 
-      list.innerHTML = '';
-      list.appendChild(wrap);
-    }
-
-    async function toggleHot(id, next) {
-      try {
-        await fetch(`/api/admin/tests/${id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ isHot: next === true || next === 'true' })
-        });
-        await loadTests();
-      } catch (e) {
-        alert('HOT 상태 변경 중 오류가 발생했습니다.');
-      }
-    }
-
-    async function deleteTest(id) {
-      if (!confirm('해당 테스트를 삭제하시겠습니까?')) return;
-      try {
-        await fetch(`/api/admin/tests/${id}`, { method: 'DELETE' });
-        await loadTests();
-      } catch (e) {
-        alert('삭제 중 오류가 발생했습니다.');
-      }
-    }
-
-    document.getElementById('imageFile').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      const preview = document.getElementById('imagePreview');
-      const hiddenUrl = document.getElementById('imageUrl');
-      if (!file) {
-        hiddenUrl.value = '';
-        preview.textContent = '이미지 미리보기';
+      const data = await res.json();
+      if (!data.success) {
+        alert('테스트 등록 중 오류가 발생했습니다.\n' + (data.message || ''));
         return;
       }
 
-      preview.textContent = '업로드 중...';
-      try {
-        const { url } = await uploadImage(file);
-        hiddenUrl.value = url;
-        preview.innerHTML = `<img src="${url}" alt="미리보기" />`;
-      } catch (err) {
-        console.error(err);
-        alert('이미지 업로드에 실패했습니다.');
-        preview.textContent = '이미지 업로드 실패';
-      }
-    });
+      alert('테스트가 성공적으로 등록되었습니다!');
+      // 폼 초기화
+      document.getElementById('title').value = '';
+      document.getElementById('tag').value = '';
+      document.getElementById('description').value = '';
+      document.getElementById('content').value = '';
+      document.getElementById('hotFlag').checked = false;
+      imageInput.value = '';
+      fileNameSpan.textContent = '선택된 파일 없음 (선택 사항)';
+      imagePreview.innerHTML = '이미지 미리보기';
+      imageBase64 = '';
 
-    document.getElementById('testForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const title = document.getElementById('title').value.trim();
-      const category = document.getElementById('category').value;
-      const tags = document.getElementById('tags').value.trim();
-      const summary = document.getElementById('summary').value.trim();
-      const playUrl = document.getElementById('playUrl').value.trim();
-      const imageUrl = document.getElementById('imageUrl').value.trim();
-      const content = document.getElementById('content').value.trim();
-      const isHot = document.getElementById('isHot').checked;
+      loadTests();
+    } catch (e) {
+      console.error(e);
+      alert('테스트 등록 중 오류가 발생했습니다. (네트워크)');
+    }
+  }
 
-      if (!title || !category) {
-        alert('제목과 카테고리는 필수입니다.');
-        return;
-      }
+  document.getElementById('saveBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    saveTest();
+  });
 
-      try {
-        const payload = {
-          title,
-          category,
-          summary,
-          playUrl,
-          imageUrl,
-          content,
-          isHot,
-          tags
-        };
-
-        const res = await fetch('/api/admin/tests', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) throw new Error();
-        // 폼 초기화
-        e.target.reset();
-        document.getElementById('imagePreview').textContent = '이미지 미리보기';
-        document.getElementById('imageUrl').value = '';
-        await loadTests();
-        alert('테스트가 등록되었습니다.');
-      } catch (err) {
-        console.error(err);
-        alert('테스트 등록 중 오류가 발생했습니다.');
-      }
-    });
-
-    loadTests();
-  </script>
+  loadTests();
+</script>
 </body>
 </html>
