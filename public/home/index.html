@@ -19,7 +19,7 @@
     }
 
     header {
-      padding: 20px;
+      padding: 20px 16px 8px;
       background: #ffffff;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       position: sticky;
@@ -36,23 +36,66 @@
     }
 
     /* 슬라이더 */
+    .slider-wrap {
+      padding: 18px 16px 4px;
+      background: #ffffff;
+    }
+
     .slider-container {
       position: relative;
       width: 100%;
-      height: 180px;
+      height: 190px;
       overflow: hidden;
-      border-radius: 16px;
-      margin-top: 20px;
+      border-radius: 18px;
+      background: radial-gradient(circle at top left, #4f46e5, #ec4899);
+      color: #ffffff;
     }
 
     .slide {
       position: absolute;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
+      inset: 0;
       opacity: 0;
       transition: opacity 1s ease;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      padding: 18px 20px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(15,23,42,0.75), rgba(15,23,42,0.25));
+      mix-blend-mode: multiply;
+    }
+
+    .slide-content {
+      position: relative;
+      z-index: 1;
+      max-width: 70%;
+    }
+
+    .slide-title {
+      font-size: 19px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .slide-sub {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .slide-badge {
+      font-size: 11px;
+      display: inline-flex;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(248, 250, 252, 0.16);
+      margin-bottom: 6px;
     }
 
     .slide.active {
@@ -63,8 +106,8 @@
     .section-title {
       font-size: 20px;
       font-weight: 700;
-      margin: 28px 0 14px;
-      padding-left: 4px;
+      margin: 22px 0 14px;
+      padding-left: 18px;
     }
 
     /* 카드 그리드 */
@@ -72,7 +115,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 16px;
-      padding: 0 8px;
+      padding: 0 16px;
     }
 
     /* 카드 */
@@ -86,7 +129,6 @@
       transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
 
-    /* 이미지 */
     .test-card img {
       width: 100%;
       height: 120px;
@@ -97,7 +139,6 @@
       animation: fadeIn 0.6s forwards ease;
     }
 
-    /* 카드 hover (PC) */
     @media (hover: hover) {
       .test-card:hover {
         transform: translateY(-6px);
@@ -105,7 +146,6 @@
       }
     }
 
-    /* 모바일 터치 효과 */
     @media (hover: none) {
       .test-card:active {
         transform: scale(0.97);
@@ -113,7 +153,6 @@
       }
     }
 
-    /* card info */
     .card-info {
       padding: 14px;
     }
@@ -129,7 +168,7 @@
       color: #666;
     }
 
-    /* fade-in 애니메이션 */
+    /* 애니메이션 */
     @keyframes fadeIn {
       0% {
         opacity: 0;
@@ -143,6 +182,12 @@
 
     /* 반응형 */
     @media (max-width: 480px) {
+      .slider-container {
+        height: 170px;
+      }
+      .slide-content {
+        max-width: 85%;
+      }
       .test-grid {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       }
@@ -152,18 +197,16 @@
     }
   </style>
 </head>
-
 <body>
-
   <header>
     <h1>심마켓 🧠</h1>
   </header>
 
   <!-- 슬라이더 -->
-  <div class="slider-container" id="slider">
-    <div class="slide active" style="background-image:url('https://i.imgur.com/k5xYzSu.jpeg')"></div>
-    <div class="slide" style="background-image:url('https://i.imgur.com/KUZaK6k.jpeg')"></div>
-    <div class="slide" style="background-image:url('https://i.imgur.com/2Tz3HqU.jpeg')"></div>
+  <div class="slider-wrap">
+    <div class="slider-container" id="slider">
+      <!-- JS에서 배너 슬라이드 주입 -->
+    </div>
   </div>
 
   <h2 class="section-title">🔥 지금 인기 테스트</h2>
@@ -173,51 +216,128 @@
   <div class="test-grid" id="latestTests"></div>
 
   <script>
-    /* 자동 슬라이더 */
+    // ===== 배너 슬라이더 =====
     let currentSlide = 0;
-    const slides = document.querySelectorAll(".slide");
+    let slideTimer = null;
 
-    setInterval(() => {
-      slides[currentSlide].classList.remove("active");
-      currentSlide = (currentSlide + 1) % slides.length;
-      slides[currentSlide].classList.add("active");
-    }, 3500);
+    async function loadBannersForSlider() {
+      const slider = document.getElementById('slider');
 
-    /* 테스트 목록 불러오기 */
-    async function loadTests() {
       try {
-        const res = await fetch("/api/tests");
-        const tests = await res.json();
+        const res = await fetch('/api/banners');
+        let banners = await res.json();
 
-        // 최신 순 정렬
-        const latest = [...tests].reverse().slice(0, 12);
+        // 활성 배너만, 최신순
+        banners = (banners || []).filter(b => b.isActive);
 
-        // HOT 테스트
-        const hot = tests.filter(t => t.isHot).slice(0, 12);
+        if (!banners.length) {
+          // 기본 배너 2~3개 (Fallback)
+          slider.innerHTML = `
+            <div class="slide active" style="background-image:url('https://i.imgur.com/k5xYzSu.jpeg')">
+              <div class="slide-content">
+                <div class="slide-badge">오늘의 추천</div>
+                <div class="slide-title">오늘 밤, 어떤 테스트로 놀아볼까요?</div>
+                <div class="slide-sub">연애·성격·금전·TMI까지 한 번에! 심마켓에서 골라보세요.</div>
+              </div>
+            </div>
+            <div class="slide" style="background-image:url('https://i.imgur.com/KUZaK6k.jpeg')">
+              <div class="slide-content">
+                <div class="slide-badge">NEW</div>
+                <div class="slide-title">금전 감각 테스트: 플렉스 vs 짠테크</div>
+                <div class="slide-sub">내 통장은 과연 안녕한지, 재미로 체크해 보세요.</div>
+              </div>
+            </div>
+          `;
+          startSlideTimer();
+          return;
+        }
 
-        renderTests(latest, document.getElementById("latestTests"));
-        renderTests(hot, document.getElementById("hotTests"));
+        slider.innerHTML = banners
+          .map(
+            (b, idx) => `
+          <div class="slide ${idx === 0 ? 'active' : ''}" 
+               data-link="${b.link || ''}" 
+               style="background-image:url('${b.image || 'https://i.imgur.com/k5xYzSu.jpeg'}')">
+            <div class="slide-content">
+              <div class="slide-badge">심마켓 추천</div>
+              <div class="slide-title">${b.title}</div>
+              <div class="slide-sub">${b.subtitle || ''}</div>
+            </div>
+          </div>`
+          )
+          .join('');
 
+        // 배너 클릭 시 링크 이동
+        slider.querySelectorAll('.slide').forEach(slide => {
+          slide.addEventListener('click', () => {
+            const link = slide.dataset.link;
+            if (!link) return;
+            if (link.startsWith('http')) {
+              window.location.href = link;
+            } else {
+              window.location.href = link;
+            }
+          });
+        });
+
+        startSlideTimer();
       } catch (e) {
-        console.error("테스트 불러오기 실패:", e);
+        console.error('배너 로드 실패:', e);
       }
     }
 
-    /* 카드 그리기 */
+    function startSlideTimer() {
+      const slides = document.querySelectorAll('.slide');
+      if (!slides.length) return;
+
+      if (slideTimer) clearInterval(slideTimer);
+
+      slideTimer = setInterval(() => {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+      }, 3500);
+    }
+
+    // ===== 테스트 목록 =====
+    async function loadTests() {
+      try {
+        const res = await fetch('/api/tests');
+        const tests = await res.json();
+
+        const latest = [...tests].reverse().slice(0, 12);
+        const hot = tests.filter(t => t.isHot).slice(0, 12);
+
+        renderTests(latest, document.getElementById('latestTests'));
+        renderTests(hot, document.getElementById('hotTests'));
+      } catch (e) {
+        console.error('테스트 로드 실패:', e);
+      }
+    }
+
     function renderTests(list, container) {
-      container.innerHTML = list.map(test => `
+      if (!list || !list.length) {
+        container.innerHTML = '<p style="font-size:13px;color:#9ca3af;">아직 표시할 테스트가 없습니다.</p>';
+        return;
+      }
+
+      container.innerHTML = list
+        .map(
+          test => `
         <div class="test-card" onclick="location.href='/index.html?testId=${test.id}'">
           <img src="${test.image || 'https://i.imgur.com/mC4i6tF.png'}" loading="lazy">
           <div class="card-info">
             <div class="card-title">${test.title}</div>
-            <div class="card-meta">${test.category} · ${test.views}명 참여</div>
+            <div class="card-meta">${test.category} · ${test.views || 0}명 참여</div>
           </div>
         </div>
-      `).join("");
+      `
+        )
+        .join('');
     }
 
+    loadBannersForSlider();
     loadTests();
   </script>
-
 </body>
 </html>

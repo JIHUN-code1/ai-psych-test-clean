@@ -1,218 +1,232 @@
+// server.js
 require('dotenv').config();
 
-const path = require('path');
-const fs = require('fs');
 const express = require('express');
+const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 const multer = require('multer');
-const OpenAI = require('openai');
+const { OpenAI } = require('openai');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// OpenAI 클라이언트
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-// 정적 파일 & 기본 미들웨어
-app.use(express.json({ limit: '1mb' }));
+// ===== 공통 설정 =====
+app.use(cors());
+app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// 정적 파일
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
-// 데이터 파일 경로
-const DATA_DIR = path.join(__dirname, 'data');
-const TESTS_DB_PATH = path.join(DATA_DIR, 'tests.json');
-
-// data 폴더 & tests.json 없으면 생성
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR);
+// 업로드 디렉토리 설정
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
-if (!fs.existsSync(TESTS_DB_PATH)) {
-  fs.writeFileSync(TESTS_DB_PATH, '[]', 'utf-8');
+app.use('/uploads', express.static(uploadDir));
+
+// Multer 설정 (썸네일/배너 이미지용)
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, Date.now() + '-' + Math.round(Math.random() * 1e9) + ext);
+  }
+});
+const upload = multer({ storage });
+
+// JSON 파일 경로
+const dataDir = path.join(__dirname, 'data');
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
 }
 
-// JSON DB 헬퍼
-function loadTests() {
+const testsFile = path.join(dataDir, 'tests.json');
+const bannersFile = path.join(dataDir, 'banners.json');
+
+// JSON 유틸
+function readJson(filePath) {
+  if (!fs.existsSync(filePath)) return [];
   try {
-    const raw = fs.readFileSync(TESTS_DB_PATH, 'utf-8');
-    return JSON.parse(raw || '[]');
-  } catch (err) {
-    console.error('Failed to load tests.json', err);
+    const raw = fs.readFileSync(filePath, 'utf-8');
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.error('JSON read error:', filePath, e);
     return [];
   }
 }
 
-function saveTests(tests) {
-  try {
-    fs.writeFileSync(TESTS_DB_PATH, JSON.stringify(tests, null, 2), 'utf-8');
-    return true;
-  } catch (err) {
-    console.error('Failed to save tests.json', err);
-    return false;
-  }
+function writeJson(filePath, data) {
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
 }
 
-// 업로드 디렉토리 준비
-const UPLOAD_DIR = path.join(__dirname, 'public', 'uploads');
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-}
-
-// multer 설정
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, UPLOAD_DIR);
-  },
-  filename: (req, file, cb) => {
-    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname || '');
-    cb(null, unique + ext);
-  },
+// ===== OpenAI 설정 (심리테스트 자동 생성용) =====
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
 });
-const upload = multer({ storage });
 
-// 라우팅: 페이지
+// 심리테스트 자동 생성 API
+app.post('/api/generate-test', async (req, res) => {
+  const { category } = req.body;
+
+  if (!category) {
+    return res.status(400).json({ error: 'category is required' });
+  }
+
+  try {
+    const prompt = `
+당신은 재미있는 심리테스트를 만드는 작가입니다.
+카테고리: ${category}
+
+형식:
+1) 제목
+2) 질문 8개 (각 질문마다 보기 A/B/C/D)
+3) 결과 유형 4개 (A/B/C/D 선택 수에 따른 엔터테인먼트형 해석)
+
+사용자가 그대로 카피해서 쓸 수 있도록 마크다운 없이 순수 텍스트로 작성해 주세요.
+`;
+
+    const response = await openai.responses.create({
+      model: 'gpt-4.1-mini',
+      input: [
+        {
+          role: 'user',
+          content: [{ type: 'input_text', text: prompt }]
+        }
+      ],
+      output: [{ type: 'output_text' }]
+    });
+
+    const text = response.output[0].content[0].text;
+    res.json({ test: text });
+  } catch (err) {
+    console.error('OpenAI error:', err);
+    res.status(500).json({ error: 'OpenAI API error' });
+  }
+});
+
+// ===== 심리테스트 DB API =====
+
+// 전체 테스트 목록
+app.get('/api/tests', (req, res) => {
+  const tests = readJson(testsFile);
+  res.json(tests);
+});
+
+// 새 테스트 등록 (이미지 업로드 포함)
+app.post('/api/tests', upload.single('image'), (req, res) => {
+  try {
+    const tests = readJson(testsFile);
+
+    const {
+      title,
+      category,
+      tag,
+      description,
+      text,
+      isHot
+    } = req.body;
+
+    if (!title || !category) {
+      return res.status(400).json({ error: 'title, category are required' });
+    }
+
+    const now = new Date().toISOString();
+    const id = Date.now().toString();
+
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
+
+    const newTest = {
+      id,
+      title,
+      category,
+      tag: tag || '',
+      description: description || '',
+      text: text || '',
+      image: imageUrl,
+      isHot: isHot === 'true' || isHot === true,
+      views: 0,
+      createdAt: now
+    };
+
+    tests.push(newTest);
+    writeJson(testsFile, tests);
+
+    res.json(newTest);
+  } catch (e) {
+    console.error('POST /api/tests error:', e);
+    res.status(500).json({ error: 'Failed to save test' });
+  }
+});
+
+// 단일 테스트 조회 (테스트 풀기 화면에서 사용 가능)
+app.get('/api/tests/:id', (req, res) => {
+  const tests = readJson(testsFile);
+  const test = tests.find(t => t.id === req.params.id);
+  if (!test) return res.status(404).json({ error: 'Not found' });
+  res.json(test);
+});
+
+// ===== 홈 배너(슬라이드) DB API =====
+
+// 배너 목록 조회
+app.get('/api/banners', (req, res) => {
+  const banners = readJson(bannersFile);
+  // 최신 등록 순으로 정렬
+  banners.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  res.json(banners);
+});
+
+// 새 배너 등록 (이미지 업로드)
+app.post('/api/banners', upload.single('bannerImage'), (req, res) => {
+  try {
+    const banners = readJson(bannersFile);
+    const { title, subtitle, link, isActive } = req.body;
+
+    if (!title) {
+      return res.status(400).json({ error: 'title is required' });
+    }
+
+    const now = new Date().toISOString();
+    const id = Date.now().toString();
+
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
+
+    const newBanner = {
+      id,
+      title,
+      subtitle: subtitle || '',
+      link: link || '',
+      image: imageUrl,
+      isActive: isActive === 'true' || isActive === true,
+      createdAt: now
+    };
+
+    banners.push(newBanner);
+    writeJson(bannersFile, banners);
+
+    res.json(newBanner);
+  } catch (e) {
+    console.error('POST /api/banners error:', e);
+    res.status(500).json({ error: 'Failed to save banner' });
+  }
+});
+
+// ===== 페이지 라우팅 =====
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.get('/home', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'home.html'));
+  res.sendFile(path.join(__dirname, 'public', 'home', 'index.html'));
 });
 
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin', 'index.html'));
 });
 
-// 테스트 목록 API (홈/관리자 공용)
-app.get('/api/tests', (req, res) => {
-  const tests = loadTests();
-  res.json(tests);
-});
-
-// 관리자: 새 테스트 등록
-app.post('/api/admin/tests', (req, res) => {
-  try {
-    const {
-      title,
-      category,
-      tag,
-      shortDesc,
-      link,
-      bodyText,
-      isHot,
-      imageUrl,
-    } = req.body || {};
-
-    if (!title) {
-      return res.status(400).json({ ok: false, message: 'title is required' });
-    }
-
-    const tests = loadTests();
-
-    const now = new Date().toISOString();
-    const newTest = {
-      id: Date.now().toString(),
-      title: String(title),
-      category: category || '',
-      tag: tag || '',
-      shortDesc: shortDesc || '',
-      link: link || '',
-      bodyText: bodyText || '',
-      isHot: Boolean(isHot),
-      imageUrl: imageUrl || '',
-      createdAt: now,
-      views: 0,
-    };
-
-    tests.push(newTest);
-
-    if (!saveTests(tests)) {
-      return res.status(500).json({ ok: false, message: 'Failed to save DB' });
-    }
-
-    res.json({ ok: true, test: newTest });
-  } catch (err) {
-    console.error('Error in /api/admin/tests', err);
-    res.status(500).json({ ok: false, message: 'Server error' });
-  }
-});
-
-// 이미지 업로드 API
-app.post('/api/upload', upload.single('image'), (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
-    }
-    const publicPath = '/uploads/' + req.file.filename;
-    res.json({ imageUrl: publicPath });
-  } catch (err) {
-    console.error('Upload error', err);
-    res.status(500).json({ error: 'Upload failed' });
-  }
-});
-
-// AI 심리테스트 자동 생성 API
-app.post('/api/generate-test', async (req, res) => {
-  try {
-    const { category } = req.body || {};
-    const cat = category || '연애 심리테스트';
-
-    const prompt = `
-당신은 한국의 재미있는 심리테스트 작가입니다.
-아래 조건을 모두 지키면서 "${cat}" 한 편을 만들어 주세요.
-
-[필수 형식]
-- 제목 1줄
-- 간단한 인트로 2~3줄
-- 번호가 붙은 질문 6~8개
-- 각 질문마다 보기 A,B,C,D 4개
-- 마지막에 결과 유형 4가지 (A,B,C,D 위주로) 를 엔터테인먼트 느낌으로 해석
-
-[스타일]
-- 말투는 가볍고 즐거운 톤
-- 심리학 용어를 남발하지 말고, 일상적인 예시 위주로 설명
-- 너무 길게 쓰지 말고, 모바일에서 읽기 편한 길이로 작성
-`.trim();
-
-    const resp = await openai.responses.create({
-      model: 'gpt-4.1-mini',
-      input: [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'input_text',
-              text: prompt,
-            },
-          ],
-        },
-      ],
-    });
-
-    const text =
-      resp.output &&
-      resp.output[0] &&
-      resp.output[0].content &&
-      resp.output[0].content[0] &&
-      resp.output[0].content[0].text
-        ? resp.output[0].content[0].text
-        : '';
-
-    res.json({ test: text });
-  } catch (err) {
-    console.error('Error in /api/generate-test', err);
-    res.status(500).json({ error: 'OpenAI API error' });
-  }
-});
-
-// 헬스체크
-app.get('/health', (req, res) => {
-  res.json({ ok: true });
-});
-
-// 서버 시작
+// ===== 서버 시작 =====
 app.listen(PORT, () => {
-  console.log(`AI Test Generator Server Running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

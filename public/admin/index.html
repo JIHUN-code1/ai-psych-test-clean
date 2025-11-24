@@ -2,633 +2,525 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>심마켓 관리자 | 심리테스트 등록/이미지 업로드</title>
+  <title>심마켓 관리자</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    * { box-sizing:border-box; margin:0; padding:0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
     body {
-      font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:#f5f5ff;
-      padding:24px 12px 40px;
-      color:#111827;
+      background: #f9fafb;
+      padding: 24px 12px 40px;
+      color: #111827;
     }
-    a { text-decoration:none; color:inherit; }
-
-    .layout {
-      max-width:1120px;
-      margin:0 auto;
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
     }
-
-    header {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:18px;
-      gap:10px;
-      flex-wrap:wrap;
+    h1 {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      -webkit-background-clip: text;
+      color: transparent;
     }
-    .brand {
-      display:flex;
-      align-items:center;
-      gap:10px;
+    .subtitle {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 20px;
     }
-    .brand-logo {
-      width:36px;
-      height:36px;
-      border-radius:14px;
-      background: radial-gradient(circle at 20% 0%, #4f46e5, #ec4899 60%, #fb7185);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#fff;
-      font-weight:900;
-      font-size:18px;
-      box-shadow:0 8px 20px rgba(79,70,229,0.35);
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 20px;
     }
-    .brand-title { font-size:18px; font-weight:800; }
-    .brand-sub { font-size:12px; color:#6b7280; }
-
-    .nav-links { display:flex; gap:8px; flex-wrap:wrap; }
-    .nav-btn {
-      padding:7px 13px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.6);
-      background:#fff;
-      font-size:13px;
-      color:#4b5563;
-      cursor:pointer;
+    .card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 18px 16px 20px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
     }
-    .nav-btn.primary {
-      background:linear-gradient(135deg,#4f46e5,#ec4899);
-      color:#fff;
-      border-color:transparent;
-      box-shadow:0 8px 22px rgba(79,70,229,0.35);
+    .card h2 {
+      font-size: 18px;
+      margin-bottom: 8px;
     }
-
-    main {
-      display:grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-      gap:18px;
+    .card p {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 12px;
     }
-    @media (max-width:880px) {
-      main { grid-template-columns:1fr; }
-    }
-
-    .panel {
-      background:#fff;
-      border-radius:20px;
-      padding:18px 16px 20px;
-      box-shadow:0 12px 30px rgba(15,23,42,0.08);
-      border:1px solid #e5e7eb;
-    }
-    .panel-title {
-      font-size:15px;
-      font-weight:700;
-      margin-bottom:4px;
-    }
-    .panel-sub {
-      font-size:12px;
-      color:#9ca3af;
-      margin-bottom:14px;
-    }
-
-    label.field-label {
-      display:block;
-      font-size:13px;
-      font-weight:600;
-      margin-bottom:4px;
-    }
-    .field-desc {
-      font-size:11px;
-      color:#9ca3af;
-      margin-bottom:6px;
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 4px;
     }
     input[type="text"],
     textarea,
     select {
-      width:100%;
-      border-radius:12px;
-      border:1px solid #e5e7eb;
-      padding:8px 10px;
-      font-size:13px;
-      outline:none;
-      resize:vertical;
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      font-size: 13px;
+      outline: none;
+      transition: border 0.15s ease, box-shadow 0.15s ease;
     }
-    textarea { min-height:90px; }
-
-    .field-group { margin-bottom:12px; }
-
-    .flex-row {
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.2);
     }
-    .flex-row > * { flex:1; }
-
-    .file-row {
-      display:flex;
-      gap:8px;
-      align-items:center;
-      flex-wrap:wrap;
+    textarea {
+      min-height: 90px;
+      resize: vertical;
     }
-
-    .file-label {
-      display:inline-block;
-      padding:7px 12px;
-      border-radius:999px;
-      background:#f3f4f6;
-      border:1px dashed #cbd5f5;
-      font-size:12px;
-      cursor:pointer;
+    .row {
+      display: flex;
+      gap: 8px;
     }
-    .file-name {
-      font-size:12px;
-      color:#6b7280;
+    .row > div {
+      flex: 1;
     }
-
-    .image-preview {
-      width:100%;
-      margin-top:10px;
-      border-radius:16px;
-      overflow:hidden;
-      border:1px dashed #d1d5db;
-      background:#f9fafb;
-      height:180px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#9ca3af;
-      font-size:13px;
-      position:relative;
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
     }
-    .image-preview img {
-      width:100%;
-      height:100%;
-      object-fit:cover;
+    .checkbox-row label {
+      margin: 0;
+      font-weight: 500;
     }
-    .image-preview-badge {
-      position:absolute;
-      left:10px;
-      top:10px;
-      padding:4px 8px;
-      border-radius:999px;
-      font-size:11px;
-      background:rgba(15,23,42,0.8);
-      color:#fef9c3;
+    button {
+      margin-top: 14px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
     }
-
-    .hot-row {
-      display:flex;
-      align-items:center;
-      gap:6px;
-      margin-top:8px;
-      font-size:12px;
+    button.primary {
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      color: #ffffff;
+      box-shadow: 0 10px 24px rgba(99, 102, 241, 0.35);
     }
-
-    .btn-primary {
-      margin-top:10px;
-      width:100%;
-      border:none;
-      border-radius:999px;
-      padding:10px 16px;
-      font-size:14px;
-      font-weight:600;
-      cursor:pointer;
-      background:linear-gradient(135deg,#4f46e5,#ec4899);
-      color:#fff;
-      box-shadow:0 10px 24px rgba(79,70,229,0.35);
+    button.primary:hover {
+      transform: translateY(-1px);
     }
-
-    /* 오른쪽 패널 */
-    .test-list {
-      max-height:520px;
-      overflow-y:auto;
-      padding-right:3px;
+    button.outline {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      color: #374151;
     }
-    .test-item {
-      border-radius:14px;
-      border:1px solid #e5e7eb;
-      padding:10px 10px;
-      background:#f9fafb;
-      margin-bottom:8px;
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
+    .list {
+      margin-top: 10px;
+      max-height: 360px;
+      overflow-y: auto;
+      padding-right: 4px;
     }
-    .test-thumb {
-      width:60px;
-      height:60px;
-      border-radius:12px;
-      overflow:hidden;
-      flex-shrink:0;
-      background:linear-gradient(135deg,#4f46e5,#ec4899);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#fff;
-      font-weight:700;
+    .list-item {
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 10px 10px 10px 10px;
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+      background: #f9fafb;
     }
-    .test-thumb img {
-      width:100%;
-      height:100%;
-      object-fit:cover;
+    .list-item img.thumb {
+      width: 70px;
+      height: 70px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #e5e7eb;
     }
-    .test-body {
-      flex:1;
-      font-size:12px;
+    .list-item-body {
+      flex: 1;
     }
-    .test-title-row {
-      display:flex;
-      justify-content:space-between;
-      gap:6px;
-      align-items:center;
-      margin-bottom:3px;
+    .list-item-title {
+      font-size: 14px;
+      font-weight: 700;
     }
-    .test-title {
-      font-size:13px;
-      font-weight:600;
-    }
-    .test-badges {
-      display:flex;
-      gap:4px;
-      flex-wrap:wrap;
+    .list-item-meta {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 2px;
     }
     .badge {
-      padding:2px 6px;
-      border-radius:999px;
-      font-size:10px;
-      background:#e5e7eb;
-      color:#374151;
+      display: inline-flex;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      margin-left: 4px;
+      background: rgba(244, 63, 94, 0.1);
+      color: #f97373;
     }
-    .badge.hot {
-      background:#fee2e2;
-      color:#b91c1c;
+    .banner-preview {
+      width: 100%;
+      height: 120px;
+      border-radius: 12px;
+      border: 1px dashed #d1d5db;
+      margin-top: 8px;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #9ca3af;
     }
-    .test-desc {
-      font-size:11px;
-      color:#6b7280;
-      margin-top:2px;
+    .footer {
+      margin-top: 18px;
+      font-size: 12px;
+      color: #9ca3af;
+      text-align: right;
     }
-    .test-meta {
-      font-size:11px;
-      color:#9ca3af;
-      margin-top:3px;
-      display:flex;
-      justify-content:space-between;
-      gap:6px;
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
     }
-    .test-actions {
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      margin-left:4px;
-    }
-    .small-btn {
-      border:none;
-      border-radius:999px;
-      padding:3px 8px;
-      font-size:11px;
-      cursor:pointer;
-      background:#fff;
-      border:1px solid #e5e7eb;
-      color:#4b5563;
-    }
-
-    footer {
-      margin-top:20px;
-      font-size:11px;
-      color:#9ca3af;
-      text-align:right;
-    }
-    footer a { color:#6366f1; text-decoration:underline; }
   </style>
 </head>
 <body>
-  <div class="layout">
-    <header>
-      <div class="brand">
-        <div class="brand-logo">심</div>
-        <div>
-          <div class="brand-title">심마켓 관리자</div>
-          <div class="brand-sub">AI로 만든 텍스트를 복붙해서 고퀄리티 카드형 심리테스트로 등록하는 공간</div>
-        </div>
-      </div>
-      <div class="nav-links">
-        <a href="/home"><button class="nav-btn">사용자 홈(마켓) 보기</button></a>
-        <a href="/"><button class="nav-btn">AI 자동 생성기</button></a>
-        <button class="nav-btn primary">관리자 페이지</button>
-      </div>
-    </header>
+  <div class="container">
+    <h1>심마켓 관리자</h1>
+    <p class="subtitle">심리테스트 등록 · 썸네일 업로드 · 홈 배너(슬라이더)까지 한 번에 관리하는 페이지입니다.</p>
 
-    <main>
-      <!-- 왼쪽: 등록 폼 -->
-      <section class="panel">
-        <div class="panel-title">새 심리테스트 등록</div>
-        <div class="panel-sub">
-          AI로 생성한 문장을 붙여 넣고 대표 이미지까지 업로드하면, 홈 화면에 자동으로 노출됩니다.
-        </div>
+    <div class="grid">
+      <!-- 왼쪽 : 테스트 등록 -->
+      <div class="card">
+        <h2>새 심리테스트 등록</h2>
+        <p>AI가 만든 심리테스트이든, 직접 만든 심리테스트이든 언제든지 추가할 수 있습니다.</p>
 
-        <div class="field-group">
-          <label class="field-label">제목</label>
-          <input type="text" id="title" placeholder="예) 나의 연애 온도 4단계 테스트" />
-        </div>
+        <label for="testTitle">제목</label>
+        <input id="testTitle" type="text" placeholder="예) 나의 연애 온도 4단계 테스트" />
 
-        <div class="field-group flex-row">
+        <div class="row">
           <div>
-            <label class="field-label">카테고리</label>
-            <select id="category">
+            <label for="testCategory">카테고리</label>
+            <select id="testCategory">
               <option value="연애">연애</option>
               <option value="성격">성격</option>
-              <option value="금전">금전</option>
-              <option value="직장">직장</option>
-              <option value="우정">우정</option>
+              <option value="금전/소비">금전/소비</option>
+              <option value="직장/커리어">직장/커리어</option>
+              <option value="우정/대인관계">우정/대인관계</option>
               <option value="라이프스타일">라이프스타일</option>
             </select>
           </div>
           <div>
-            <label class="field-label">대표 태그 (심플 구분용)</label>
-            <input type="text" id="tag" placeholder="예) 연애 온도, TMI 성격 등" />
+            <label for="testTag">대표 태그(선택)</label>
+            <input id="testTag" type="text" placeholder="예) MBTI, TMI, 썸타는중" />
           </div>
         </div>
 
-        <div class="field-group">
-          <label class="field-label">한 줄/짧은 설명</label>
-          <textarea id="shortDesc" placeholder="예) 오늘 나의 연애 온도는 몇 도인지, 4단계로 재미있게 확인해보는 테스트입니다."></textarea>
+        <label for="testDesc">한 줄/짧은 설명</label>
+        <textarea id="testDesc" placeholder="예) 연애 온도를 4단계로 나눠서 당신의 연애 스타일을 진단해 줍니다."></textarea>
+
+        <label for="testImage">대표 이미지 (썸네일)</label>
+        <input id="testImage" type="file" accept="image/*" />
+
+        <label for="testText">테스트 본문 텍스트</label>
+        <textarea id="testText" placeholder="질문, 보기, 결과 해석까지 전체 텍스트를 그대로 붙여넣어 주세요."></textarea>
+
+        <div class="checkbox-row">
+          <input id="testHot" type="checkbox" />
+          <label for="testHot">지금 뜨는 HOT 테스트로 표시</label>
         </div>
 
-        <div class="field-group">
-          <label class="field-label">테스트 풀기 링크 (선택)</label>
-          <div class="field-desc">
-            비워두면 나중에 별도 페이지 연결 예정입니다. 현재는 외부 링크(예: 블로그, Notion 등)를 넣어도 됩니다.
+        <button class="primary" id="btnSaveTest">테스트 등록하기</button>
+        <button class="outline" id="btnGenerateAI">AI로 심리테스트 자동 생성</button>
+
+        <p style="margin-top:10px;font-size:12px;color:#9ca3af;">
+          ※ 테스트 자동 생성은 OpenAI API를 사용합니다. (요청량에 따라 시간이 조금 걸릴 수 있습니다.)
+        </p>
+      </div>
+
+      <!-- 오른쪽 : 테스트/배너 리스트 & 배너 등록 -->
+      <div class="card">
+        <h2>등록된 심리테스트</h2>
+        <p>최신 순으로 정렬되며, HOT 지정 시 메인 인기 영역에도 노출됩니다.</p>
+        <div id="testList" class="list">
+          <!-- JS로 채워짐 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 배너 관리 -->
+    <div style="margin-top:22px;" class="card">
+      <h2>홈 배너 관리 (슬라이더)</h2>
+      <p>홈 화면 상단의 대형 슬라이드 배너를 관리합니다. 이벤트/신규 테스트 홍보에 활용해 보세요.</p>
+
+      <div class="row">
+        <div style="flex:1.2;">
+          <label for="bannerTitle">배너 제목</label>
+          <input id="bannerTitle" type="text" placeholder="예) 오늘 밤, 어떤 테스트로 놀아볼까요?" />
+
+          <label for="bannerSubtitle">배너 서브 텍스트</label>
+          <input id="bannerSubtitle" type="text" placeholder="예) 연애, TMI, 성격, 금전 감각까지!" />
+
+          <label for="bannerLink">배너 클릭 시 이동 링크 (선택)</label>
+          <input id="bannerLink" type="text" placeholder="예) /index.html?testId=123456 or https://..." />
+
+          <label for="bannerImage">배너 이미지 (권장 1200×400)</label>
+          <input id="bannerImage" type="file" accept="image/*" />
+
+          <div class="checkbox-row">
+            <input id="bannerActive" type="checkbox" checked />
+            <label for="bannerActive">홈 화면에 노출하기</label>
           </div>
-          <input type="text" id="link" placeholder="예) https://example.com/my-test" />
+
+          <div id="bannerPreview" class="banner-preview">
+            배너 이미지를 선택하면 미리보기가 표시됩니다.
+          </div>
+
+          <button class="primary" id="btnSaveBanner">배너 등록하기</button>
         </div>
 
-        <div class="field-group">
-          <label class="field-label">대표 이미지</label>
-          <div class="field-desc">
-            800×600 이상 가로 이미지 추천. 업로드하면 홈 카드에 썸네일로 표시됩니다.
-          </div>
-          <div class="file-row">
-            <label class="file-label" for="imageInput">파일 선택</label>
-            <span class="file-name" id="fileName">선택된 파일 없음</span>
-          </div>
-          <input type="file" id="imageInput" accept="image/*" style="display:none;" />
-          <div class="image-preview" id="imagePreview">
-            대표 이미지를 선택하면 여기 미리보기로 나타납니다.
+        <div style="flex:1;">
+          <label>등록된 배너 목록</label>
+          <div id="bannerList" class="list">
+            <!-- JS로 채워짐 -->
           </div>
         </div>
+      </div>
 
-        <div class="field-group">
-          <label class="field-label">테스트 본문 텍스트 (선택)</label>
-          <div class="field-desc">
-            01~08, 결과 유형 설명 등 전체 텍스트를 그대로 붙여 넣어 주세요. 나중에 풀기 전용 페이지에서 활용 예정입니다.
-          </div>
-          <textarea id="bodyText" placeholder="AI 생성 결과를 여기에 복사해 두면 나중에 상세 페이지에서 사용할 수 있습니다."></textarea>
-        </div>
-
-        <div class="hot-row">
-          <input type="checkbox" id="isHot" checked />
-          <label for="isHot">지금 뜨는 HOT 테스트로 표시</label>
-        </div>
-
-        <button class="btn-primary" id="submitBtn">테스트 등록하기</button>
-      </section>
-
-      <!-- 오른쪽: 최근 테스트 목록 -->
-      <section class="panel">
-        <div class="panel-title">최근 등록된 테스트</div>
-        <div class="panel-sub">
-          최신 순으로 정렬되며, HOT 지정 시 메인 인기 영역에 노출됩니다.
-        </div>
-        <div class="test-list" id="testList">
-          로딩 중...
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      문의: <a href="mailto:ainam0727@gmail.com">ainam0727@gmail.com</a>
-    </footer>
+      <div class="footer">
+        문의: <a href="mailto:ainam0727@gmail.com">ainam0727@gmail.com</a>
+      </div>
+    </div>
   </div>
 
   <script>
-    const imageInput = document.getElementById('imageInput');
-    const fileNameSpan = document.getElementById('fileName');
-    const imagePreview = document.getElementById('imagePreview');
-    const submitBtn = document.getElementById('submitBtn');
-    const testList = document.getElementById('testList');
-
-    let currentImageUrl = '';
-
-    document.querySelector('.file-label').addEventListener('click', () => {
-      imageInput.click();
-    });
-
-    imageInput.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      fileNameSpan.textContent = file.name;
-
-      // 업로드 전 미리보기는 브라우저 URL 사용
-      const tempUrl = URL.createObjectURL(file);
-      imagePreview.innerHTML = '';
-      const img = document.createElement('img');
-      img.src = tempUrl;
-      imagePreview.appendChild(img);
-      const badge = document.createElement('div');
-      badge.className = 'image-preview-badge';
-      badge.textContent = '업로드 예정';
-      imagePreview.appendChild(badge);
-
-      // 서버 업로드
-      try {
-        const form = new FormData();
-        form.append('image', file);
-        const res = await fetch('/api/upload', {
-          method: 'POST',
-          body: form
-        });
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        currentImageUrl = data.imageUrl;
-        imagePreview.innerHTML = '';
-        const img2 = document.createElement('img');
-        img2.src = currentImageUrl;
-        imagePreview.appendChild(img2);
-        const badge2 = document.createElement('div');
-        badge2.className = 'image-preview-badge';
-        badge2.textContent = '업로드 완료';
-        imagePreview.appendChild(badge2);
-      } catch (err) {
-        console.error(err);
-        alert('이미지 업로드 중 오류가 발생했습니다.');
-        currentImageUrl = '';
-        imagePreview.innerHTML = '대표 이미지를 선택하면 여기 미리보기로 나타납니다.';
-      }
-    });
-
+    // ===== 테스트 등록/목록 =====
     async function loadTests() {
       try {
         const res = await fetch('/api/tests');
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        renderTests(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.error(err);
-        testList.textContent = '목록을 불러오는 중 오류가 발생했습니다.';
+        const tests = await res.json();
+
+        const listEl = document.getElementById('testList');
+        if (!Array.isArray(tests) || tests.length === 0) {
+          listEl.innerHTML = '<p style="font-size:13px;color:#9ca3af;">아직 등록된 테스트가 없습니다.</p>';
+          return;
+        }
+
+        listEl.innerHTML = tests
+          .slice()
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .map(t => {
+            const hotBadge = t.isHot ? '<span class="badge">HOT</span>' : '';
+            const img = t.image ? `<img class="thumb" src="${t.image}" alt="">` : '<div class="thumb" style="background:#e5e7eb;"></div>';
+            return `
+              <div class="list-item">
+                ${img}
+                <div class="list-item-body">
+                  <div class="list-item-title">${t.title}${hotBadge}</div>
+                  <div class="list-item-meta">${t.category} · ${t.views || 0}명 참여 · ${new Date(t.createdAt).toLocaleString()}</div>
+                </div>
+              </div>
+            `;
+          })
+          .join('');
+      } catch (e) {
+        console.error(e);
+        document.getElementById('testList').innerHTML = '<p style="font-size:13px;color:#ef4444;">테스트 목록을 불러오는 중 오류가 발생했습니다.</p>';
       }
     }
 
-    function renderTests(list) {
-      if (!list.length) {
-        testList.textContent = '등록된 테스트가 아직 없습니다.';
-        return;
-      }
-      const sorted = list.slice().sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0));
-      testList.innerHTML = '';
-      sorted.forEach(t => {
-        const item = document.createElement('div');
-        item.className = 'test-item';
-
-        const thumb = document.createElement('div');
-        thumb.className = 'test-thumb';
-        if (t.imageUrl) {
-          const img = document.createElement('img');
-          img.src = t.imageUrl;
-          img.alt = t.title || '이미지';
-          thumb.appendChild(img);
-        } else {
-          thumb.textContent = (t.category || '심')[0];
-        }
-
-        const body = document.createElement('div');
-        body.className = 'test-body';
-
-        const titleRow = document.createElement('div');
-        titleRow.className = 'test-title-row';
-        const title = document.createElement('div');
-        title.className = 'test-title';
-        title.textContent = t.title || '(제목 없음)';
-        const badges = document.createElement('div');
-        badges.className = 'test-badges';
-        if (t.category) {
-          const b1 = document.createElement('div');
-          b1.className = 'badge';
-          b1.textContent = t.category;
-          badges.appendChild(b1);
-        }
-        if (t.isHot) {
-          const b2 = document.createElement('div');
-          b2.className = 'badge hot';
-          b2.textContent = 'HOT';
-          badges.appendChild(b2);
-        }
-        titleRow.appendChild(title);
-        titleRow.appendChild(badges);
-
-        const desc = document.createElement('div');
-        desc.className = 'test-desc';
-        desc.textContent = t.shortDesc || t.oneLine || '';
-
-        const meta = document.createElement('div');
-        meta.className = 'test-meta';
-        const left = document.createElement('span');
-        const views = t.views || 0;
-        const d = t.createdAt ? new Date(t.createdAt) : null;
-        const dateStr = d ? d.toLocaleString('ko-KR') : '방금';
-        left.textContent = `참여수 ${views}명 · ${dateStr}`;
-        const right = document.createElement('span');
-        right.textContent = t.link ? '링크 연결됨' : '링크 미지정';
-        meta.appendChild(left);
-        meta.appendChild(right);
-
-        body.appendChild(titleRow);
-        body.appendChild(desc);
-        body.appendChild(meta);
-
-        const actions = document.createElement('div');
-        actions.className = 'test-actions';
-        const copyLinkBtn = document.createElement('button');
-        copyLinkBtn.className = 'small-btn';
-        copyLinkBtn.textContent = '링크 복사';
-        copyLinkBtn.onclick = async () => {
-          if (!t.link) {
-            alert('아직 링크가 지정되지 않았습니다.');
-            return;
-          }
-          await navigator.clipboard.writeText(t.link);
-          alert('테스트 링크가 복사되었습니다.');
-        };
-        actions.appendChild(copyLinkBtn);
-
-        item.appendChild(thumb);
-        item.appendChild(body);
-        item.appendChild(actions);
-        testList.appendChild(item);
-      });
-    }
-
-    submitBtn.addEventListener('click', async () => {
-      const title = document.getElementById('title').value.trim();
-      const category = document.getElementById('category').value;
-      const tag = document.getElementById('tag').value.trim();
-      const shortDesc = document.getElementById('shortDesc').value.trim();
-      const link = document.getElementById('link').value.trim();
-      const bodyText = document.getElementById('bodyText').value.trim();
-      const isHot = document.getElementById('isHot').checked;
+    async function saveTest() {
+      const title = document.getElementById('testTitle').value.trim();
+      const category = document.getElementById('testCategory').value;
+      const tag = document.getElementById('testTag').value.trim();
+      const description = document.getElementById('testDesc').value.trim();
+      const text = document.getElementById('testText').value.trim();
+      const isHot = document.getElementById('testHot').checked;
+      const imageFile = document.getElementById('testImage').files[0];
 
       if (!title) {
-        alert('제목은 필수입니다.');
+        alert('제목을 입력해 주세요.');
         return;
       }
 
-      try {
-        submitBtn.disabled = true;
-        submitBtn.textContent = '등록 중...';
+      const fd = new FormData();
+      fd.append('title', title);
+      fd.append('category', category);
+      fd.append('tag', tag);
+      fd.append('description', description);
+      fd.append('text', text);
+      fd.append('isHot', isHot ? 'true' : 'false');
+      if (imageFile) fd.append('image', imageFile);
 
-        const res = await fetch('/api/admin/tests', {
+      try {
+        const res = await fetch('/api/tests', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title,
-            category,
-            tag,
-            shortDesc,
-            link,
-            bodyText,
-            isHot,
-            imageUrl: currentImageUrl
-          })
+          body: fd
         });
 
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        if (!data || !data.ok) throw new Error();
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || '테스트 등록 실패');
+        }
 
         alert('테스트가 등록되었습니다.');
-        // 폼 초기화
-        document.getElementById('title').value = '';
-        document.getElementById('tag').value = '';
-        document.getElementById('shortDesc').value = '';
-        document.getElementById('link').value = '';
-        document.getElementById('bodyText').value = '';
-        document.getElementById('isHot').checked = true;
-        imagePreview.innerHTML = '대표 이미지를 선택하면 여기 미리보기로 나타납니다.';
-        fileNameSpan.textContent = '선택된 파일 없음';
-        currentImageUrl = '';
+        // 폼 리셋
+        document.getElementById('testTitle').value = '';
+        document.getElementById('testTag').value = '';
+        document.getElementById('testDesc').value = '';
+        document.getElementById('testText').value = '';
+        document.getElementById('testImage').value = '';
+        document.getElementById('testHot').checked = false;
 
         loadTests();
-      } catch (err) {
-        console.error(err);
+      } catch (e) {
+        console.error(e);
         alert('테스트 등록 중 오류가 발생했습니다.');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = '테스트 등록하기';
       }
+    }
+
+    // ===== AI 자동 생성 버튼 =====
+    async function generateTestWithAI() {
+      const category = document.getElementById('testCategory').value;
+      if (!confirm(`${category} 카테고리로 AI 자동 생성 테스트를 만들까요?`)) return;
+
+      try {
+        const res = await fetch('/api/generate-test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category })
+        });
+
+        if (!res.ok) {
+          throw new Error('OpenAI API 오류');
+        }
+
+        const data = await res.json();
+        document.getElementById('testText').value = data.test || '';
+        alert('AI가 생성한 테스트 텍스트가 본문에 채워졌습니다. 제목/이미지 등을 채운 뒤 저장해 주세요.');
+      } catch (e) {
+        console.error(e);
+        alert('AI 테스트 생성 중 오류가 발생했습니다.');
+      }
+    }
+
+    // ===== 배너 관리 =====
+    const bannerImageInput = document.getElementById('bannerImage');
+    const bannerPreview = document.getElementById('bannerPreview');
+
+    bannerImageInput.addEventListener('change', () => {
+      const file = bannerImageInput.files[0];
+      if (!file) {
+        bannerPreview.style.backgroundImage = '';
+        bannerPreview.textContent = '배너 이미지를 선택하면 미리보기가 표시됩니다.';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = e => {
+        bannerPreview.style.backgroundImage = `url('${e.target.result}')`;
+        bannerPreview.textContent = '';
+      };
+      reader.readAsDataURL(file);
     });
 
+    async function loadBanners() {
+      try {
+        const res = await fetch('/api/banners');
+        const banners = await res.json();
+        const listEl = document.getElementById('bannerList');
+
+        if (!Array.isArray(banners) || banners.length === 0) {
+          listEl.innerHTML = '<p style="font-size:13px;color:#9ca3af;">아직 등록된 배너가 없습니다.</p>';
+          return;
+        }
+
+        listEl.innerHTML = banners
+          .map(b => {
+            const img = b.image ? `<img class="thumb" src="${b.image}" alt="">` : '<div class="thumb" style="background:#e5e7eb;"></div>';
+            const active = b.isActive ? '<span class="badge" style="background:rgba(59,130,246,0.1);color:#3b82f6;">ON</span>' : '<span class="badge" style="background:rgba(156,163,175,0.15);color:#6b7280;">OFF</span>';
+            return `
+              <div class="list-item">
+                ${img}
+                <div class="list-item-body">
+                  <div class="list-item-title">${b.title} ${active}</div>
+                  <div class="list-item-meta">${b.subtitle || ''}</div>
+                  <div class="list-item-meta">${b.link || ''}</div>
+                </div>
+              </div>
+            `;
+          })
+          .join('');
+      } catch (e) {
+        console.error(e);
+        document.getElementById('bannerList').innerHTML = '<p style="font-size:13px;color:#ef4444;">배너 목록을 불러오는 중 오류가 발생했습니다.</p>';
+      }
+    }
+
+    async function saveBanner() {
+      const title = document.getElementById('bannerTitle').value.trim();
+      const subtitle = document.getElementById('bannerSubtitle').value.trim();
+      const link = document.getElementById('bannerLink').value.trim();
+      const isActive = document.getElementById('bannerActive').checked;
+      const imageFile = bannerImageInput.files[0];
+
+      if (!title) {
+        alert('배너 제목을 입력해 주세요.');
+        return;
+      }
+
+      const fd = new FormData();
+      fd.append('title', title);
+      fd.append('subtitle', subtitle);
+      fd.append('link', link);
+      fd.append('isActive', isActive ? 'true' : 'false');
+      if (imageFile) fd.append('bannerImage', imageFile);
+
+      try {
+        const res = await fetch('/api/banners', {
+          method: 'POST',
+          body: fd
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || '배너 등록 실패');
+        }
+
+        alert('배너가 등록되었습니다.');
+
+        // 폼 리셋
+        document.getElementById('bannerTitle').value = '';
+        document.getElementById('bannerSubtitle').value = '';
+        document.getElementById('bannerLink').value = '';
+        document.getElementById('bannerActive').checked = true;
+        bannerImageInput.value = '';
+        bannerPreview.style.backgroundImage = '';
+        bannerPreview.textContent = '배너 이미지를 선택하면 미리보기가 표시됩니다.';
+
+        loadBanners();
+      } catch (e) {
+        console.error(e);
+        alert('배너 등록 중 오류가 발생했습니다.');
+      }
+    }
+
+    // 이벤트 바인딩 & 초기 로딩
+    document.getElementById('btnSaveTest').addEventListener('click', saveTest);
+    document.getElementById('btnGenerateAI').addEventListener('click', generateTestWithAI);
+    document.getElementById('btnSaveBanner').addEventListener('click', saveBanner);
+
     loadTests();
+    loadBanners();
   </script>
 </body>
 </html>
