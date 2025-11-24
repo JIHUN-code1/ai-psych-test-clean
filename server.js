@@ -1,113 +1,218 @@
-const express = require("express");
-const fs = require("fs");
-const path = require("path");
-const cors = require("cors");
+require('dotenv').config();
+
+const path = require('path');
+const fs = require('fs');
+const express = require('express');
+const multer = require('multer');
+const OpenAI = require('openai');
 
 const app = express();
+const PORT = process.env.PORT || 10000;
 
-// JSON 바디 파싱
-app.use(express.json({ limit: "10mb" }));
-app.use(cors());
+// OpenAI 클라이언트
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-// 🔐 Render 에서 쓰기 가능한 위치: /tmp
-const TESTS_FILE = path.join("/tmp", "tests.json");
+// 정적 파일 & 기본 미들웨어
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
-// tests.json 읽기
-function readTests() {
+// 데이터 파일 경로
+const DATA_DIR = path.join(__dirname, 'data');
+const TESTS_DB_PATH = path.join(DATA_DIR, 'tests.json');
+
+// data 폴더 & tests.json 없으면 생성
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR);
+}
+if (!fs.existsSync(TESTS_DB_PATH)) {
+  fs.writeFileSync(TESTS_DB_PATH, '[]', 'utf-8');
+}
+
+// JSON DB 헬퍼
+function loadTests() {
   try {
-    if (!fs.existsSync(TESTS_FILE)) {
-      return [];
-    }
-    const text = fs.readFileSync(TESTS_FILE, "utf8");
-    if (!text.trim()) return [];
-    return JSON.parse(text);
+    const raw = fs.readFileSync(TESTS_DB_PATH, 'utf-8');
+    return JSON.parse(raw || '[]');
   } catch (err) {
-    console.error("readTests error:", err);
+    console.error('Failed to load tests.json', err);
     return [];
   }
 }
 
-// tests.json 쓰기
-function writeTests(list) {
+function saveTests(tests) {
   try {
-    fs.writeFileSync(TESTS_FILE, JSON.stringify(list, null, 2), "utf8");
+    fs.writeFileSync(TESTS_DB_PATH, JSON.stringify(tests, null, 2), 'utf-8');
+    return true;
   } catch (err) {
-    console.error("writeTests error:", err);
+    console.error('Failed to save tests.json', err);
+    return false;
   }
 }
 
-// 정적 파일 서빙 (public 폴더)
-app.use("/", express.static(path.join(__dirname, "public")));
+// 업로드 디렉토리 준비
+const UPLOAD_DIR = path.join(__dirname, 'public', 'uploads');
+if (!fs.existsSync(UPLOAD_DIR)) {
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+}
 
-// ✅ 테스트 목록 불러오기 (홈 화면/관리자 공용)
-app.get("/api/tests", (req, res) => {
-  const tests = readTests();
+// multer 설정
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, UPLOAD_DIR);
+  },
+  filename: (req, file, cb) => {
+    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname || '');
+    cb(null, unique + ext);
+  },
+});
+const upload = multer({ storage });
 
-  // 최신 등록 순으로 정렬
-  tests.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
-
-  res.json({
-    success: true,
-    tests,
-  });
+// 라우팅: 페이지
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// ✅ 단일 테스트 조회 (필요하면 index.html에서 사용 가능)
-app.get("/api/tests/:id", (req, res) => {
-  const tests = readTests();
-  const found = tests.find((t) => t.id === req.params.id);
-  if (!found) {
-    return res.status(404).json({ success: false, message: "테스트를 찾을 수 없습니다." });
-  }
-  res.json({ success: true, test: found });
+app.get('/home', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'home.html'));
 });
 
-// ✅ 테스트 등록 (관리자 페이지에서 호출)
-app.post("/api/tests", (req, res) => {
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin', 'index.html'));
+});
+
+// 테스트 목록 API (홈/관리자 공용)
+app.get('/api/tests', (req, res) => {
+  const tests = loadTests();
+  res.json(tests);
+});
+
+// 관리자: 새 테스트 등록
+app.post('/api/admin/tests', (req, res) => {
   try {
-    const body = req.body || {};
-    const { title, category, tag, description, content, image, hot } = body;
+    const {
+      title,
+      category,
+      tag,
+      shortDesc,
+      link,
+      bodyText,
+      isHot,
+      imageUrl,
+    } = req.body || {};
 
-    if (!title || !category) {
-      return res
-        .status(400)
-        .json({ success: false, message: "제목과 카테고리는 필수입니다." });
+    if (!title) {
+      return res.status(400).json({ ok: false, message: 'title is required' });
     }
 
-    let tests = readTests();
+    const tests = loadTests();
 
     const now = new Date().toISOString();
     const newTest = {
       id: Date.now().toString(),
-      title,
-      category,
-      tag: tag || "",
-      description: description || "",
-      content: content || "",
-      image: image || "", // (지금은 Base64 또는 URL 문자열, 나중에 업로드 기능 붙일 수 있음)
-      hot: !!hot,
+      title: String(title),
+      category: category || '',
+      tag: tag || '',
+      shortDesc: shortDesc || '',
+      link: link || '',
+      bodyText: bodyText || '',
+      isHot: Boolean(isHot),
+      imageUrl: imageUrl || '',
       createdAt: now,
       views: 0,
     };
 
     tests.push(newTest);
-    writeTests(tests);
 
-    return res.json({
-      success: true,
-      message: "테스트가 성공적으로 저장되었습니다.",
-      test: newTest,
-    });
+    if (!saveTests(tests)) {
+      return res.status(500).json({ ok: false, message: 'Failed to save DB' });
+    }
+
+    res.json({ ok: true, test: newTest });
   } catch (err) {
-    console.error("POST /api/tests error:", err);
-    return res
-      .status(500)
-      .json({ success: false, message: "서버 내부 오류가 발생했습니다." });
+    console.error('Error in /api/admin/tests', err);
+    res.status(500).json({ ok: false, message: 'Server error' });
   }
 });
 
+// 이미지 업로드 API
+app.post('/api/upload', upload.single('image'), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+    const publicPath = '/uploads/' + req.file.filename;
+    res.json({ imageUrl: publicPath });
+  } catch (err) {
+    console.error('Upload error', err);
+    res.status(500).json({ error: 'Upload failed' });
+  }
+});
+
+// AI 심리테스트 자동 생성 API
+app.post('/api/generate-test', async (req, res) => {
+  try {
+    const { category } = req.body || {};
+    const cat = category || '연애 심리테스트';
+
+    const prompt = `
+당신은 한국의 재미있는 심리테스트 작가입니다.
+아래 조건을 모두 지키면서 "${cat}" 한 편을 만들어 주세요.
+
+[필수 형식]
+- 제목 1줄
+- 간단한 인트로 2~3줄
+- 번호가 붙은 질문 6~8개
+- 각 질문마다 보기 A,B,C,D 4개
+- 마지막에 결과 유형 4가지 (A,B,C,D 위주로) 를 엔터테인먼트 느낌으로 해석
+
+[스타일]
+- 말투는 가볍고 즐거운 톤
+- 심리학 용어를 남발하지 말고, 일상적인 예시 위주로 설명
+- 너무 길게 쓰지 말고, 모바일에서 읽기 편한 길이로 작성
+`.trim();
+
+    const resp = await openai.responses.create({
+      model: 'gpt-4.1-mini',
+      input: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'input_text',
+              text: prompt,
+            },
+          ],
+        },
+      ],
+    });
+
+    const text =
+      resp.output &&
+      resp.output[0] &&
+      resp.output[0].content &&
+      resp.output[0].content[0] &&
+      resp.output[0].content[0].text
+        ? resp.output[0].content[0].text
+        : '';
+
+    res.json({ test: text });
+  } catch (err) {
+    console.error('Error in /api/generate-test', err);
+    res.status(500).json({ error: 'OpenAI API error' });
+  }
+});
+
+// 헬스체크
+app.get('/health', (req, res) => {
+  res.json({ ok: true });
+});
+
 // 서버 시작
-const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-  console.log(`심마켓 서버 실행 중: http://localhost:${PORT}`);
+  console.log(`AI Test Generator Server Running on port ${PORT}`);
 });
