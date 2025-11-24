@@ -79,12 +79,37 @@ app.post('/api/generate-test', async (req, res) => {
 당신은 재미있는 심리테스트를 만드는 작가입니다.
 카테고리: ${category}
 
-형식:
-1) 제목
-2) 질문 8개 (각 질문마다 보기 A/B/C/D)
-3) 결과 유형 4개 (A/B/C/D 선택 수에 따른 엔터테인먼트형 해석)
+형식은 아래와 같이 통일해 주세요.
 
-사용자가 그대로 카피해서 쓸 수 있도록 마크다운 없이 순수 텍스트로 작성해 주세요.
+제목: (한 줄 제목)
+
+Q1. 첫 번째 질문 내용?
+A) 보기 1
+B) 보기 2
+C) 보기 3
+D) 보기 4
+
+Q2. 두 번째 질문 내용?
+A) ...
+B) ...
+C) ...
+D) ...
+
+(총 7~8문항)
+
+[결과 - A 타입]
+A를 가장 많이 고른 사람에 대한 엔터테인먼트형 해석(3~5문장)
+
+[결과 - B 타입]
+...
+
+[결과 - C 타입]
+...
+
+[결과 - D 타입]
+...
+
+markdown 없이, 위 형식 그대로 사람이 바로 읽고 사용할 수 있게 출력해 주세요.
 `;
 
     const response = await openai.responses.create({
@@ -160,7 +185,7 @@ app.post('/api/tests', upload.single('image'), (req, res) => {
   }
 });
 
-// 단일 테스트 조회 (테스트 풀기 화면에서 사용 가능)
+// 단일 테스트 조회
 app.get('/api/tests/:id', (req, res) => {
   const tests = readJson(testsFile);
   const test = tests.find(t => t.id === req.params.id);
@@ -168,12 +193,29 @@ app.get('/api/tests/:id', (req, res) => {
   res.json(test);
 });
 
+// 조회수 증가
+app.post('/api/tests/:id/view', (req, res) => {
+  try {
+    const tests = readJson(testsFile);
+    const idx = tests.findIndex(t => t.id === req.params.id);
+    if (idx === -1) {
+      return res.status(404).json({ error: 'Not found' });
+    }
+    const current = tests[idx].views || 0;
+    tests[idx].views = current + 1;
+    writeJson(testsFile, tests);
+    res.json({ views: tests[idx].views });
+  } catch (e) {
+    console.error('POST /api/tests/:id/view error:', e);
+    res.status(500).json({ error: 'Failed to update views' });
+  }
+});
+
 // ===== 홈 배너(슬라이드) DB API =====
 
 // 배너 목록 조회
 app.get('/api/banners', (req, res) => {
   const banners = readJson(bannersFile);
-  // 최신 등록 순으로 정렬
   banners.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   res.json(banners);
 });

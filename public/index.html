@@ -2,494 +2,488 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>AI 심리테스트 자동 생성기 | 심리테스트 마켓 - 심마켓</title>
+  <title>심마켓 테스트 풀기</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f5f5ff;
-      padding: 32px 16px 48px;
-      color: #111827;
     }
-    a { text-decoration: none; color: inherit; }
-
-    .layout {
-      max-width: 1100px;
+    body {
+      background: #f3f4f6;
+      color: #111827;
+      padding: 20px 12px 40px;
+    }
+    .container {
+      max-width: 900px;
       margin: 0 auto;
     }
-
-    /* 헤더 */
-    .top-nav {
+    header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 24px;
-    }
-    .brand {
-      display: flex;
       align-items: center;
-      gap: 10px;
+      margin-bottom: 18px;
     }
-    .brand-logo {
-      width: 36px;
-      height: 36px;
-      border-radius: 14px;
-      background: radial-gradient(circle at 20% 0%, #facc15, #f97316 40%, #ec4899 80%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 900;
-      font-size: 18px;
-      box-shadow: 0 8px 20px rgba(236, 72, 153, 0.35);
-    }
-    .brand-text-title {
-      font-size: 18px;
+    header h1 {
+      font-size: 22px;
       font-weight: 800;
-    }
-    .brand-text-sub {
-      font-size: 12px;
-      color: #6b7280;
-    }
-    .brand-text-sub b { color:#4f46e5; }
-
-    .nav-links {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .nav-btn {
-      padding: 7px 13px;
-      border-radius: 999px;
-      font-size: 13px;
-      border: 1px solid rgba(148,163,184,0.5);
-      background: #fff;
-      color: #4b5563;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      transition: all 0.15s ease;
-    }
-    .nav-btn.primary {
-      background: linear-gradient(135deg, #4f46e5, #ec4899);
-      color: #fff;
-      border-color: transparent;
-      box-shadow: 0 10px 22px rgba(79,70,229,0.35);
-    }
-    .nav-btn:hover { transform: translateY(-1px); }
-
-    /* 메인 카드 */
-    .container {
-      margin-top: 12px;
-      background: #ffffff;
-      border-radius: 22px;
-      box-shadow: 0 18px 45px rgba(15,23,42,0.14);
-      padding: 28px 20px 32px;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: rgba(79,70,229,0.06);
-      color: #4f46e5;
-      font-size: 11px;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
-    h1 {
-      font-size: 26px;
-      font-weight: 800;
-      margin-bottom: 10px;
       background: linear-gradient(135deg, #6366f1, #ec4899);
       -webkit-background-clip: text;
       color: transparent;
     }
-    .subtitle {
-      font-size: 14px;
+    header a {
+      font-size: 13px;
       color: #6b7280;
-      margin-bottom: 22px;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      margin-bottom: 22px;
-    }
-    .tab {
-      flex-shrink: 0;
-      padding: 8px 14px;
+      text-decoration: none;
+      padding: 6px 10px;
       border-radius: 999px;
       border: 1px solid #e5e7eb;
-      background: #f9fafb;
-      font-size: 13px;
-      color: #4b5563;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
+      background: white;
     }
-    .tab.active {
-      background: linear-gradient(135deg, #6366f1, #ec4899);
-      color: white;
-      border-color: transparent;
-      box-shadow: 0 6px 18px rgba(99,102,241,0.3);
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
+    .hero {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 18px 16px 16px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
       margin-bottom: 18px;
     }
-    button.primary, button.outline {
+    .badge {
+      display: inline-flex;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(99, 102, 241, 0.1);
+      color: #4f46e5;
+      margin-right: 4px;
+    }
+    .hero-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin: 8px 0 4px;
+    }
+    .hero-desc {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+    .hero-meta {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    .primary-btn {
+      margin-top: 12px;
       padding: 10px 18px;
       border-radius: 999px;
       border: none;
       font-size: 14px;
       cursor: pointer;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      color: #ffffff;
+      box-shadow: 0 10px 24px rgba(99, 102, 241, 0.35);
       display: inline-flex;
       align-items: center;
       gap: 6px;
+    }
+    .primary-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+      box-shadow: none;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 18px 16px 20px;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.12);
+      margin-bottom: 16px;
+    }
+    .question-header {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    .question-text {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .option {
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       transition: all 0.15s ease;
     }
-    button.primary {
+    .option-label {
+      font-weight: 700;
+      margin-right: 6px;
+    }
+    .option:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(148, 163, 184, 0.35);
+    }
+    .option.selected {
       background: linear-gradient(135deg, #6366f1, #ec4899);
       color: white;
-      box-shadow: 0 8px 20px rgba(99,102,241,0.35);
+      border-color: transparent;
+      box-shadow: 0 10px 22px rgba(99, 102, 241, 0.48);
     }
-    button.primary:hover { transform: translateY(-1px); }
-    button.outline {
-      background: white;
-      border: 1px solid #e5e7eb;
+    .progress-bar-wrap {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      margin-top: 16px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6366f1, #ec4899);
+      transition: width 0.3s ease;
+    }
+    .summary {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 8px;
+    }
+    .result-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .result-type-badge {
+      display: inline-flex;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: rgba(248, 250, 252, 0.16);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      margin-bottom: 6px;
+    }
+    .result-text {
+      font-size: 14px;
       color: #374151;
+      white-space: pre-wrap;
+      line-height: 1.6;
     }
-    button.outline:hover { background:#f9fafb; }
-
-    .result-box {
-      margin-top: 14px;
-      padding: 18px 16px;
-      border-radius: 16px;
-      border: 1px solid #e5e7eb;
+    .raw-box {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 12px;
       background: #f9fafb;
-      max-height: 520px;
+      border: 1px dashed #e5e7eb;
+      font-size: 12px;
+      max-height: 220px;
       overflow-y: auto;
       white-space: pre-wrap;
-      font-size: 14px;
-      line-height: 1.5;
-      color: #111827;
+      color: #6b7280;
     }
-    .placeholder {
-      margin-top: 32px;
-      font-size: 14px;
+    .small-link {
+      font-size: 12px;
       color: #9ca3af;
-      text-align: center;
+      margin-top: 6px;
     }
-
-    .saved-box {
-      margin-top: 28px;
-      border-radius: 18px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      padding: 18px 16px;
-    }
-    .saved-header {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:8px;
-    }
-    .saved-title { font-size:14px; font-weight:600; }
-    .saved-empty { font-size:13px; color:#9ca3af; }
-
-    .saved-list {
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      max-height:220px;
-      overflow-y:auto;
-      padding-top:4px;
-    }
-    .saved-item {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      background:#fff;
-      border-radius:10px;
-      padding:7px 10px;
-      border:1px solid #e5e7eb;
-      font-size:13px;
-    }
-    .saved-item span.label {
-      max-width:210px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .saved-item .time {
-      font-size:11px;
-      color:#9ca3af;
-      margin-left:8px;
-    }
-    .saved-buttons {
-      display:flex;
-      gap:4px;
-    }
-    .saved-btn {
-      border:none;
-      border-radius:999px;
-      padding:4px 8px;
-      font-size:11px;
-      cursor:pointer;
-      background:#f3f4f6;
-      color:#4b5563;
-    }
-    .saved-btn.danger {
-      background:#fee2e2;
-      color:#b91c1c;
-    }
-
-    footer {
-      margin-top: 26px;
-      font-size: 11px;
-      color: #9ca3af;
-      text-align: right;
-    }
-    footer a {
-      color:#6366f1;
-      text-decoration:underline;
-    }
-
-    @media (min-width: 768px) {
-      body { padding: 40px 24px 48px; }
-      .container { padding: 26px 26px 32px; }
-      h1 { font-size: 30px; }
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+      .hero-title {
+        font-size: 18px;
+      }
+      .question-text {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="layout">
-    <header class="top-nav">
-      <div class="brand">
-        <div class="brand-logo">심</div>
-        <div>
-          <div class="brand-text-title">심리테스트 마켓 · 심마켓</div>
-          <div class="brand-text-sub">
-            요즘 뜨는 심리테스트를 한 곳에서, <b>AI 자동 생성기</b>까지
-          </div>
-        </div>
-      </div>
-      <div class="nav-links">
-        <a href="/home"><button class="nav-btn">사용자 홈(마켓) 보기</button></a>
-        <a href="/admin"><button class="nav-btn">관리자 페이지</button></a>
-        <button class="nav-btn primary">AI 자동 생성기</button>
-      </div>
+  <div class="container">
+    <header>
+      <h1>심마켓 테스트 풀기</h1>
+      <a href="/home">← 심마켓 홈으로</a>
     </header>
 
-    <main class="container">
-      <div class="badge">
-        <span>✨ AI 심리테스트 자동 생성기</span>
-      </div>
-      <h1>AI 심리테스트 자동 생성기</h1>
-      <p class="subtitle">
-        카테고리를 고르고 버튼만 누르면, AI가 질문·보기·결과까지 한 번에 만들어 줍니다.
-        (생성된 텍스트는 관리자 페이지에서 복사해 바로 등록할 수 있어요)
-      </p>
+    <div id="hero" class="hero">
+      <span class="badge">불러오는 중...</span>
+      <div class="hero-title">테스트 정보를 불러오는 중입니다.</div>
+      <div class="hero-desc">잠시만 기다려 주세요.</div>
+      <div class="hero-meta"></div>
+      <button id="startBtn" class="primary-btn" disabled>테스트 시작하기</button>
+    </div>
 
-      <!-- 카테고리 탭 -->
-      <div class="tabs" id="categoryTabs">
-        <div class="tab active" data-value="연애 심리테스트">연애 심리테스트</div>
-        <div class="tab" data-value="성격 심리테스트">성격 심리테스트</div>
-        <div class="tab" data-value="금전/소비 성향 심리테스트">금전/소비 성향 심리테스트</div>
-        <div class="tab" data-value="직장/커리어 심리테스트">직장/커리어 심리테스트</div>
-        <div class="tab" data-value="우정/대인관계 심리테스트">우정/대인관계 심리테스트</div>
-        <div class="tab" data-value="라이프스타일 심리테스트">라이프스타일 심리테스트</div>
-      </div>
-
-      <!-- 버튼들 -->
-      <div class="controls">
-        <button class="primary" id="generateBtn">테스트 생성하기</button>
-        <button class="outline" id="regenerateBtn">다시 생성하기</button>
-        <button class="outline" id="copyBtn">결과 복사하기</button>
-      </div>
-
-      <!-- 결과 영역 -->
-      <div id="result" class="result-box" style="display:none;"></div>
-      <div id="placeholder" class="placeholder">
-        위에서 카테고리를 선택하고 <b>테스트 생성하기</b>를 눌러 주세요.
-      </div>
-
-      <!-- 저장된 텍스트 -->
-      <section class="saved-box">
-        <div class="saved-header">
-          <div class="saved-title">저장된 테스트</div>
-          <div style="font-size:11px; color:#9ca3af;">브라우저에만 저장되며, 관리자 페이지에서 직접 등록해 주세요.</div>
+    <div id="playArea" style="display:none;">
+      <div class="card" id="questionCard">
+        <div class="question-header" id="qHeader">Q 1 / N</div>
+        <div class="question-text" id="qText">질문 내용</div>
+        <div class="options" id="options"></div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="progressBar"></div>
         </div>
-        <div id="savedList" class="saved-list"></div>
-        <div id="savedEmpty" class="saved-empty">아직 저장된 테스트가 없습니다.</div>
-      </section>
-    </main>
+        <div class="summary" id="summaryText"></div>
+      </div>
+    </div>
 
-    <footer>
-      문의: <a href="mailto:ainam0727@gmail.com">ainam0727@gmail.com</a>
-    </footer>
+    <div id="resultArea" style="display:none;">
+      <div class="card">
+        <div class="result-type-badge" id="resultTypeBadge">A 타입</div>
+        <div class="result-title" id="resultTitle">AI 엔터테인먼트 해석</div>
+        <div class="result-text" id="resultText"></div>
+      </div>
+      <div class="card">
+        <div style="font-size:13px;font-weight:600;margin-bottom:4px;">테스트 원문</div>
+        <div id="rawText" class="raw-box"></div>
+        <div class="small-link">
+          이 결과는 가볍게 즐기는 엔터테인먼트 용도입니다. 마음 가는 대로 재미있게 참고만 해주세요 :)
+        </div>
+      </div>
+    </div>
+
+    <div id="errorBox" class="card" style="display:none;background:#fef2f2;border:1px solid #fecaca;">
+      <div style="font-size:15px;font-weight:700;color:#b91c1c;margin-bottom:6px;">테스트를 불러올 수 없습니다.</div>
+      <div style="font-size:13px;color:#7f1d1d;">
+        주소가 잘못되었거나, 테스트가 삭제되었을 수 있습니다. 심마켓 홈에서 다시 선택해 주세요.
+      </div>
+    </div>
   </div>
 
   <script>
-    const tabs = document.querySelectorAll('.tab');
-    const generateBtn = document.getElementById('generateBtn');
-    const regenerateBtn = document.getElementById('regenerateBtn');
-    const copyBtn = document.getElementById('copyBtn');
-    const resultBox = document.getElementById('result');
-    const placeholder = document.getElementById('placeholder');
-    const savedList = document.getElementById('savedList');
-    const savedEmpty = document.getElementById('savedEmpty');
+    const params = new URLSearchParams(location.search);
+    const testId = params.get('testId');
 
-    let selectedCategory = '연애 심리테스트';
-    let lastPayload = null;
+    let testData = null;
+    let questions = [];
+    let currentIdx = 0;
+    let answers = [];
+    let counts = { A: 0, B: 0, C: 0, D: 0 };
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        selectedCategory = tab.dataset.value;
-      });
-    });
+    const heroEl = document.getElementById('hero');
+    const startBtn = document.getElementById('startBtn');
+    const playArea = document.getElementById('playArea');
+    const resultArea = document.getElementById('resultArea');
+    const errorBox = document.getElementById('errorBox');
 
-    function loadSaved() {
-      const raw = localStorage.getItem('aiTests') || '[]';
+    // UI 요소
+    const qHeader = document.getElementById('qHeader');
+    const qText = document.getElementById('qText');
+    const optionsEl = document.getElementById('options');
+    const progressBar = document.getElementById('progressBar');
+    const summaryText = document.getElementById('summaryText');
+
+    const resultTypeBadge = document.getElementById('resultTypeBadge');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultText = document.getElementById('resultText');
+    const rawTextEl = document.getElementById('rawText');
+
+    if (!testId) {
+      heroEl.querySelector('.badge').textContent = '잘못된 접근';
+      heroEl.querySelector('.hero-title').textContent = '테스트 ID가 없습니다.';
+      heroEl.querySelector('.hero-desc').textContent = '홈 화면에서 테스트를 선택한 뒤 다시 들어와 주세요.';
+      startBtn.disabled = true;
+    } else {
+      loadTest(testId);
+    }
+
+    async function loadTest(id) {
       try {
-        const list = JSON.parse(raw);
-        renderSaved(list);
-      } catch {
-        renderSaved([]);
-      }
-    }
+        // 조회수 증가 (실패해도 그냥 넘어감)
+        fetch(`/api/tests/${id}/view`, { method: 'POST' }).catch(() => {});
 
-    function saveCurrent(text) {
-      const raw = localStorage.getItem('aiTests') || '[]';
-      let list;
-      try { list = JSON.parse(raw); } catch { list = []; }
-      const item = {
-        id: Date.now(),
-        category: selectedCategory,
-        text,
-        createdAt: new Date().toISOString()
-      };
-      list.unshift(item);
-      localStorage.setItem('aiTests', JSON.stringify(list.slice(0, 50)));
-      renderSaved(list.slice(0, 50));
-    }
+        const res = await fetch(`/api/tests/${id}`);
+        if (!res.ok) throw new Error('not found');
+        testData = await res.json();
 
-    function renderSaved(list) {
-      savedList.innerHTML = '';
-      if (!list.length) {
-        savedEmpty.style.display = 'block';
-        return;
-      }
-      savedEmpty.style.display = 'none';
-      list.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'saved-item';
-        const left = document.createElement('div');
-        const label = document.createElement('span');
-        label.className = 'label';
-        label.textContent = `[${item.category}] ${item.text.replace(/\\s+/g,' ').slice(0,40)}...`;
-        const time = document.createElement('span');
-        time.className = 'time';
-        const d = new Date(item.createdAt);
-        time.textContent = d.toLocaleString('ko-KR');
-        left.appendChild(label);
-        left.appendChild(time);
+        heroEl.querySelector('.badge').textContent = testData.category || '심리테스트';
+        heroEl.querySelector('.hero-title').textContent = testData.title || '제목 없는 테스트';
+        heroEl.querySelector('.hero-desc').textContent =
+          testData.description || '질문을 따라가며 가볍게 즐기는 심리테스트입니다.';
+        heroEl.querySelector('.hero-meta').textContent =
+          `${testData.tag || '엔터테인먼트'} · 참여 ${testData.views || 0}회`;
 
-        const btns = document.createElement('div');
-        btns.className = 'saved-buttons';
-        const copy = document.createElement('button');
-        copy.className = 'saved-btn';
-        copy.textContent = '복사';
-        copy.onclick = async () => {
-          await navigator.clipboard.writeText(item.text);
-          alert('클립보드에 복사되었습니다.');
-        };
-        const load = document.createElement('button');
-        load.className = 'saved-btn';
-        load.textContent = '보기';
-        load.onclick = () => {
-          resultBox.style.display = 'block';
-          placeholder.style.display = 'none';
-          resultBox.textContent = item.text;
-        };
-        const del = document.createElement('button');
-        del.className = 'saved-btn danger';
-        del.textContent = '삭제';
-        del.onclick = () => {
-          const filtered = list.filter(x => x.id !== item.id);
-          localStorage.setItem('aiTests', JSON.stringify(filtered));
-          renderSaved(filtered);
-        };
-        btns.appendChild(copy);
-        btns.appendChild(load);
-        btns.appendChild(del);
+        rawTextEl.textContent = testData.text || '';
 
-        div.appendChild(left);
-        div.appendChild(btns);
-        savedList.appendChild(div);
-      });
-    }
+        // 질문 파싱
+        questions = parseQuestions(testData.text || '');
+        if (!questions.length) {
+          heroEl.querySelector('.hero-desc').textContent =
+            '질문 형식을 인식하지 못해 인터랙티브 모드 대신 원문만 제공합니다.';
+          startBtn.disabled = true;
+          // 인터랙티브 모드는 못 쓰지만, 원문은 보여주기
+          playArea.style.display = 'none';
+          resultArea.style.display = 'block';
+          resultTypeBadge.textContent = '안내';
+          resultTitle.textContent = '이 테스트는 직접 읽으면서 즐겨 주세요.';
+          resultText.textContent =
+            '등록된 텍스트에서 Q1, A) / B) 형식을 찾지 못했습니다. 질문과 결과를 직접 읽으면서 가볍게 참고해 주세요.';
+          return;
+        }
 
-    async function callApi(category) {
-      resultBox.style.display = 'block';
-      resultBox.textContent = 'AI가 심리테스트를 만드는 중입니다...\\n(잠시만 기다려 주세요)';
-      placeholder.style.display = 'none';
-
-      try {
-        const res = await fetch('/api/generate-test', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ category })
-        });
-
-        if (!res.ok) throw new Error('API 요청 실패');
-
-        const data = await res.json();
-        const txt = typeof data.test === 'string'
-          ? data.test
-          : JSON.stringify(data.test, null, 2);
-
-        resultBox.textContent = txt;
-        lastPayload = txt;
-        saveCurrent(txt);
-      } catch (err) {
-        console.error(err);
-        resultBox.textContent = '오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
-      }
-    }
-
-    generateBtn.addEventListener('click', () => {
-      callApi(selectedCategory);
-    });
-    regenerateBtn.addEventListener('click', () => {
-      callApi(selectedCategory);
-    });
-
-    copyBtn.addEventListener('click', async () => {
-      if (!resultBox.textContent.trim()) return;
-      try {
-        await navigator.clipboard.writeText(resultBox.textContent);
-        alert('결과가 클립보드에 복사되었습니다!\\n관리자 페이지에서 붙여 넣어 등록해 주세요.');
+        startBtn.disabled = false;
+        startBtn.addEventListener('click', startTest, { once: true });
       } catch (e) {
-        alert('복사 중 오류가 발생했습니다.');
+        console.error(e);
+        heroEl.style.display = 'none';
+        playArea.style.display = 'none';
+        resultArea.style.display = 'none';
+        errorBox.style.display = 'block';
       }
-    });
+    }
 
-    loadSaved();
+    function parseQuestions(text) {
+      const lines = text.split(/\r?\n/);
+      const qs = [];
+      let current = null;
+
+      const qRegex1 = /^Q\s*(\d+)[\.\)]\s*(.+)$/i;   // Q1. 질문
+      const qRegex2 = /^(\d+)[\.\)]\s*(.+)$/;       // 1. 질문
+      const optRegex = /^([ABCD])[)\.]\s*(.+)$/i;   // A) 보기
+
+      for (let raw of lines) {
+        const line = raw.trim();
+        if (!line) continue;
+
+        let m = line.match(qRegex1) || line.match(qRegex2);
+        if (m) {
+          if (current) qs.push(current);
+          current = {
+            no: parseInt(m[1], 10),
+            text: m[2].trim(),
+            options: []
+          };
+          continue;
+        }
+
+        const o = line.match(optRegex);
+        if (o && current) {
+          current.options.push({
+            key: o[1].toUpperCase(),
+            text: o[2].trim()
+          });
+        }
+      }
+      if (current) qs.push(current);
+
+      // 2개 미만이면 실패로 간주
+      return qs.length >= 2 ? qs : [];
+    }
+
+    function startTest() {
+      heroEl.style.display = 'none';
+      resultArea.style.display = 'none';
+      playArea.style.display = 'block';
+
+      currentIdx = 0;
+      answers = [];
+      counts = { A: 0, B: 0, C: 0, D: 0 };
+
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = questions[currentIdx];
+      if (!q) return finishTest();
+
+      qHeader.textContent = `Q ${currentIdx + 1} / ${questions.length}`;
+      qText.textContent = q.text;
+
+      optionsEl.innerHTML = q.options
+        .map(
+          opt => `
+        <button class="option" data-key="${opt.key}">
+          <span><span class="option-label">${opt.key}</span>${opt.text}</span>
+        </button>`
+        )
+        .join('');
+
+      optionsEl.querySelectorAll('.option').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.key;
+          optionsEl.querySelectorAll('.option').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          setTimeout(() => handleAnswer(key), 160);
+        });
+      });
+
+      progressBar.style.width = `${((currentIdx) / questions.length) * 100}%`;
+      summaryText.textContent = '';
+    }
+
+    function handleAnswer(key) {
+      answers[currentIdx] = key;
+      if (counts[key] == null) counts[key] = 0;
+      counts[key] += 1;
+
+      currentIdx += 1;
+      if (currentIdx >= questions.length) {
+        finishTest();
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function finishTest() {
+      playArea.style.display = 'none';
+      resultArea.style.display = 'block';
+
+      // 가장 많이 고른 타입 찾기
+      const entries = Object.entries(counts);
+      entries.sort((a, b) => b[1] - a[1]);
+      const [bestType, bestCount] = entries[0];
+
+      resultTypeBadge.textContent = `${bestType} 타입 결과`;
+      resultTitle.textContent = `${testData.title || '심리테스트'} · 당신의 메인 타입은 ${bestType} 타입!`;
+
+      // 원문에서 [결과 - X 타입] 블록 찾아보기
+      const resultBlock = extractResultBlock(testData.text || '', bestType);
+      if (resultBlock) {
+        resultText.textContent = resultBlock.trim();
+      } else {
+        resultText.textContent =
+          `가장 많이 선택한 타입은 ${bestType} 입니다. 등록된 테스트에서 결과 블록을 찾지 못해, 상세 해석은 작성된 텍스트를 참고해 주세요.`;
+      }
+
+      progressBar.style.width = '100%';
+      summaryText.textContent =
+        `총 ${questions.length}문항 중 ${bestType}를 가장 많이 선택했습니다. (A:${counts.A || 0}, B:${counts.B || 0}, C:${counts.C || 0}, D:${counts.D || 0})`;
+    }
+
+    function extractResultBlock(text, type) {
+      const lines = text.split(/\r?\n/);
+      const startRegex = new RegExp(`^\\[\\s*결과\\s*-\\s*${type}\\s*타입\\s*\\]`);
+      const altStart = new RegExp(`^${type}\\s*타입`);
+      let collecting = false;
+      let buff = [];
+
+      for (let raw of lines) {
+        const line = raw.trim();
+        if (!collecting) {
+          if (startRegex.test(line) || altStart.test(line)) {
+            collecting = true;
+            continue;
+          }
+        } else {
+          // 다음 결과 블록 시작하면 멈춤
+          if (/^\[\s*결과\s*-\s*[ABCD]\s*타입\s*\]/.test(line)) break;
+          if (/^[ABCD]\s*타입/.test(line)) break;
+          buff.push(raw);
+        }
+      }
+
+      return buff.length ? buff.join('\n') : '';
+    }
   </script>
 </body>
 </html>
