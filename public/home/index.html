@@ -2,971 +2,222 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>심리테스트 마켓 - 심마켓 홈</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta
-    name="description"
-    content="심마켓 - 오늘 밤, 어떤 심리테스트로 놀아볼까요? AI & 전문가가 만든 연애/성격/금전/직장/우정 심리테스트 마켓."
-  />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>심마켓 │ AI 심리테스트 마켓</title>
 
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     body {
-      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-      background: radial-gradient(circle at top, #eef2ff 0, #f9fafb 40%, #f5f3ff 100%);
-      color: #111827;
-      min-height: 100vh;
+      background: #fafafa;
+      padding-bottom: 60px;
     }
 
-    a {
-      text-decoration: none;
-      color: inherit;
+    header {
+      padding: 20px;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 99;
     }
 
-    .page {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 20px 16px 40px;
-    }
-
-    /* HEADER */
-
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-logo {
-      width: 32px;
-      height: 32px;
-      border-radius: 14px;
-      background: conic-gradient(
-        from 140deg,
-        #f97316,
-        #fb7185,
-        #a855f7,
-        #22c55e,
-        #38bdf8,
-        #f97316
-      );
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
+    header h1 {
+      font-size: 22px;
       font-weight: 800;
-      font-size: 16px;
-      box-shadow: 0 10px 25px rgba(148, 163, 184, 0.55);
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      -webkit-background-clip: text;
+      color: transparent;
     }
 
-    .brand-text-title {
-      font-size: 18px;
-      font-weight: 800;
-      color: #111827;
-    }
-
-    .brand-text-sub {
-      font-size: 12px;
-      color: #6b7280;
-    }
-
-    .top-right {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .chip {
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.04);
-      color: #4b5563;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .chip b {
-      color: #111827;
-    }
-
-    .btn-sm-outline {
-      padding: 7px 12px;
-      border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      font-size: 12px;
-      color: #374151;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: all 0.18s ease;
-    }
-
-    .btn-sm-outline:hover {
-      background: #f9fafb;
-      transform: translateY(-1px);
-      box-shadow: 0 7px 18px rgba(148, 163, 184, 0.35);
-    }
-
-    .btn-sm-primary {
-      padding: 7px 14px;
-      border-radius: 999px;
-      border: none;
-      background: linear-gradient(135deg, #4f46e5, #ec4899);
-      color: #fff;
-      font-weight: 600;
-      font-size: 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      box-shadow: 0 10px 24px rgba(129, 140, 248, 0.55);
-      transition: all 0.2s ease;
-    }
-
-    .btn-sm-primary:hover {
-      transform: translateY(-1px) scale(1.01);
-      box-shadow: 0 16px 32px rgba(129, 140, 248, 0.7);
-    }
-
-    /* HERO SLIDER */
-
-    .hero {
+    /* 슬라이더 */
+    .slider-container {
       position: relative;
-      border-radius: 24px;
-      padding: 22px 20px 24px;
-      margin-bottom: 20px;
+      width: 100%;
+      height: 180px;
       overflow: hidden;
-      background: radial-gradient(circle at top left, #4f46e5, #7c3aed, #ec4899);
-      color: #fff;
-      box-shadow: 0 18px 45px rgba(79, 70, 229, 0.45);
+      border-radius: 16px;
+      margin-top: 20px;
     }
 
-    .hero-inner {
-      display: grid;
-      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.8fr);
-      gap: 20px;
-      align-items: center;
-    }
-
-    .hero-badge-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .hero-badge {
-      padding: 5px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      background: rgba(15, 23, 42, 0.22);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .hero-title {
-      font-size: 24px;
-      font-weight: 800;
-      margin-bottom: 8px;
-      letter-spacing: -0.02em;
-    }
-
-    .hero-sub {
-      font-size: 13px;
-      color: #e5e7eb;
-      max-width: 320px;
-      line-height: 1.5;
-      margin-bottom: 16px;
-    }
-
-    .hero-btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .hero-meta {
-      font-size: 11px;
-      color: #e5e7eb;
-      opacity: 0.85;
-    }
-
-    /* Slider right */
-
-    .hero-slider {
-      position: relative;
-      height: 170px;
-      border-radius: 18px;
-      overflow: hidden;
-      background: rgba(15, 23, 42, 0.16);
-    }
-
-    .hero-slide-track {
+    .slide {
+      position: absolute;
       width: 100%;
       height: 100%;
-      position: relative;
-    }
-
-    .hero-slide {
-      position: absolute;
-      inset: 0;
-      padding: 18px 18px 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border-radius: 18px;
-      backdrop-filter: blur(10px);
+      background-size: cover;
+      background-position: center;
       opacity: 0;
-      transform: translateX(8px);
-      transition: opacity 0.4s ease, transform 0.4s ease;
+      transition: opacity 1s ease;
     }
 
-    .hero-slide.active {
+    .slide.active {
       opacity: 1;
-      transform: translateX(0);
     }
 
-    .hero-slide:nth-child(1) {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(79, 70, 229, 0.7));
-    }
-
-    .hero-slide:nth-child(2) {
-      background: linear-gradient(135deg, rgba(248, 250, 252, 0.16), rgba(251, 113, 133, 0.7));
-    }
-
-    .hero-slide:nth-child(3) {
-      background: linear-gradient(135deg, rgba(248, 250, 252, 0.16), rgba(52, 211, 153, 0.7));
-    }
-
-    .hero-slide-tag {
-      font-size: 11px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.3);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .hero-slide-title {
-      font-size: 15px;
-      font-weight: 700;
-      margin-top: 10px;
-      margin-bottom: 4px;
-    }
-
-    .hero-slide-desc {
-      font-size: 11px;
-      line-height: 1.5;
-      color: #eef2ff;
-      max-width: 210px;
-    }
-
-    .hero-slide-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 10px;
-      font-size: 11px;
-    }
-
-    .hero-slide-avatars {
-      display: flex;
-      align-items: center;
-    }
-
-    .hero-dot-row {
-      position: absolute;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 6px;
-    }
-
-    .hero-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: rgba(226, 232, 240, 0.5);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .hero-dot.active {
-      width: 16px;
-      background: #eef2ff;
-    }
-
-    /* CATEGORY TABS */
-
-    .category-row {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      margin-bottom: 16px;
-    }
-
-    .cat-pill {
-      flex-shrink: 0;
-      border-radius: 999px;
-      padding: 7px 14px;
-      font-size: 12px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      background: rgba(249, 250, 251, 0.85);
-      color: #4b5563;
-      cursor: pointer;
-      transition: all 0.16s ease;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .cat-pill span {
-      font-size: 11px;
-      color: #9ca3af;
-    }
-
-    .cat-pill.active {
-      background: #111827;
-      color: #f9fafb;
-      border-color: #111827;
-      box-shadow: 0 9px 22px rgba(15, 23, 42, 0.35);
-    }
-
-    /* SECTIONS */
-
-    .section {
-      margin-top: 4px;
-      margin-bottom: 22px;
-    }
-
-    .section-head {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      gap: 8px;
-    }
-
+    /* 섹션 제목 */
     .section-title {
-      font-size: 16px;
+      font-size: 20px;
       font-weight: 700;
-      letter-spacing: -0.015em;
+      margin: 28px 0 14px;
+      padding-left: 4px;
     }
 
-    .section-sub {
-      font-size: 11px;
-      color: #6b7280;
-    }
-
-    .section-link {
-      font-size: 12px;
-      color: #4f46e5;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .card-grid {
+    /* 카드 그리드 */
+    .test-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+      padding: 0 8px;
     }
 
-    @media (max-width: 960px) {
-      .card-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .hero-inner {
-        grid-template-columns: minmax(0, 1fr);
-      }
-
-      .hero {
-        padding: 20px 18px 22px;
-      }
-
-      .hero-slider {
-        height: 160px;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .page {
-        padding: 16px 14px 32px;
-      }
-
-      .top-bar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .card-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
-
-      .hero-title {
-        font-size: 20px;
-      }
-    }
-
-    /* CARD */
-
-    .card {
-      position: relative;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.96);
-      box-shadow: 0 10px 26px rgba(148, 163, 184, 0.25);
+    /* 카드 */
+    .test-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
       overflow: hidden;
       cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.18s ease, box-shadow 0.18s ease,
-        translate 0.18s ease;
+      transform: translateY(0);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
 
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
-    }
-
-    .card-thumb {
-      position: relative;
-      padding-bottom: 56%;
-      overflow: hidden;
-    }
-
-    .card-thumb img {
-      position: absolute;
-      inset: 0;
+    /* 이미지 */
+    .test-card img {
       width: 100%;
-      height: 100%;
+      height: 120px;
       object-fit: cover;
-      transform: scale(1.02);
-      transition: transform 0.25s ease;
+      display: block;
+      opacity: 0;
+      transform: scale(1.05);
+      animation: fadeIn 0.6s forwards ease;
     }
 
-    .card:hover .card-thumb img {
-      transform: scale(1.06);
+    /* 카드 hover (PC) */
+    @media (hover: hover) {
+      .test-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+      }
     }
 
-    .card-chip {
-      position: absolute;
-      left: 10px;
-      top: 10px;
-      font-size: 11px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.75);
-      color: #f9fafb;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+    /* 모바일 터치 효과 */
+    @media (hover: none) {
+      .test-card:active {
+        transform: scale(0.97);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+      }
     }
 
-    .card-chip.hot {
-      background: rgba(248, 113, 113, 0.95);
-    }
-
-    .card-body {
-      padding: 10px 11px 11px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+    /* card info */
+    .card-info {
+      padding: 14px;
     }
 
     .card-title {
-      font-size: 13px;
+      font-size: 15px;
       font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.4;
+      margin-bottom: 6px;
     }
 
-    .card-desc {
-      font-size: 11px;
-      color: #6b7280;
-      line-height: 1.5;
-      min-height: 32px;
+    .card-meta {
+      font-size: 13px;
+      color: #666;
     }
 
-    .card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      font-size: 10px;
+    /* fade-in 애니메이션 */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: scale(1.05);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
-    .card-tag {
-      padding: 3px 7px;
-      border-radius: 999px;
-      background: #f3f4f6;
-      color: #4b5563;
-    }
-
-    .card-footer {
-      margin-top: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 10px;
-      color: #9ca3af;
-    }
-
-    .card-stat {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .empty-msg {
-      font-size: 12px;
-      color: #9ca3af;
-      padding: 10px 2px 4px;
-    }
-
-    footer {
-      margin-top: 18px;
-      font-size: 11px;
-      color: #9ca3af;
-      text-align: right;
-    }
-
-    footer a {
-      color: #6b7280;
+    /* 반응형 */
+    @media (max-width: 480px) {
+      .test-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      }
+      .test-card img {
+        height: 110px;
+      }
     }
   </style>
 </head>
+
 <body>
-  <div class="page">
-    <!-- HEADER -->
-    <header class="top-bar">
-      <div class="brand">
-        <div class="brand-logo">심</div>
-        <div>
-          <div class="brand-text-title">심리테스트 마켓 <span style="color:#4f46e5;">심마켓</span></div>
-          <div class="brand-text-sub">오늘 기분에 맞는 심리테스트를 한 번에</div>
-        </div>
-      </div>
 
-      <div class="top-right">
-        <div class="chip">
-          오늘 업데이트 <b id="todayCount">0</b>개 · 전체 <b id="totalCount">0</b>개
-        </div>
-        <button class="btn-sm-outline" onclick="location.href='index.html'">
-          AI 심리테스트 생성
-        </button>
-        <button class="btn-sm-primary" onclick="location.href='admin.html'">
-          관리자 페이지
-        </button>
-      </div>
-    </header>
+  <header>
+    <h1>심마켓 🧠</h1>
+  </header>
 
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-inner">
-        <div>
-          <div class="hero-badge-row">
-            <div class="hero-badge">Beta · 심리테스트 마켓 오픈</div>
-            <div class="hero-badge">AI + 사람이 같이 만드는 테스트</div>
-          </div>
-          <h1 class="hero-title">오늘 밤, 어떤 테스트로 놀아볼까요?</h1>
-          <p class="hero-sub">
-            연애 온도, TMI 성격, 금전 감각까지. AI와 심마켓 큐레이터가 엄선한
-            심리테스트를 모아 둔 마켓입니다.
-          </p>
-          <div class="hero-btn-row">
-            <button class="btn-sm-primary" onclick="scrollToSection('popularSection')">
-              🔥 지금 인기 TOP
-            </button>
-            <button class="btn-sm-outline" onclick="scrollToSection('latestSection')">
-              ✨ 따끈따끈 최신
-            </button>
-          </div>
-          <div class="hero-meta">
-            * 테스트 결과는 엔터테인먼트 용도이며, 너무 진지하게 받아들이지 말고 재밌게 즐겨 주세요.
-          </div>
-        </div>
-
-        <!-- SLIDER -->
-        <div class="hero-slider" id="heroSlider">
-          <div class="hero-slide-track">
-            <article class="hero-slide active">
-              <div>
-                <div class="hero-slide-tag">연애 · MBTI 감성</div>
-                <div class="hero-slide-title">나의 연애 온도 4단계 테스트</div>
-                <p class="hero-slide-desc">
-                  요즘 내 연애 텐션은 몇 도쯤일까? 친구와 같이 풀어보면 더 재밌는 연애 온도 체크 테스트.
-                </p>
-              </div>
-              <div class="hero-slide-bottom">
-                <span>평균 참여 12,384명 · 재밌어서 또 한다는 테스트</span>
-                <span>♥ 오늘의 추천</span>
-              </div>
-            </article>
-
-            <article class="hero-slide">
-              <div>
-                <div class="hero-slide-tag">TMI 성격 · 하루 루틴</div>
-                <div class="hero-slide-title">TMI 성격 유형 TEST</div>
-                <p class="hero-slide-desc">
-                  회사에서는 멀쩡한데, 집에만 오면 이상해지는 나? TMI까지 파헤쳐 주는 웃긴 성격 테스트.
-                </p>
-              </div>
-              <div class="hero-slide-bottom">
-                <span>출근길 · 친구들이랑 · 회식 끝나고 하기 좋음</span>
-                <span>😆 웃긴 결과 모음</span>
-              </div>
-            </article>
-
-            <article class="hero-slide">
-              <div>
-                <div class="hero-slide-tag">금전 감각 · 플렉스</div>
-                <div class="hero-slide-title">금전 감각 체크: 플렉스 vs 짠테크</div>
-                <p class="hero-slide-desc">
-                  나는 플렉스 파인가, 짠테크 파인가? 소비 성향부터 통장 체질까지 가볍게 체크해 보는 테스트.
-                </p>
-              </div>
-              <div class="hero-slide-bottom">
-                <span>머니·소비 성향 심리테스트 3종 세트 준비 중</span>
-                <span>💰 이번 달 소비 성찰</span>
-              </div>
-            </article>
-          </div>
-          <div class="hero-dot-row">
-            <div class="hero-dot active" data-index="0"></div>
-            <div class="hero-dot" data-index="1"></div>
-            <div class="hero-dot" data-index="2"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CATEGORY TABS -->
-    <nav class="category-row" id="categoryRow">
-      <button class="cat-pill active" data-category="all">
-        전체 <span>All</span>
-      </button>
-      <button class="cat-pill" data-category="연애">
-        연애/썸/관계 <span>Love</span>
-      </button>
-      <button class="cat-pill" data-category="성격">
-        성격/MBTI 감성 <span>Personality</span>
-      </button>
-      <button class="cat-pill" data-category="금전">
-        금전/소비 성향 <span>Money</span>
-      </button>
-      <button class="cat-pill" data-category="직장">
-        직장/커리어 <span>Work</span>
-      </button>
-      <button class="cat-pill" data-category="우정">
-        우정/대인관계 <span>Friends</span>
-      </button>
-      <button class="cat-pill" data-category="라이프">
-        라이프스타일 <span>Life</span>
-      </button>
-    </nav>
-
-    <!-- POPULAR SECTION -->
-    <section class="section" id="popularSection">
-      <div class="section-head">
-        <div>
-          <div class="section-title">지금 인기 TOP</div>
-          <div class="section-sub">최근 일주일 기준으로 가장 많이 플레이 된 테스트</div>
-        </div>
-        <button class="section-link" onclick="scrollToSection('latestSection')">
-          최신 테스트 보러가기 →
-        </button>
-      </div>
-      <div id="popularList" class="card-grid"></div>
-      <p id="popularEmpty" class="empty-msg" style="display:none;">
-        아직 인기 데이터가 없어요. 관리자 페이지에서 테스트를 등록해 주세요.
-      </p>
-    </section>
-
-    <!-- LATEST SECTION -->
-    <section class="section" id="latestSection">
-      <div class="section-head">
-        <div>
-          <div class="section-title">따끈따끈 최신 테스트</div>
-          <div class="section-sub">오늘·어제 새로 올라온 테스트 모아보기</div>
-        </div>
-        <button class="section-link" onclick="scrollTo(0, 0)">
-          맨 위로 ↑
-        </button>
-      </div>
-      <div id="latestList" class="card-grid"></div>
-      <p id="latestEmpty" class="empty-msg" style="display:none;">
-        아직 등록된 테스트가 없어요. 먼저 하나 만들어 볼까요?
-      </p>
-    </section>
-
-    <footer>
-      문의: <a href="mailto:ainam0727@gmail.com">ainam0727@gmail.com</a> ·
-      본 서비스는 엔터테인먼트 용도로 제공됩니다.
-    </footer>
+  <!-- 슬라이더 -->
+  <div class="slider-container" id="slider">
+    <div class="slide active" style="background-image:url('https://i.imgur.com/k5xYzSu.jpeg')"></div>
+    <div class="slide" style="background-image:url('https://i.imgur.com/KUZaK6k.jpeg')"></div>
+    <div class="slide" style="background-image:url('https://i.imgur.com/2Tz3HqU.jpeg')"></div>
   </div>
 
+  <h2 class="section-title">🔥 지금 인기 테스트</h2>
+  <div class="test-grid" id="hotTests"></div>
+
+  <h2 class="section-title">⭐ 최신 등록 테스트</h2>
+  <div class="test-grid" id="latestTests"></div>
+
   <script>
-    const categoryRow = document.getElementById("categoryRow");
-    let currentCategory = "all";
-    let popularTests = [];
-    let latestTests = [];
-
-    // ---------- HERO SLIDER ----------
-    const slides = Array.from(document.querySelectorAll(".hero-slide"));
-    const dots = Array.from(document.querySelectorAll(".hero-dot"));
+    /* 자동 슬라이더 */
     let currentSlide = 0;
-    let sliderTimer = null;
+    const slides = document.querySelectorAll(".slide");
 
-    function showSlide(index) {
-      slides.forEach((s, i) => {
-        s.classList.toggle("active", i === index);
-      });
-      dots.forEach((d, i) => {
-        d.classList.toggle("active", i === index);
-      });
-      currentSlide = index;
-    }
+    setInterval(() => {
+      slides[currentSlide].classList.remove("active");
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add("active");
+    }, 3500);
 
-    function startSlider() {
-      if (sliderTimer) clearInterval(sliderTimer);
-      sliderTimer = setInterval(() => {
-        const next = (currentSlide + 1) % slides.length;
-        showSlide(next);
-      }, 4500);
-    }
-
-    dots.forEach((dot) => {
-      dot.addEventListener("click", () => {
-        const idx = Number(dot.dataset.index || 0);
-        showSlide(idx);
-        startSlider();
-      });
-    });
-
-    startSlider();
-
-    // ---------- CATEGORY FILTER ----------
-    categoryRow.addEventListener("click", (e) => {
-      const btn = e.target.closest(".cat-pill");
-      if (!btn) return;
-      const cat = btn.dataset.category;
-      if (!cat) return;
-      currentCategory = cat;
-      document
-        .querySelectorAll(".cat-pill")
-        .forEach((b) => b.classList.toggle("active", b === btn));
-      renderAll();
-    });
-
-    function scrollToSection(id) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const top = el.getBoundingClientRect().top + window.scrollY - 72;
-      window.scrollTo({ top, behavior: "smooth" });
-    }
-
-    // ---------- FETCH TEST DATA ----------
-    async function fetchTests() {
+    /* 테스트 목록 불러오기 */
+    async function loadTests() {
       try {
-        const [popularRes, latestRes] = await Promise.all([
-          fetch("/api/tests?sort=popular&limit=6"),
-          fetch("/api/tests?sort=latest&limit=6"),
-        ]);
+        const res = await fetch("/api/tests");
+        const tests = await res.json();
 
-        const popularJson = await popularRes.json();
-        const latestJson = await latestRes.json();
+        // 최신 순 정렬
+        const latest = [...tests].reverse().slice(0, 12);
 
-        popularTests = popularJson.tests || popularJson || [];
-        latestTests = latestJson.tests || latestJson || [];
+        // HOT 테스트
+        const hot = tests.filter(t => t.isHot).slice(0, 12);
 
-        updateStats(popularJson, latestJson);
-        renderAll();
-      } catch (err) {
-        console.error("테스트 목록 불러오기 오류:", err);
-        document.getElementById("popularEmpty").style.display = "block";
-        document.getElementById("latestEmpty").style.display = "block";
+        renderTests(latest, document.getElementById("latestTests"));
+        renderTests(hot, document.getElementById("hotTests"));
+
+      } catch (e) {
+        console.error("테스트 불러오기 실패:", e);
       }
     }
 
-    function updateStats(popularJson, latestJson) {
-      const tests =
-        (popularJson.tests || popularJson || []).concat(
-          latestJson.tests || latestJson || []
-        );
-
-      const unique = new Map();
-      tests.forEach((t) => {
-        if (!t || !t.id) return;
-        if (!unique.has(t.id)) unique.set(t.id, t);
-      });
-
-      const list = Array.from(unique.values());
-      document.getElementById("totalCount").textContent = list.length.toString();
-
-      const todayStr = new Date().toISOString().slice(0, 10);
-      const todayCount = list.filter((t) => {
-        const createdAt = t.createdAt || t.created_at;
-        if (!createdAt) return false;
-        return (createdAt + "").slice(0, 10) === todayStr;
-      }).length;
-
-      document.getElementById("todayCount").textContent =
-        todayCount.toString();
-    }
-
-    function renderAll() {
-      renderSection(
-        popularTests,
-        document.getElementById("popularList"),
-        document.getElementById("popularEmpty"),
-        "popular"
-      );
-      renderSection(
-        latestTests,
-        document.getElementById("latestList"),
-        document.getElementById("latestEmpty"),
-        "latest"
-      );
-    }
-
-    function filterByCategory(tests) {
-      if (currentCategory === "all") return tests;
-      return tests.filter((t) => {
-        const cat = (t.category || "").toString();
-        if (!cat) return false;
-        // 카테고리 텍스트 일부만 포함되어도 통과
-        return cat.includes(currentCategory);
-      });
-    }
-
-    function renderSection(list, container, emptyEl, type) {
-      container.innerHTML = "";
-      const filtered = filterByCategory(list);
-
-      if (!filtered || filtered.length === 0) {
-        emptyEl.style.display = "block";
-        return;
-      }
-      emptyEl.style.display = "none";
-
-      filtered.forEach((test) => {
-        const card = createCard(test, type);
-        container.appendChild(card);
-      });
-    }
-
-    function createCard(test, type) {
-      const {
-        id,
-        title,
-        shortDescription,
-        description,
-        category,
-        moodTag,
-        tag,
-        mainTag,
-        imageUrl,
-        thumbnailUrl,
-        isHot,
-        playCount,
-        viewCount,
-      } = test;
-
-      const thumb =
-        thumbnailUrl ||
-        imageUrl ||
-        "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?auto=compress&cs=tinysrgb&w=800";
-
-      const sub =
-        shortDescription ||
-        description ||
-        "가볍게 웃으면서 풀어보는 심마켓 심리테스트.";
-
-      const mainTagText = mainTag || moodTag || tag || category || "심리테스트";
-      const plays = playCount || 0;
-      const views = viewCount || 0;
-
-      const chipLabel =
-        type === "popular"
-          ? "HOT"
-          : "NEW";
-
-      const article = document.createElement("article");
-      article.className = "card";
-      article.innerHTML = `
-        <div class="card-thumb">
-          <img src="${thumb}" alt="${title || "심리테스트 썸네일"}" />
-          <div class="card-chip ${isHot ? "hot" : ""}">
-            ${chipLabel}
+    /* 카드 그리기 */
+    function renderTests(list, container) {
+      container.innerHTML = list.map(test => `
+        <div class="test-card" onclick="location.href='/index.html?testId=${test.id}'">
+          <img src="${test.image || 'https://i.imgur.com/mC4i6tF.png'}" loading="lazy">
+          <div class="card-info">
+            <div class="card-title">${test.title}</div>
+            <div class="card-meta">${test.category} · ${test.views}명 참여</div>
           </div>
         </div>
-        <div class="card-body">
-          <h3 class="card-title">${title || "제목 없는 심리테스트"}</h3>
-          <p class="card-desc">${sub}</p>
-          <div class="card-tags">
-            <span class="card-tag">#${mainTagText}</span>
-            ${
-              category
-                ? `<span class="card-tag">${category}</span>`
-                : ""
-            }
-          </div>
-          <div class="card-footer">
-            <span class="card-stat">👥 ${plays.toLocaleString()}명 참여</span>
-            <span class="card-stat">👀 ${views.toLocaleString()} 조회</span>
-          </div>
-        </div>
-      `;
-
-      article.addEventListener("click", () => {
-        goToTest(id);
-      });
-
-      return article;
+      `).join("");
     }
 
-    function goToTest(id) {
-      if (!id) return;
-      // 클릭수 증가 API가 존재하면 호출, 없으면 조용히 실패
-      fetch(`/api/tests/${encodeURIComponent(id)}/click`, {
-        method: "POST",
-      }).catch(() => {});
-      window.location.href = `index.html?testId=${encodeURIComponent(id)}`;
-    }
-
-    // 초기 로드
-    fetchTests();
+    loadTests();
   </script>
+
 </body>
 </html>
