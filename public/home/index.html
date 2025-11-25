@@ -2,342 +2,696 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>심마켓 │ AI 심리테스트 마켓</title>
-
+  <title>심마켓 – AI 심리테스트 마켓 홈</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-
     body {
-      background: #fafafa;
-      padding-bottom: 60px;
+      background: #f3f4f6;
+      color: #111827;
+      padding: 16px 10px 40px;
     }
-
+    .layout {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
     header {
-      padding: 20px 16px 8px;
-      background: #ffffff;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-      position: sticky;
-      top: 0;
-      z-index: 99;
-    }
-
-    header h1 {
-      font-size: 22px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #6366f1, #ec4899);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    /* 슬라이더 */
-    .slider-wrap {
-      padding: 18px 16px 4px;
-      background: #ffffff;
-    }
-
-    .slider-container {
-      position: relative;
-      width: 100%;
-      height: 190px;
-      overflow: hidden;
-      border-radius: 18px;
-      background: radial-gradient(circle at top left, #4f46e5, #ec4899);
-      color: #ffffff;
-    }
-
-    .slide {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transition: opacity 1s ease;
       display: flex;
-      align-items: flex-end;
-      justify-content: flex-start;
-      padding: 18px 20px;
-      background-size: cover;
-      background-position: center;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 20% 0%, #fb7185, #f97316 40%, #6366f1 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(248, 113, 113, 0.5);
+    }
+    .brand-text-main {
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .brand-text-sub {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .chip {
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: white;
+      color: #4b5563;
+      text-decoration: none;
+    }
+    .chip.primary {
+      background: #111827;
+      color: white;
+      border-color: transparent;
     }
 
-    .slide::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(15,23,42,0.75), rgba(15,23,42,0.25));
-      mix-blend-mode: multiply;
-    }
-
-    .slide-content {
+    /* Hero & slider */
+    .hero {
       position: relative;
-      z-index: 1;
-      max-width: 70%;
+      overflow: hidden;
+      border-radius: 20px;
+      padding: 20px 18px;
+      margin-bottom: 20px;
+      background: radial-gradient(circle at 0% 0%, #4f46e5, #0f172a 50%, #111827 100%);
+      color: #e5e7eb;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.5);
     }
-
-    .slide-title {
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .hero-title {
       font-size: 19px;
       font-weight: 800;
-      margin-bottom: 6px;
+      line-height: 1.4;
     }
-
-    .slide-sub {
-      font-size: 13px;
-      opacity: 0.9;
+    .hero-subtext {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #cbd5f5;
     }
-
-    .slide-badge {
+    .hero-meta {
       font-size: 11px;
-      display: inline-flex;
-      padding: 3px 8px;
+      color: #9ca3af;
+      margin-top: 8px;
+    }
+    .hero-cta {
+      font-size: 12px;
+      padding: 7px 12px;
       border-radius: 999px;
-      background: rgba(248, 250, 252, 0.16);
-      margin-bottom: 6px;
-    }
-
-    .slide.active {
-      opacity: 1;
-    }
-
-    /* 섹션 제목 */
-    .section-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin: 22px 0 14px;
-      padding-left: 18px;
-    }
-
-    /* 카드 그리드 */
-    .test-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 16px;
-      padding: 0 16px;
-    }
-
-    /* 카드 */
-    .test-card {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
-      overflow: hidden;
+      border: none;
+      background: linear-gradient(135deg, #f97316, #fb7185);
+      color: white;
       cursor: pointer;
-      transform: translateY(0);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 10px 24px rgba(249, 115, 22, 0.6);
+    }
+    .hero-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .hero-pill {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.6);
     }
 
-    .test-card img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      display: block;
-      opacity: 0;
-      transform: scale(1.05);
-      animation: fadeIn 0.6s forwards ease;
+    .hero-slider {
+      margin-top: 14px;
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 16px;
+      padding: 12px 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    .banner-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #e5e7eb;
+      margin-bottom: 4px;
+    }
+    .banner-sub {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .banner-indicators {
+      position: absolute;
+      right: 10px;
+      bottom: 8px;
+      display: flex;
+      gap: 4px;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.4);
+    }
+    .dot.active {
+      width: 10px;
+      background: #f97316;
     }
 
-    @media (hover: hover) {
-      .test-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
-      }
+    /* Category tabs */
+    .category-tabs {
+      margin: 20px 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .category-tab {
+      flex-shrink: 0;
+      font-size: 12px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      color: #4b5563;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .category-tab.active {
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      border-color: transparent;
+      color: white;
+      box-shadow: 0 8px 22px rgba(99, 102, 241, 0.45);
     }
 
-    @media (hover: none) {
-      .test-card:active {
-        transform: scale(0.97);
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
-      }
+    /* Section titles */
+    .section-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 12px 2px 6px;
     }
-
-    .card-info {
-      padding: 14px;
-    }
-
-    .card-title {
+    .section-title {
       font-size: 15px;
       font-weight: 700;
-      margin-bottom: 6px;
+    }
+    .section-tag {
+      font-size: 11px;
+      color: #ef4444;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .section-sub {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .link-small {
+      font-size: 11px;
+      color: #6b7280;
+      cursor: default;
     }
 
-    .card-meta {
-      font-size: 13px;
-      color: #666;
+    /* Cards grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
     }
-
-    /* 애니메이션 */
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-        transform: scale(1.05);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1);
+    @media (max-width: 900px) {
+      .cards-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
+    @media (max-width: 640px) {
+      body {
+        padding: 16px 10px 28px;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .cards-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+      }
+      .hero {
+        padding: 16px 14px;
+      }
+    }
 
-    /* 반응형 */
-    @media (max-width: 480px) {
-      .slider-container {
-        height: 170px;
-      }
-      .slide-content {
-        max-width: 85%;
-      }
-      .test-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      }
-      .test-card img {
-        height: 110px;
-      }
+    .test-card {
+      border-radius: 18px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      padding: 10px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      text-align: left;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+    .test-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.18);
+      border-color: #c4b5fd;
+    }
+    .test-thumb {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      height: 110px;
+      margin-bottom: 4px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #111827;
+      font-size: 30px;
+    }
+    .test-thumb-label {
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.78);
+      color: #f9fafb;
+    }
+    .test-thumb-chip {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(248, 250, 252, 0.9);
+      color: #111827;
+    }
+
+    .test-title {
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .test-desc {
+      font-size: 11px;
+      color: #6b7280;
+      min-height: 32px;
+    }
+    .test-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+    .test-meta-left {
+      font-size: 10px;
+      color: #9ca3af;
+    }
+    .test-meta-right {
+      font-size: 10px;
+      color: #4b5563;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .hot-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(248, 113, 113, 0.12);
+      color: #b91c1c;
+    }
+
+    .empty-state {
+      font-size: 12px;
+      color: #9ca3af;
+      padding: 16px 6px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>심마켓 🧠</h1>
-  </header>
+  <div class="layout">
+    <header>
+      <div class="brand">
+        <div class="brand-logo">심</div>
+        <div>
+          <div class="brand-text-main">심마켓</div>
+          <div class="brand-text-sub">오늘 기분에 맞는 심리테스트를 골라보세요</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="/admin" class="chip">관리자 페이지</a>
+        <a href="/admin" class="chip primary">AI 자동 생성기</a>
+      </div>
+    </header>
 
-  <!-- 슬라이더 -->
-  <div class="slider-wrap">
-    <div class="slider-container" id="slider">
-      <!-- JS에서 배너 슬라이드 주입 -->
-    </div>
+    <!-- Hero + 배너 슬라이더 -->
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="hero-title">
+            오늘 밤, 어떤 테스트로 놀아볼까요?<br />
+            연애 온도, TMI 성격, 금전 감각까지 한 번에!
+          </div>
+          <div class="hero-subtext">
+            버튼 한 번이면 테스트가 완성되는 AI 심리테스트 마켓, <b>심마켓</b>입니다.
+          </div>
+          <div class="hero-meta">
+            오늘 업데이트된 테스트 <span id="statNew">0</span> · 전체 등록 테스트 <span id="statTotal">0</span>
+          </div>
+          <button class="hero-cta" onclick="location.href='/admin'">
+            AI로 새 테스트 만들기
+          </button>
+        </div>
+      </div>
+
+      <div class="hero-pill-row">
+        <div class="hero-pill">#연애_썸타는중</div>
+        <div class="hero-pill">#TMI_성격파헤치기</div>
+        <div class="hero-pill">#금전감각_체크</div>
+        <div class="hero-pill">#직장_프로불편러_테스트</div>
+        <div class="hero-pill">#우정템_모임에서_돌려보기</div>
+      </div>
+
+      <div class="hero-slider" id="bannerSlider">
+        <div id="bannerContent">
+          <div class="banner-title">심마켓에 오신 걸 환영합니다 🎉</div>
+          <div class="banner-sub">관리자 페이지에서 배너를 등록하면 이 영역에 자동으로 노출됩니다.</div>
+        </div>
+        <div class="banner-indicators" id="bannerDots"></div>
+      </div>
+    </section>
+
+    <!-- 카테고리 탭 -->
+    <section>
+      <div class="category-tabs" id="categoryTabs">
+        <button class="category-tab active" data-key="all">전체</button>
+        <button class="category-tab" data-key="연애">연애/MBTI 감정</button>
+        <button class="category-tab" data-key="성격">성격/MBTI 유형</button>
+        <button class="category-tab" data-key="금전">금전/소비 성향</button>
+        <button class="category-tab" data-key="직장">직장/커리어</button>
+        <button class="category-tab" data-key="우정">우정/대인관계</button>
+        <button class="category-tab" data-key="라이프">라이프스타일</button>
+      </div>
+    </section>
+
+    <!-- 인기 TOP -->
+    <section>
+      <div class="section-title-row">
+        <div>
+          <div class="section-title">
+            지금 뜨는 인기 TOP
+            <span class="section-tag">HOT 🔥</span>
+          </div>
+          <div class="section-sub">최근 일주일 동안 참여 수가 많은 테스트</div>
+        </div>
+        <div class="link-small">실시간 순위는 조회수 기반으로 정렬됩니다</div>
+      </div>
+      <div id="popularList" class="cards-grid"></div>
+      <div id="popularEmpty" class="empty-state" style="display:none;">
+        아직 인기 데이터가 없습니다. 테스트를 더 등록하고, 직접 플레이해 보세요.
+      </div>
+    </section>
+
+    <!-- 따끈따끈 최신 -->
+    <section style="margin-top:18px;">
+      <div class="section-title-row">
+        <div>
+          <div class="section-title">
+            따끈따끈 최신 테스트 ✨
+          </div>
+          <div class="section-sub">방금 막 등록된 테스트부터 차례대로</div>
+        </div>
+        <div class="link-small">관리자 페이지에서 등록하면 즉시 이곳에 노출됩니다</div>
+      </div>
+      <div id="latestList" class="cards-grid"></div>
+      <div id="latestEmpty" class="empty-state" style="display:none;">
+        아직 등록된 테스트가 없습니다. AI 자동 생성기로 첫 테스트를 만들어 보세요.
+      </div>
+    </section>
   </div>
 
-  <h2 class="section-title">🔥 지금 인기 테스트</h2>
-  <div class="test-grid" id="hotTests"></div>
-
-  <h2 class="section-title">⭐ 최신 등록 테스트</h2>
-  <div class="test-grid" id="latestTests"></div>
-
   <script>
-    // ===== 배너 슬라이더 =====
-    let currentSlide = 0;
-    let slideTimer = null;
+    let allTests = [];
+    let selectedCategoryKey = 'all';
 
-    async function loadBannersForSlider() {
-      const slider = document.getElementById('slider');
+    // ---------- 공통 유틸 ----------
+    function formatDate(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return '';
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${mm}.${dd}`;
+    }
 
+    function matchCategory(test, key) {
+      if (key === 'all') return true;
+      const c = (test.category || '').toString();
+      return c.includes(key);
+    }
+
+    function getEmojiByCategory(test) {
+      const c = (test.category || '').toString();
+      if (c.includes('연애')) return '💕';
+      if (c.includes('성격') || c.includes('MBTI')) return '🧠';
+      if (c.includes('금전') || c.includes('소비')) return '💰';
+      if (c.includes('직장') || c.includes('커리어')) return '💼';
+      if (c.includes('우정') || c.includes('대인')) return '🤝';
+      if (c.includes('라이프')) return '🌈';
+      return '✨';
+    }
+
+    function cardThumbnailStyle(test) {
+      if (test.image) {
+        return `background-image:url('${test.image}')`;
+      }
+      const gradient = 'linear-gradient(135deg,#e0f2fe,#f5d0fe)';
+      return `background-image:${gradient}`;
+    }
+
+    function goPlay(test) {
+      if (!test || !test.id) return;
+      location.href = `/index.html?testId=${encodeURIComponent(test.id)}`;
+    }
+
+    // ---------- 카테고리 탭 ----------
+    const categoryTabs = document.getElementById('categoryTabs');
+    categoryTabs.querySelectorAll('.category-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        categoryTabs.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        selectedCategoryKey = tab.dataset.key;
+        renderSections();
+      });
+    });
+
+    // ---------- 메인 데이터 로드 ----------
+    async function loadData() {
       try {
-        const res = await fetch('/api/banners');
-        let banners = await res.json();
+        const [testsRes, bannersRes] = await Promise.all([
+          fetch('/api/tests'),
+          fetch('/api/banners')
+        ]);
 
-        // 활성 배너만, 최신순
-        banners = (banners || []).filter(b => b.isActive);
-
-        if (!banners.length) {
-          // 기본 배너 2~3개 (Fallback)
-          slider.innerHTML = `
-            <div class="slide active" style="background-image:url('https://i.imgur.com/k5xYzSu.jpeg')">
-              <div class="slide-content">
-                <div class="slide-badge">오늘의 추천</div>
-                <div class="slide-title">오늘 밤, 어떤 테스트로 놀아볼까요?</div>
-                <div class="slide-sub">연애·성격·금전·TMI까지 한 번에! 심마켓에서 골라보세요.</div>
-              </div>
-            </div>
-            <div class="slide" style="background-image:url('https://i.imgur.com/KUZaK6k.jpeg')">
-              <div class="slide-content">
-                <div class="slide-badge">NEW</div>
-                <div class="slide-title">금전 감각 테스트: 플렉스 vs 짠테크</div>
-                <div class="slide-sub">내 통장은 과연 안녕한지, 재미로 체크해 보세요.</div>
-              </div>
-            </div>
-          `;
-          startSlideTimer();
-          return;
+        if (testsRes.ok) {
+          allTests = await testsRes.json();
+        } else {
+          allTests = [];
         }
 
-        slider.innerHTML = banners
-          .map(
-            (b, idx) => `
-          <div class="slide ${idx === 0 ? 'active' : ''}" 
-               data-link="${b.link || ''}" 
-               style="background-image:url('${b.image || 'https://i.imgur.com/k5xYzSu.jpeg'}')">
-            <div class="slide-content">
-              <div class="slide-badge">심마켓 추천</div>
-              <div class="slide-title">${b.title}</div>
-              <div class="slide-sub">${b.subtitle || ''}</div>
+        const today = new Date();
+        const todayStr = today.toISOString().slice(0, 10);
+
+        // 통계
+        document.getElementById('statTotal').textContent = allTests.length;
+        const todays = allTests.filter(t => (t.createdAt || '').slice(0, 10) === todayStr);
+        document.getElementById('statNew').textContent = todays.length;
+
+        renderSections();
+
+        // 배너
+        if (bannersRes.ok) {
+          const banners = await bannersRes.json();
+          initBannerSlider(banners.filter(b => b.isActive));
+        } else {
+          initBannerSlider([]);
+        }
+      } catch (e) {
+        console.error('loadData error', e);
+        allTests = [];
+        renderSections();
+        initBannerSlider([]);
+      }
+    }
+
+    function renderSections() {
+      renderPopular();
+      renderLatest();
+    }
+
+    // ---------- 인기 TOP ----------
+    function renderPopular() {
+      const wrap = document.getElementById('popularList');
+      const empty = document.getElementById('popularEmpty');
+      wrap.innerHTML = '';
+
+      const filtered = allTests.filter(t => matchCategory(t, selectedCategoryKey));
+      if (!filtered.length) {
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      // views desc, createdAt desc
+      const sorted = [...filtered].sort((a, b) => {
+        const vA = a.views || 0;
+        const vB = b.views || 0;
+        if (vB !== vA) return vB - vA;
+        const dA = new Date(a.createdAt || 0).getTime();
+        const dB = new Date(b.createdAt || 0).getTime();
+        return dB - dA;
+      });
+
+      const top = sorted.slice(0, 6);
+      for (const t of top) {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'test-card';
+        card.innerHTML = `
+          <div class="test-thumb" style="${cardThumbnailStyle(t)}">
+            <span class="test-thumb-label">${t.category || '심리테스트'}</span>
+            <span class="test-thumb-chip">참여 ${t.views || 0}회</span>
+            <span>${getEmojiByCategory(t)}</span>
+          </div>
+          <div class="test-title">${t.title || '제목 없는 테스트'}</div>
+          <div class="test-desc">${t.description || '클릭해서 바로 테스트를 시작해 보세요.'}</div>
+          <div class="test-meta-row">
+            <div class="test-meta-left">${formatDate(t.createdAt)} · ${t.tag || '엔터테인먼트'}</div>
+            <div class="test-meta-right">
+              ${t.isHot ? '<span class="hot-badge">HOT</span>' : ''}
+              <span>조회 ${t.views || 0}</span>
             </div>
-          </div>`
-          )
-          .join('');
-
-        // 배너 클릭 시 링크 이동
-        slider.querySelectorAll('.slide').forEach(slide => {
-          slide.addEventListener('click', () => {
-            const link = slide.dataset.link;
-            if (!link) return;
-            if (link.startsWith('http')) {
-              window.location.href = link;
-            } else {
-              window.location.href = link;
-            }
-          });
-        });
-
-        startSlideTimer();
-      } catch (e) {
-        console.error('배너 로드 실패:', e);
+          </div>
+        `;
+        card.addEventListener('click', () => goPlay(t));
+        wrap.appendChild(card);
       }
     }
 
-    function startSlideTimer() {
-      const slides = document.querySelectorAll('.slide');
-      if (!slides.length) return;
+    // ---------- 최신 테스트 ----------
+    function renderLatest() {
+      const wrap = document.getElementById('latestList');
+      const empty = document.getElementById('latestEmpty');
+      wrap.innerHTML = '';
 
-      if (slideTimer) clearInterval(slideTimer);
+      const filtered = allTests.filter(t => matchCategory(t, selectedCategoryKey));
+      if (!filtered.length) {
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
 
-      slideTimer = setInterval(() => {
-        slides[currentSlide].classList.remove('active');
-        currentSlide = (currentSlide + 1) % slides.length;
-        slides[currentSlide].classList.add('active');
-      }, 3500);
-    }
+      const sorted = [...filtered].sort((a, b) => {
+        const dA = new Date(a.createdAt || 0).getTime();
+        const dB = new Date(b.createdAt || 0).getTime();
+        return dB - dA;
+      });
 
-    // ===== 테스트 목록 =====
-    async function loadTests() {
-      try {
-        const res = await fetch('/api/tests');
-        const tests = await res.json();
-
-        const latest = [...tests].reverse().slice(0, 12);
-        const hot = tests.filter(t => t.isHot).slice(0, 12);
-
-        renderTests(latest, document.getElementById('latestTests'));
-        renderTests(hot, document.getElementById('hotTests'));
-      } catch (e) {
-        console.error('테스트 로드 실패:', e);
+      const top = sorted.slice(0, 6);
+      for (const t of top) {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'test-card';
+        card.innerHTML = `
+          <div class="test-thumb" style="${cardThumbnailStyle(t)}">
+            <span class="test-thumb-label">${t.category || '심리테스트'}</span>
+            ${t.isHot ? '<span class="test-thumb-chip">HOT</span>' : ''}
+            <span>${getEmojiByCategory(t)}</span>
+          </div>
+          <div class="test-title">${t.title || '제목 없는 테스트'}</div>
+          <div class="test-desc">${t.description || '친구들과 함께 돌려보면 더 재밌는 테스트!'}</div>
+          <div class="test-meta-row">
+            <div class="test-meta-left">${formatDate(t.createdAt)} · ${t.tag || '엔터테인먼트'}</div>
+            <div class="test-meta-right">
+              <span>조회 ${t.views || 0}</span>
+            </div>
+          </div>
+        `;
+        card.addEventListener('click', () => goPlay(t));
+        wrap.appendChild(card);
       }
     }
 
-    function renderTests(list, container) {
-      if (!list || !list.length) {
-        container.innerHTML = '<p style="font-size:13px;color:#9ca3af;">아직 표시할 테스트가 없습니다.</p>';
+    // ---------- 배너 슬라이더 ----------
+    let bannerIndex = 0;
+    let bannerTimer = null;
+
+    function initBannerSlider(banners) {
+      const content = document.getElementById('bannerContent');
+      const dotsWrap = document.getElementById('bannerDots');
+      if (!banners.length) {
+        dotsWrap.innerHTML = '';
         return;
       }
 
-      container.innerHTML = list
-        .map(
-          test => `
-        <div class="test-card" onclick="location.href='/index.html?testId=${test.id}'">
-          <img src="${test.image || 'https://i.imgur.com/mC4i6tF.png'}" loading="lazy">
-          <div class="card-info">
-            <div class="card-title">${test.title}</div>
-            <div class="card-meta">${test.category} · ${test.views || 0}명 참여</div>
-          </div>
-        </div>
-      `
-        )
-        .join('');
+      function renderBanner() {
+        const b = banners[bannerIndex];
+        content.innerHTML = `
+          <div class="banner-title">${b.title}</div>
+          <div class="banner-sub">${b.subtitle || ''}</div>
+        `;
+        if (b.link) {
+          content.style.cursor = 'pointer';
+          content.onclick = () => {
+            if (b.link.startsWith('http')) {
+              window.open(b.link, '_blank');
+            } else {
+              location.href = b.link;
+            }
+          };
+        } else {
+          content.style.cursor = 'default';
+          content.onclick = null;
+        }
+
+        dotsWrap.innerHTML = '';
+        banners.forEach((_, idx) => {
+          const dot = document.createElement('div');
+          dot.className = 'dot' + (idx === bannerIndex ? ' active' : '');
+          dotsWrap.appendChild(dot);
+        });
+      }
+
+      renderBanner();
+
+      if (bannerTimer) clearInterval(bannerTimer);
+      bannerTimer = setInterval(() => {
+        bannerIndex = (bannerIndex + 1) % banners.length;
+        renderBanner();
+      }, 6000);
     }
 
-    loadBannersForSlider();
-    loadTests();
+    // 초기 로드
+    loadData();
   </script>
 </body>
 </html>
