@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>심마켓 테스트 풀기</title>
+  <title>심마켓 관리자 – 통계 대시보드</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * {
@@ -12,12 +12,12 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     body {
-      background: #f3f4f6;
-      color: #111827;
+      background: #0f172a;
+      color: #e5e7eb;
       padding: 20px 12px 40px;
     }
-    .container {
-      max-width: 900px;
+    .layout {
+      max-width: 1120px;
       margin: 0 auto;
     }
     header {
@@ -26,585 +26,411 @@
       align-items: center;
       margin-bottom: 18px;
     }
-    header h1 {
-      font-size: 22px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #6366f1, #ec4899);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-    header a {
-      font-size: 13px;
-      color: #6b7280;
-      text-decoration: none;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      background: white;
-    }
-    .hero {
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 18px 16px 16px;
-      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
-      margin-bottom: 18px;
-    }
-    .badge {
-      display: inline-flex;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      background: rgba(99, 102, 241, 0.1);
-      color: #4f46e5;
-      margin-right: 4px;
-    }
-    .hero-title {
-      font-size: 20px;
-      font-weight: 800;
-      margin: 8px 0 4px;
-    }
-    .hero-desc {
-      font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 8px;
-    }
-    .hero-meta {
-      font-size: 12px;
-      color: #9ca3af;
-    }
-    .primary-btn {
-      margin-top: 12px;
-      padding: 10px 18px;
-      border-radius: 999px;
-      border: none;
-      font-size: 14px;
-      cursor: pointer;
-      background: linear-gradient(135deg, #6366f1, #ec4899);
-      color: #ffffff;
-      box-shadow: 0 10px 24px rgba(99, 102, 241, 0.35);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .primary-btn:disabled {
-      opacity: 0.4;
-      cursor: default;
-      box-shadow: none;
-    }
-    .card {
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 18px 16px 20px;
-      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.12);
-      margin-bottom: 16px;
-    }
-    .question-header {
-      font-size: 13px;
-      color: #9ca3af;
-      margin-bottom: 4px;
-    }
-    .question-text {
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-    .options {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .option {
-      border-radius: 999px;
-      padding: 10px 14px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      font-size: 14px;
-      cursor: pointer;
+    .brand {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      transition: all 0.15s ease;
+      gap: 10px;
     }
-    .option-label {
-      font-weight: 700;
-      margin-right: 6px;
-    }
-    .option:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 14px rgba(148, 163, 184, 0.35);
-    }
-    .option.selected {
-      background: linear-gradient(135deg, #6366f1, #ec4899);
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 20% 0%, #fb7185, #f97316 40%, #6366f1 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: white;
-      border-color: transparent;
-      box-shadow: 0 10px 22px rgba(99, 102, 241, 0.48);
+      font-size: 18px;
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(248, 113, 113, 0.6);
     }
-    .progress-bar-wrap {
-      width: 100%;
-      height: 6px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      margin-top: 16px;
-      overflow: hidden;
-    }
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #6366f1, #ec4899);
-      transition: width 0.3s ease;
-    }
-    .summary {
-      font-size: 13px;
-      color: #6b7280;
-      margin-top: 8px;
-    }
-    .result-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-    }
-    .share-buttons {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-    .share-btn {
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      font-size: 12px;
-      background: #f9fafb;
-      color: #374151;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .share-btn.primary-share {
-      background: #111827;
-      color: #f9fafb;
-      border-color: transparent;
-    }
-    .result-title {
+    .brand-main {
       font-size: 18px;
       font-weight: 800;
-      margin-bottom: 6px;
     }
-    .result-type-badge {
-      display: inline-flex;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      background: rgba(248, 250, 252, 0.16);
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      margin-bottom: 4px;
-    }
-    .result-text {
-      font-size: 14px;
-      color: #374151;
-      white-space: pre-wrap;
-      line-height: 1.6;
-    }
-    .raw-box {
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 12px;
-      background: #f9fafb;
-      border: 1px dashed #e5e7eb;
-      font-size: 12px;
-      max-height: 220px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      color: #6b7280;
-    }
-    .small-link {
-      font-size: 12px;
+    .brand-sub {
+      font-size: 11px;
       color: #9ca3af;
-      margin-top: 6px;
     }
-    .actions-row {
+    .header-actions {
       display: flex;
-      flex-wrap: wrap;
       gap: 8px;
-      margin-top: 10px;
+      flex-wrap: wrap;
     }
-    .secondary-btn {
-      padding: 8px 14px;
+    .btn {
+      font-size: 12px;
+      padding: 7px 12px;
       border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      background: #ffffff;
-      font-size: 13px;
+      border: 1px solid #475569;
+      background: #020617;
+      color: #e5e7eb;
+      text-decoration: none;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 4px;
     }
+    .btn.primary {
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      border-color: transparent;
+    }
 
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
+    .grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
       }
-      .hero-title {
-        font-size: 18px;
-      }
-      .question-text {
-        font-size: 16px;
-      }
-      .result-header-row {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+    }
+
+    .card {
+      border-radius: 20px;
+      padding: 18px 16px 18px;
+      background: radial-gradient(circle at top left, #1f2937, #020617);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+      border: 1px solid #1f2937;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .card-sub {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid #4b5563;
+      color: #e5e7eb;
+    }
+
+    .stat-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .stat-box {
+      flex: 1;
+      min-width: 120px;
+      border-radius: 14px;
+      padding: 8px 10px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid #374151;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .stat-value {
+      font-size: 16px;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    .table-wrap {
+      margin-top: 10px;
+      max-height: 360px;
+      overflow: auto;
+      border-radius: 14px;
+      border: 1px solid #1f2937;
+      background: rgba(15, 23, 42, 0.85);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th, td {
+      padding: 6px 8px;
+      text-align: left;
+      border-bottom: 1px solid #111827;
+      white-space: nowrap;
+    }
+    th {
+      background: #020617;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tr:nth-child(even) td {
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    .badge-hot {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(248, 113, 113, 0.18);
+      color: #fecaca;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 260px !important;
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="layout">
     <header>
-      <h1>심마켓 테스트 풀기</h1>
-      <a href="/home">← 심마켓 홈으로</a>
+      <div class="brand">
+        <div class="brand-logo">심</div>
+        <div>
+          <div class="brand-main">심마켓 관리자 통계</div>
+          <div class="brand-sub">테스트별 조회수·참여수 한눈에 보기</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="/admin" class="btn">← 관리자 홈</a>
+        <a href="/home" class="btn">서비스 홈 보기</a>
+        <button id="btnRefresh" class="btn primary">데이터 새로고침</button>
+      </div>
     </header>
 
-    <div id="hero" class="hero">
-      <span class="badge">불러오는 중...</span>
-      <div class="hero-title">테스트 정보를 불러오는 중입니다.</div>
-      <div class="hero-desc">잠시만 기다려 주세요.</div>
-      <div class="hero-meta"></div>
-      <button id="startBtn" class="primary-btn" disabled>테스트 시작하기</button>
-    </div>
-
-    <div id="playArea" style="display:none;">
-      <div class="card" id="questionCard">
-        <div class="question-header" id="qHeader">Q 1 / N</div>
-        <div class="question-text" id="qText">질문 내용</div>
-        <div class="options" id="options"></div>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar" id="progressBar"></div>
-        </div>
-        <div class="summary" id="summaryText"></div>
-      </div>
-    </div>
-
-    <div id="resultArea" style="display:none;">
-      <div class="card">
-        <div class="result-header-row">
+    <div class="grid">
+      <!-- 좌측: 그래프 -->
+      <section class="card">
+        <div class="card-header">
           <div>
-            <div class="result-type-badge" id="resultTypeBadge">A 타입</div>
-            <div class="result-title" id="resultTitle">AI 엔터테인먼트 해석</div>
+            <div class="card-title">테스트별 조회/참여 추이</div>
+            <div class="card-sub">상위 10개 테스트 기준 · 파란선=조회수, 보라선=참여수</div>
           </div>
-          <div class="share-buttons">
-            <button class="share-btn primary-share" id="btnShare">
-              🔗 결과 공유하기
-            </button>
-            <button class="share-btn" id="btnCopyLink">
-              📋 링크 복사
-            </button>
-          </div>
+          <span class="chip" id="chipSummary">테스트 0개</span>
         </div>
-        <div class="result-text" id="resultText"></div>
-        <div class="actions-row">
-          <button class="secondary-btn" id="btnRetry">다시 풀기</button>
-          <button class="secondary-btn" id="btnGoHome">다른 테스트 하러가기</button>
-        </div>
-      </div>
-      <div class="card">
-        <div style="font-size:13px;font-weight:600;margin-bottom:4px;">테스트 원문</div>
-        <div id="rawText" class="raw-box"></div>
-        <div class="small-link">
-          이 결과는 가볍게 즐기는 엔터테인먼트 용도입니다. 마음 가는 대로 재미있게 참고만 해주세요 :)
-        </div>
-      </div>
-    </div>
+        <canvas id="statsChart"></canvas>
+      </section>
 
-    <div id="errorBox" class="card" style="display:none;background:#fef2f2;border:1px solid #fecaca;">
-      <div style="font-size:15px;font-weight:700;color:#b91c1c;margin-bottom:6px;">테스트를 불러올 수 없습니다.</div>
-      <div style="font-size:13px;color:#7f1d1d;">
-        주소가 잘못되었거나, 테스트가 삭제되었을 수 있습니다. 심마켓 홈에서 다시 선택해 주세요.
-      </div>
+      <!-- 우측: 총괄 요약 + 표 -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">요약 지표</div>
+            <div class="card-sub">전체 누적 기준</div>
+          </div>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="stat-label">전체 테스트 수</div>
+            <div class="stat-value" id="statTotalTests">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">총 조회수(views)</div>
+            <div class="stat-value" id="statTotalViews">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">총 참여수(plays)</div>
+            <div class="stat-value" id="statTotalPlays">0</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>제목</th>
+                <th>카테고리</th>
+                <th>조회수</th>
+                <th>참여수</th>
+                <th>참여율</th>
+                <th>등록일</th>
+                <th>HOT</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <tr>
+                <td colspan="7" style="text-align:center;color:#9ca3af;">불러오는 중...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
   </div>
 
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <script>
-    const params = new URLSearchParams(location.search);
-    const testId = params.get('testId');
+    const btnRefresh = document.getElementById('btnRefresh');
+    const chipSummary = document.getElementById('chipSummary');
+    const statTotalTests = document.getElementById('statTotalTests');
+    const statTotalViews = document.getElementById('statTotalViews');
+    const statTotalPlays = document.getElementById('statTotalPlays');
+    const tableBody = document.getElementById('tableBody');
+    const ctx = document.getElementById('statsChart').getContext('2d');
 
-    let testData = null;
-    let questions = [];
-    let currentIdx = 0;
-    let answers = [];
-    let counts = { A: 0, B: 0, C: 0, D: 0 };
-    let lastResultType = null;
+    let chart;
 
-    const heroEl = document.getElementById('hero');
-    const startBtn = document.getElementById('startBtn');
-    const playArea = document.getElementById('playArea');
-    const resultArea = document.getElementById('resultArea');
-    const errorBox = document.getElementById('errorBox');
-
-    // UI 요소
-    const qHeader = document.getElementById('qHeader');
-    const qText = document.getElementById('qText');
-    const optionsEl = document.getElementById('options');
-    const progressBar = document.getElementById('progressBar');
-    const summaryText = document.getElementById('summaryText');
-
-    const resultTypeBadge = document.getElementById('resultTypeBadge');
-    const resultTitle = document.getElementById('resultTitle');
-    const resultText = document.getElementById('resultText');
-    const rawTextEl = document.getElementById('rawText');
-
-    const btnShare = document.getElementById('btnShare');
-    const btnCopyLink = document.getElementById('btnCopyLink');
-    const btnRetry = document.getElementById('btnRetry');
-    const btnGoHome = document.getElementById('btnGoHome');
-
-    if (!testId) {
-      heroEl.querySelector('.badge').textContent = '잘못된 접근';
-      heroEl.querySelector('.hero-title').textContent = '테스트 ID가 없습니다.';
-      heroEl.querySelector('.hero-desc').textContent = '홈 화면에서 테스트를 선택한 뒤 다시 들어와 주세요.';
-      startBtn.disabled = true;
-    } else {
-      loadTest(testId);
+    function formatNumber(num) {
+      if (!num) return '0';
+      return num.toLocaleString('ko-KR');
     }
 
-    async function loadTest(id) {
+    function formatDate(iso) {
+      if (!iso) return '-';
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return '-';
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+
+    async function loadStats() {
       try {
-        // 조회수 증가 (실패해도 그냥 넘어감)
-        fetch(`/api/tests/${id}/view`, { method: 'POST' }).catch(() => {});
+        btnRefresh.textContent = '불러오는 중...';
+        btnRefresh.disabled = true;
 
-        const res = await fetch(`/api/tests/${id}`);
-        if (!res.ok) throw new Error('not found');
-        testData = await res.json();
+        const res = await fetch('/api/tests');
+        if (!res.ok) throw new Error('API error');
+        const tests = await res.json();
 
-        heroEl.querySelector('.badge').textContent = testData.category || '심리테스트';
-        heroEl.querySelector('.hero-title').textContent = testData.title || '제목 없는 테스트';
-        heroEl.querySelector('.hero-desc').textContent =
-          testData.description || '질문을 따라가며 가볍게 즐기는 심리테스트입니다.';
-        heroEl.querySelector('.hero-meta').textContent =
-          `${testData.tag || '엔터테인먼트'} · 참여 ${testData.views || 0}회`;
+        // 기본값 보정
+        tests.forEach(t => {
+          t.views = typeof t.views === 'number' ? t.views : 0;
+          t.plays = typeof t.plays === 'number' ? t.plays : 0;
+        });
 
-        rawTextEl.textContent = testData.text || '';
+        // 요약 지표
+        const totalTests = tests.length;
+        const totalViews = tests.reduce((sum, t) => sum + (t.views || 0), 0);
+        const totalPlays = tests.reduce((sum, t) => sum + (t.plays || 0), 0);
 
-        // 질문 파싱
-        questions = parseQuestions(testData.text || '');
-        if (!questions.length) {
-          heroEl.querySelector('.hero-desc').textContent =
-            '질문 형식을 인식하지 못해 인터랙티브 모드 대신 원문만 제공합니다.';
-          startBtn.disabled = true;
-          playArea.style.display = 'none';
-          resultArea.style.display = 'block';
-          resultTypeBadge.textContent = '안내';
-          resultTitle.textContent = '이 테스트는 직접 읽으면서 즐겨 주세요.';
-          resultText.textContent =
-            '등록된 텍스트에서 Q1, A) / B) 형식을 찾지 못했습니다. 질문과 결과를 직접 읽으면서 가볍게 참고해 주세요.';
-          return;
+        statTotalTests.textContent = formatNumber(totalTests);
+        statTotalViews.textContent = formatNumber(totalViews);
+        statTotalPlays.textContent = formatNumber(totalPlays);
+        chipSummary.textContent = `테스트 ${totalTests}개 · 총 조회 ${formatNumber(totalViews)} · 참여 ${formatNumber(totalPlays)}`;
+
+        // 표 렌더링 (조회수 기준 내림차순)
+        tests.sort((a, b) => (b.views || 0) - (a.views || 0));
+
+        if (!tests.length) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="7" style="text-align:center;color:#9ca3af;">등록된 테스트가 없습니다.</td>
+            </tr>
+          `;
+        } else {
+          tableBody.innerHTML = tests.map(t => {
+            const views = t.views || 0;
+            const plays = t.plays || 0;
+            const rate = views > 0 ? ((plays / views) * 100).toFixed(1) + '%' : '-';
+            const safeTitle = (t.title || '제목 없음').slice(0, 16);
+            const category = t.category || '-';
+
+            return `
+              <tr>
+                <td title="${t.title || ''}">${safeTitle}</td>
+                <td>${category}</td>
+                <td>${formatNumber(views)}</td>
+                <td>${formatNumber(plays)}</td>
+                <td>${rate}</td>
+                <td>${formatDate(t.createdAt)}</td>
+                <td>${t.isHot ? '<span class="badge-hot">HOT</span>' : ''}</td>
+              </tr>
+            `;
+          }).join('');
         }
 
-        startBtn.disabled = false;
-        startBtn.addEventListener('click', startTest, { once: true });
-      } catch (e) {
-        console.error(e);
-        heroEl.style.display = 'none';
-        playArea.style.display = 'none';
-        resultArea.style.display = 'none';
-        errorBox.style.display = 'block';
-      }
-    }
+        // 상위 10개로 차트 데이터 생성
+        const top = tests.slice(0, 10);
+        const labels = top.map((t, idx) => `${idx + 1}. ${(t.title || '제목 없음').slice(0, 10)}`);
+        const dataViews = top.map(t => t.views || 0);
+        const dataPlays = top.map(t => t.plays || 0);
 
-    function parseQuestions(text) {
-      const lines = text.split(/\r?\n/);
-      const qs = [];
-      let current = null;
-
-      const qRegex1 = /^Q\s*(\d+)[\.\)]\s*(.+)$/i;   // Q1. 질문
-      const qRegex2 = /^(\d+)[\.\)]\s*(.+)$/;       // 1. 질문
-      const optRegex = /^([ABCD])[)\.]\s*(.+)$/i;   // A) 보기
-
-      for (let raw of lines) {
-        const line = raw.trim();
-        if (!line) continue;
-
-        let m = line.match(qRegex1) || line.match(qRegex2);
-        if (m) {
-          if (current) qs.push(current);
-          current = {
-            no: parseInt(m[1], 10),
-            text: m[2].trim(),
-            options: []
-          };
-          continue;
-        }
-
-        const o = line.match(optRegex);
-        if (o && current) {
-          current.options.push({
-            key: o[1].toUpperCase(),
-            text: o[2].trim()
+        // 차트 생성/업데이트
+        if (chart) {
+          chart.data.labels = labels;
+          chart.data.datasets[0].data = dataViews;
+          chart.data.datasets[1].data = dataPlays;
+          chart.update();
+        } else {
+          chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels,
+              datasets: [
+                {
+                  label: '조회수(views)',
+                  data: dataViews,
+                  backgroundColor: 'rgba(59,130,246,0.7)'
+                },
+                {
+                  label: '참여수(plays)',
+                  data: dataPlays,
+                  backgroundColor: 'rgba(147,51,234,0.7)'
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  labels: {
+                    color: '#e5e7eb',
+                    font: { size: 11 }
+                  }
+                }
+              },
+              scales: {
+                x: {
+                  ticks: {
+                    color: '#9ca3af',
+                    font: { size: 10 }
+                  },
+                  grid: {
+                    color: 'rgba(31,41,55,0.7)'
+                  }
+                },
+                y: {
+                  ticks: {
+                    color: '#9ca3af',
+                    font: { size: 10 },
+                    callback: value => formatNumber(value)
+                  },
+                  grid: {
+                    color: 'rgba(31,41,55,0.7)'
+                  }
+                }
+              }
+            }
           });
         }
-      }
-      if (current) qs.push(current);
 
-      // 2개 미만이면 실패로 간주
-      return qs.length >= 2 ? qs : [];
-    }
-
-    function startTest() {
-      heroEl.style.display = 'none';
-      resultArea.style.display = 'none';
-      playArea.style.display = 'block';
-
-      currentIdx = 0;
-      answers = [];
-      counts = { A: 0, B: 0, C: 0, D: 0 };
-      lastResultType = null;
-
-      renderQuestion();
-    }
-
-    function renderQuestion() {
-      const q = questions[currentIdx];
-      if (!q) return finishTest();
-
-      qHeader.textContent = `Q ${currentIdx + 1} / ${questions.length}`;
-      qText.textContent = q.text;
-
-      optionsEl.innerHTML = q.options
-        .map(
-          opt => `
-        <button class="option" data-key="${opt.key}">
-          <span><span class="option-label">${opt.key}</span>${opt.text}</span>
-        </button>`
-        )
-        .join('');
-
-      optionsEl.querySelectorAll('.option').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const key = btn.dataset.key;
-          optionsEl.querySelectorAll('.option').forEach(b => b.classList.remove('selected'));
-          btn.classList.add('selected');
-          setTimeout(() => handleAnswer(key), 160);
-        });
-      });
-
-      progressBar.style.width = `${((currentIdx) / questions.length) * 100}%`;
-      summaryText.textContent = '';
-    }
-
-    function handleAnswer(key) {
-      answers[currentIdx] = key;
-      if (counts[key] == null) counts[key] = 0;
-      counts[key] += 1;
-
-      currentIdx += 1;
-      if (currentIdx >= questions.length) {
-        finishTest();
-      } else {
-        renderQuestion();
-      }
-    }
-
-    function finishTest() {
-      playArea.style.display = 'none';
-      resultArea.style.display = 'block';
-
-      // 가장 많이 고른 타입 찾기
-      const entries = Object.entries(counts);
-      entries.sort((a, b) => b[1] - a[1]);
-      const [bestType, bestCount] = entries[0];
-      lastResultType = bestType;
-
-      resultTypeBadge.textContent = `${bestType} 타입 결과`;
-      resultTitle.textContent = `${testData.title || '심리테스트'} · 당신의 메인 타입은 ${bestType} 타입!`;
-
-      // 원문에서 [결과 - X 타입] 블록 찾아보기
-      const resultBlock = extractResultBlock(testData.text || '', bestType);
-      if (resultBlock) {
-        resultText.textContent = resultBlock.trim();
-      } else {
-        resultText.textContent =
-          `가장 많이 선택한 타입은 ${bestType} 입니다. 등록된 테스트에서 결과 블록을 찾지 못해, 상세 해석은 작성된 텍스트를 참고해 주세요.`;
-      }
-
-      progressBar.style.width = '100%';
-      summaryText.textContent =
-        `총 ${questions.length}문항 중 ${bestType}를 가장 많이 선택했습니다. (A:${counts.A || 0}, B:${counts.B || 0}, C:${counts.C || 0}, D:${counts.D || 0})`;
-    }
-
-    function extractResultBlock(text, type) {
-      const lines = text.split(/\r?\n/);
-      const startRegex = new RegExp(`^\\[\\s*결과\\s*-\\s*${type}\\s*타입\\s*\\]`);
-      const altStart = new RegExp(`^${type}\\s*타입`);
-      let collecting = false;
-      let buff = [];
-
-      for (let raw of lines) {
-        const line = raw.trim();
-        if (!collecting) {
-          if (startRegex.test(line) || altStart.test(line)) {
-            collecting = true;
-            continue;
-          }
-        } else {
-          // 다음 결과 블록 시작하면 멈춤
-          if (/^\[\s*결과\s*-\s*[ABCD]\s*타입\s*\]/.test(line)) break;
-          if (/^[ABCD]\s*타입/.test(line)) break;
-          buff.push(raw);
-        }
-      }
-
-      return buff.length ? buff.join('\n') : '';
-    }
-
-    // ===== 공유/복사/다시하기 버튼 =====
-    btnCopyLink.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(location.href);
-        alert('현재 테스트 링크가 클립보드에 복사되었습니다.');
       } catch (e) {
         console.error(e);
-        alert('링크 복사 중 오류가 발생했습니다. 다른 브라우저에서 다시 시도해 주세요.');
+        chipSummary.textContent = '데이터를 불러오지 못했습니다.';
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align:center;color:#fca5a5;">API 호출 중 오류가 발생했습니다.</td>
+          </tr>
+        `;
+      } finally {
+        btnRefresh.textContent = '데이터 새로고침';
+        btnRefresh.disabled = false;
       }
-    });
+    }
 
-    btnShare.addEventListener('click', async () => {
-      const type = lastResultType || '?';
-      const title = testData?.title || '심마켓 심리테스트';
-      const text = `${title}에서 나는 ${type} 타입이 나왔어요. 심마켓에서 당신의 타입도 확인해 보세요!`;
-      const url = location.href;
+    btnRefresh.addEventListener('click', loadStats);
 
-      if (navigator.share) {
-        try {
-          await navigator.share({ title, text, url });
-        } catch (e) {
-          // 사용자가 취소한 경우 등은 무시
-          console.log('share cancelled or error', e);
-        }
-      } else {
-        // Web Share API 미지원 브라우저는 링크 복사로 대체
-        try {
-          await navigator.clipboard.writeText(url);
-          alert('이 브라우저에서는 공유 기능이 제한되어\n링크 복사로 대체되었습니다.');
-        } catch (e) {
-          alert('공유 기능을 사용할 수 없습니다. 링크를 직접 복사해 주세요.');
-        }
-      }
-    });
-
-    btnRetry.addEventListener('click', () => {
-      // 같은 testId로 다시 시작
-      startTest();
-      heroEl.style.display = 'none';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    btnGoHome.addEventListener('click', () => {
-      location.href = '/home';
-    });
+    // 초기 로드
+    loadStats();
   </script>
 </body>
 </html>
