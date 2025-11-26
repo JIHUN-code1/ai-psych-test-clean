@@ -2,696 +2,725 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>심마켓 – AI 심리테스트 마켓 홈</title>
+  <title>심마켓 – AI 심리테스트 마켓</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background: #f3f4f6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      background: #f5f5ff;
       color: #111827;
-      padding: 16px 10px 40px;
+      padding: 24px 12px 40px;
     }
-    .layout {
-      max-width: 1080px;
+    a { color: inherit; text-decoration: none; }
+
+    .page {
+      max-width: 1120px;
       margin: 0 auto;
     }
-    header {
+
+    /* 헤더 */
+    .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
+      gap: 12px;
     }
-    .brand {
+    .logo-wrap {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .brand-logo {
-      width: 36px;
-      height: 36px;
+    .logo-circle {
+      width: 32px;
+      height: 32px;
       border-radius: 999px;
-      background: radial-gradient(circle at 20% 0%, #fb7185, #f97316 40%, #6366f1 80%);
+      background: linear-gradient(135deg,#6366f1,#ec4899);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
+      color: #fff;
       font-size: 18px;
-      font-weight: 900;
-      box-shadow: 0 10px 24px rgba(248, 113, 113, 0.5);
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(99,102,241,0.35);
     }
-    .brand-text-main {
+    .logo-title {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .logo-title-main {
       font-size: 18px;
       font-weight: 800;
     }
-    .brand-text-sub {
-      font-size: 11px;
-      color: #9ca3af;
+    .logo-title-sub {
+      font-size: 12px;
+      color: #6b7280;
     }
-    .header-actions {
+    .header-buttons {
       display: flex;
-      align-items: center;
       gap: 8px;
+      flex-shrink: 0;
     }
-    .chip {
-      font-size: 11px;
-      padding: 6px 10px;
+    .btn {
       border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      background: white;
-      color: #4b5563;
-      text-decoration: none;
-    }
-    .chip.primary {
-      background: #111827;
-      color: white;
-      border-color: transparent;
-    }
-
-    /* Hero & slider */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      border-radius: 20px;
-      padding: 20px 18px;
-      margin-bottom: 20px;
-      background: radial-gradient(circle at 0% 0%, #4f46e5, #0f172a 50%, #111827 100%);
-      color: #e5e7eb;
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.5);
-    }
-    .hero-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .hero-title {
-      font-size: 19px;
-      font-weight: 800;
-      line-height: 1.4;
-    }
-    .hero-subtext {
-      margin-top: 6px;
-      font-size: 12px;
-      color: #cbd5f5;
-    }
-    .hero-meta {
-      font-size: 11px;
-      color: #9ca3af;
-      margin-top: 8px;
-    }
-    .hero-cta {
-      font-size: 12px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      border: none;
-      background: linear-gradient(135deg, #f97316, #fb7185);
-      color: white;
+      padding: 8px 16px;
+      font-size: 13px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: #fff;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      box-shadow: 0 10px 24px rgba(249, 115, 22, 0.6);
+      transition: all .15s ease;
+      white-space: nowrap;
     }
-    .hero-pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 10px;
+    .btn:hover {
+      background: #f9fafb;
+      box-shadow: 0 4px 12px rgba(148,163,184,0.35);
+      transform: translateY(-1px);
     }
-    .hero-pill {
-      font-size: 11px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(148, 163, 184, 0.6);
+    .btn-primary {
+      border: none;
+      background: linear-gradient(135deg,#6366f1,#ec4899);
+      color: #fff;
+      box-shadow: 0 10px 26px rgba(99,102,241,0.45);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1.5px);
     }
 
-    .hero-slider {
-      margin-top: 14px;
-      background: rgba(15, 23, 42, 0.7);
-      border-radius: 16px;
-      padding: 12px 12px;
-      overflow: hidden;
+    /* 배너(슬라이더) */
+    .hero {
       position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      padding: 24px 20px 26px;
+      margin-bottom: 22px;
+      color: #fff;
+      background: radial-gradient(circle at 0 0,#f97316 0,#6366f1 38%,#1e293b 100%);
     }
-    .banner-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #e5e7eb;
-      margin-bottom: 4px;
-    }
-    .banner-sub {
-      font-size: 11px;
-      color: #9ca3af;
-    }
-    .banner-indicators {
-      position: absolute;
-      right: 10px;
-      bottom: 8px;
+    .hero-inner {
       display: flex;
-      gap: 4px;
+      gap: 20px;
+      align-items: flex-start;
     }
-    .dot {
+    .hero-left {
+      flex: 1.7;
+      min-width: 0;
+    }
+    .hero-right {
+      flex: 1.3;
+      min-width: 0;
+      text-align: right;
+      font-size: 12px;
+      color: rgba(226,232,240,0.85);
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(15,23,42,0.5);
+      margin-bottom: 10px;
+      backdrop-filter: blur(6px);
+    }
+    .hero-pill-dot {
       width: 6px;
       height: 6px;
       border-radius: 999px;
-      background: rgba(148, 163, 184, 0.4);
+      background: #22c55e;
     }
-    .dot.active {
-      width: 10px;
-      background: #f97316;
+    .hero-title {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .hero-sub {
+      font-size: 13px;
+      color: rgba(226,232,240,0.9);
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .hero-tag {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(15,23,42,0.45);
+      border: 1px solid rgba(148,163,184,0.6);
+      white-space: nowrap;
+    }
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .hero-slide-indicator {
+      position: absolute;
+      right: 18px;
+      bottom: 16px;
+      font-size: 11px;
+      opacity: .8;
+    }
+    .hero-dots {
+      display: inline-flex;
+      gap: 4px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .hero-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.7);
+    }
+    .hero-dot.active {
+      background: #fbbf24;
+      transform: scale(1.2);
     }
 
-    /* Category tabs */
-    .category-tabs {
-      margin: 20px 0 10px;
+    /* 카테고리 탭 */
+    .category-bar {
       display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
+      margin-bottom: 20px;
     }
-    .category-tab {
-      flex-shrink: 0;
-      font-size: 12px;
+    .category-pill {
       padding: 7px 12px;
       border-radius: 999px;
+      font-size: 12px;
       border: 1px solid #e5e7eb;
-      background: #f9fafb;
+      background: #fff;
       color: #4b5563;
       cursor: pointer;
       white-space: nowrap;
+      transition: all .12s ease;
     }
-    .category-tab.active {
-      background: linear-gradient(135deg, #6366f1, #ec4899);
-      border-color: transparent;
-      color: white;
-      box-shadow: 0 8px 22px rgba(99, 102, 241, 0.45);
+    .category-pill span {
+      font-size: 11px;
+      margin-left: 4px;
+      color: #9ca3af;
+    }
+    .category-pill.active {
+      background: #111827;
+      color: #fff;
+      border-color: #111827;
+      box-shadow: 0 7px 18px rgba(15,23,42,0.36);
     }
 
-    /* Section titles */
-    .section-title-row {
+    /* 섹션 */
+    .section {
+      margin-bottom: 26px;
+    }
+    .section-head {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin: 12px 2px 6px;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 10px;
     }
     .section-title {
       font-size: 15px;
       font-weight: 700;
     }
-    .section-tag {
-      font-size: 11px;
-      color: #ef4444;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .section-sub {
+    .section-caption {
       font-size: 11px;
       color: #9ca3af;
     }
-    .link-small {
+    .section-link {
       font-size: 11px;
-      color: #6b7280;
-      cursor: default;
+      color: #6366f1;
+      cursor: pointer;
+      white-space: nowrap;
     }
 
-    /* Cards grid */
-    .cards-grid {
+    /* 카드 그리드 */
+    .card-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 14px;
     }
-    @media (max-width: 900px) {
-      .cards-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    @media (max-width: 960px) {
+      .card-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
     }
-    @media (max-width: 640px) {
-      body {
-        padding: 16px 10px 28px;
-      }
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-      }
-      .cards-grid {
-        grid-template-columns: repeat(1, minmax(0, 1fr));
-      }
-      .hero {
-        padding: 16px 14px;
-      }
+    @media (max-width: 720px) {
+      body { padding: 16px 10px 28px; }
+      .header { flex-direction: column; align-items: flex-start; }
+      .card-grid { grid-template-columns: minmax(0,1fr); }
+      .hero { padding: 18px 16px 20px; }
+      .hero-inner { flex-direction: column; }
+      .hero-right { text-align: left; }
     }
 
-    .test-card {
+    .card {
       border-radius: 18px;
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      padding: 10px 10px 12px;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 10px 26px rgba(15,23,42,0.06);
+      cursor: pointer;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      cursor: pointer;
-      text-align: left;
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
-      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-    }
-    .test-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.18);
-      border-color: #c4b5fd;
-    }
-    .test-thumb {
+      transition: transform .16s ease, box-shadow .16s ease, translate .16s ease;
       position: relative;
-      border-radius: 14px;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(15,23,42,0.12);
+    }
+    .card-thumb {
+      position: relative;
+      padding-top: 60%;
       overflow: hidden;
-      height: 110px;
-      margin-bottom: 4px;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-color: #e5e7eb;
+    }
+    .card-thumb img,
+    .card-thumb .thumb-placeholder {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .thumb-placeholder {
+      background: radial-gradient(circle at 0 0,#38bdf8 0,#6366f1 40%,#111827 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #111827;
-      font-size: 30px;
+      color: rgba(248,250,252,0.95);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 0 14px;
+      text-align: center;
     }
-    .test-thumb-label {
+    .card-badge {
       position: absolute;
-      left: 8px;
-      top: 8px;
+      left: 10px;
+      top: 10px;
+      padding: 4px 9px;
       font-size: 10px;
-      padding: 3px 7px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.78);
-      color: #f9fafb;
+      background: rgba(15,23,42,0.8);
+      color: #fef9c3;
+      backdrop-filter: blur(4px);
     }
-    .test-thumb-chip {
-      position: absolute;
-      right: 8px;
-      bottom: 8px;
-      font-size: 10px;
-      padding: 3px 7px;
-      border-radius: 999px;
-      background: rgba(248, 250, 252, 0.9);
-      color: #111827;
+    .card-body {
+      padding: 12px 13px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
     }
-
-    .test-title {
+    .card-category {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .card-title {
       font-size: 14px;
       font-weight: 700;
+      color: #111827;
+      line-height: 1.5;
+      min-height: 2.9em;
     }
-    .test-desc {
-      font-size: 11px;
-      color: #6b7280;
-      min-height: 32px;
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
     }
-    .test-meta-row {
+    .card-tag {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .card-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 10px;
+      color: #9ca3af;
       margin-top: 4px;
     }
-    .test-meta-left {
-      font-size: 10px;
-      color: #9ca3af;
-    }
-    .test-meta-right {
-      font-size: 10px;
-      color: #4b5563;
-      display: flex;
-      gap: 6px;
+    .card-meta span {
+      display: inline-flex;
       align-items: center;
+      gap: 3px;
     }
-    .hot-badge {
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: rgba(248, 113, 113, 0.12);
-      color: #b91c1c;
+    .card-meta strong {
+      color: #4b5563;
+      font-weight: 600;
     }
 
-    .empty-state {
+    .empty-box {
+      padding: 18px 14px;
+      border-radius: 16px;
+      background: #f9fafb;
+      border: 1px dashed #e5e7eb;
       font-size: 12px;
-      color: #9ca3af;
-      padding: 16px 6px;
+      color: #6b7280;
     }
+
+    .footer {
+      margin-top: 24px;
+      font-size: 11px;
+      color: #9ca3af;
+      text-align: right;
+    }
+    .footer span { color: #6366f1; }
   </style>
 </head>
 <body>
-  <div class="layout">
-    <header>
-      <div class="brand">
-        <div class="brand-logo">심</div>
-        <div>
-          <div class="brand-text-main">심마켓</div>
-          <div class="brand-text-sub">오늘 기분에 맞는 심리테스트를 골라보세요</div>
+  <div class="page">
+    <!-- 상단 헤더 -->
+    <header class="header">
+      <div class="logo-wrap">
+        <div class="logo-circle">심</div>
+        <div class="logo-title">
+          <div class="logo-title-main">심리테스트 마켓 <span style="color:#6366f1;">심마켓</span></div>
+          <div class="logo-title-sub">취향·연애·금전·TMI까지, 오늘 운명 테스트를 골라보세요.</div>
         </div>
       </div>
-      <div class="header-actions">
-        <a href="/admin" class="chip">관리자 페이지</a>
-        <a href="/admin" class="chip primary">AI 자동 생성기</a>
+      <div class="header-buttons">
+        <button class="btn" onclick="location.href='/index.html'">AI 자동 생성기</button>
+        <button class="btn btn-primary" onclick="location.href='/admin/'">관리자 페이지</button>
       </div>
     </header>
 
-    <!-- Hero + 배너 슬라이더 -->
-    <section class="hero">
-      <div class="hero-top">
-        <div>
-          <div class="hero-title">
-            오늘 밤, 어떤 테스트로 놀아볼까요?<br />
-            연애 온도, TMI 성격, 금전 감각까지 한 번에!
+    <!-- 히어로 / 슬라이드 배너 -->
+    <section class="hero" id="hero">
+      <div class="hero-inner">
+        <div class="hero-left">
+          <div class="hero-pill">
+            <span class="hero-pill-dot"></span>
+            <span id="hero-pill-text">오늘 업데이트된 심테 3개</span>
           </div>
-          <div class="hero-subtext">
-            버튼 한 번이면 테스트가 완성되는 AI 심리테스트 마켓, <b>심마켓</b>입니다.
+          <h1 class="hero-title" id="hero-title">오늘 밤, 어떤 테스트로 놀아볼까요?</h1>
+          <p class="hero-sub" id="hero-sub">
+            연애 온도, TMI 성격, 금전 감각까지. 심마켓에서 지금 가장 뜨거운 심리테스트를 모아봤어요.
+          </p>
+          <div class="hero-tags" id="hero-tags"></div>
+          <div class="hero-ctas">
+            <button class="btn btn-primary" onclick="location.href='/index.html'">AI로 새 테스트 만들기</button>
+            <button class="btn" onclick="scrollToSection('latest-section')">최신 테스트 보러가기</button>
           </div>
-          <div class="hero-meta">
-            오늘 업데이트된 테스트 <span id="statNew">0</span> · 전체 등록 테스트 <span id="statTotal">0</span>
-          </div>
-          <button class="hero-cta" onclick="location.href='/admin'">
-            AI로 새 테스트 만들기
-          </button>
+        </div>
+        <div class="hero-right">
+          <div style="font-size:12px; margin-bottom:6px;">실시간 심테 현황</div>
+          <div id="hero-stats">전체 등록 0개 · 오늘 업데이트 0개</div>
         </div>
       </div>
-
-      <div class="hero-pill-row">
-        <div class="hero-pill">#연애_썸타는중</div>
-        <div class="hero-pill">#TMI_성격파헤치기</div>
-        <div class="hero-pill">#금전감각_체크</div>
-        <div class="hero-pill">#직장_프로불편러_테스트</div>
-        <div class="hero-pill">#우정템_모임에서_돌려보기</div>
-      </div>
-
-      <div class="hero-slider" id="bannerSlider">
-        <div id="bannerContent">
-          <div class="banner-title">심마켓에 오신 걸 환영합니다 🎉</div>
-          <div class="banner-sub">관리자 페이지에서 배너를 등록하면 이 영역에 자동으로 노출됩니다.</div>
-        </div>
-        <div class="banner-indicators" id="bannerDots"></div>
+      <div class="hero-slide-indicator">
+        <span id="hero-slide-label">AI 연애 온도 / TMI / 금전 감각</span>
+        <span class="hero-dots" id="hero-dots"></span>
       </div>
     </section>
 
     <!-- 카테고리 탭 -->
-    <section>
-      <div class="category-tabs" id="categoryTabs">
-        <button class="category-tab active" data-key="all">전체</button>
-        <button class="category-tab" data-key="연애">연애/MBTI 감정</button>
-        <button class="category-tab" data-key="성격">성격/MBTI 유형</button>
-        <button class="category-tab" data-key="금전">금전/소비 성향</button>
-        <button class="category-tab" data-key="직장">직장/커리어</button>
-        <button class="category-tab" data-key="우정">우정/대인관계</button>
-        <button class="category-tab" data-key="라이프">라이프스타일</button>
+    <nav class="category-bar" id="categoryBar">
+      <button class="category-pill active" data-cat="all">전체 보기<span id="badge-all">0</span></button>
+      <button class="category-pill" data-cat="연애">연애/썸<span id="badge-love">0</span></button>
+      <button class="category-pill" data-cat="성격/MBTI">성격/MBTI<span id="badge-mbti">0</span></button>
+      <button class="category-pill" data-cat="금전/소비">금전/소비<span id="badge-money">0</span></button>
+      <button class="category-pill" data-cat="직장/커리어">직장/커리어<span id="badge-work">0</span></button>
+      <button class="category-pill" data-cat="우정/대인관계">우정/대인관계<span id="badge-friend">0</span></button>
+      <button class="category-pill" data-cat="라이프스타일">라이프스타일<span id="badge-life">0</span></button>
+    </nav>
+
+    <!-- 지금 뜨는 인기 TOP -->
+    <section class="section" id="hot-section">
+      <div class="section-head">
+        <div>
+          <div class="section-title">지금 뜨는 인기 TOP 🔥</div>
+          <div class="section-caption">최근 일주일 동안 참여 수가 많은 테스트들입니다.</div>
+        </div>
+        <div class="section-link" onclick="scrollToSection('latest-section')">최신 업로드 보기</div>
       </div>
+      <div id="hot-list" class="card-grid"></div>
     </section>
 
-    <!-- 인기 TOP -->
-    <section>
-      <div class="section-title-row">
+    <!-- 따끈따끈 최신 테스트 -->
+    <section class="section" id="latest-section">
+      <div class="section-head">
         <div>
-          <div class="section-title">
-            지금 뜨는 인기 TOP
-            <span class="section-tag">HOT 🔥</span>
-          </div>
-          <div class="section-sub">최근 일주일 동안 참여 수가 많은 테스트</div>
+          <div class="section-title">따끈따끈 최신 테스트 ✨</div>
+          <div class="section-caption">방금 막 업로드 된 따끈한 테스트를 만나보세요.</div>
         </div>
-        <div class="link-small">실시간 순위는 조회수 기반으로 정렬됩니다</div>
       </div>
-      <div id="popularList" class="cards-grid"></div>
-      <div id="popularEmpty" class="empty-state" style="display:none;">
-        아직 인기 데이터가 없습니다. 테스트를 더 등록하고, 직접 플레이해 보세요.
-      </div>
+      <div id="latest-list" class="card-grid"></div>
     </section>
 
-    <!-- 따끈따끈 최신 -->
-    <section style="margin-top:18px;">
-      <div class="section-title-row">
-        <div>
-          <div class="section-title">
-            따끈따끈 최신 테스트 ✨
-          </div>
-          <div class="section-sub">방금 막 등록된 테스트부터 차례대로</div>
-        </div>
-        <div class="link-small">관리자 페이지에서 등록하면 즉시 이곳에 노출됩니다</div>
-      </div>
-      <div id="latestList" class="cards-grid"></div>
-      <div id="latestEmpty" class="empty-state" style="display:none;">
-        아직 등록된 테스트가 없습니다. AI 자동 생성기로 첫 테스트를 만들어 보세요.
-      </div>
-    </section>
+    <footer class="footer">
+      Powered by <span>심마켓</span> · 문의: ainam0727@gmail.com
+    </footer>
   </div>
 
   <script>
-    let allTests = [];
-    let selectedCategoryKey = 'all';
-
-    // ---------- 공통 유틸 ----------
-    function formatDate(iso) {
-      if (!iso) return '';
-      const d = new Date(iso);
-      if (Number.isNaN(d.getTime())) return '';
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      return `${mm}.${dd}`;
-    }
-
-    function matchCategory(test, key) {
-      if (key === 'all') return true;
-      const c = (test.category || '').toString();
-      return c.includes(key);
-    }
-
-    function getEmojiByCategory(test) {
-      const c = (test.category || '').toString();
-      if (c.includes('연애')) return '💕';
-      if (c.includes('성격') || c.includes('MBTI')) return '🧠';
-      if (c.includes('금전') || c.includes('소비')) return '💰';
-      if (c.includes('직장') || c.includes('커리어')) return '💼';
-      if (c.includes('우정') || c.includes('대인')) return '🤝';
-      if (c.includes('라이프')) return '🌈';
-      return '✨';
-    }
-
-    function cardThumbnailStyle(test) {
-      if (test.image) {
-        return `background-image:url('${test.image}')`;
+    // --- 슬라이드 배너 데이터 ---
+    const HERO_SLIDES = [
+      {
+        pill: "AI 연애 온도·궁합 테스트",
+        title: "오늘 밤, 연애 온도 몇 도인가요?",
+        sub: "썸인지, 연인인지, 친구인지 애매한 그 관계. 심마켓 인기 연애 심테로 간편하게 확인해 보세요.",
+        tags: ["연애 온도", "썸인지 애매할 때", "고민되는 관계 상태"],
+        label: "연애/썸 심리테스트"
+      },
+      {
+        pill: "TMI 성격·MBTI 심테",
+        title: "남들이 보는 나의 TMI 성격은?",
+        sub: "나도 몰랐던 내 속마음과 TMI 포인트까지. 친구랑 같이 돌리면 더 재밌는 성격 심테 모음.",
+        tags: ["TMI 성격", "친구랑 같이", "파티용 심테"],
+        label: "성격/MBTI 심리테스트"
+      },
+      {
+        pill: "금전 감각·소비 스타일",
+        title: "나는 플렉스형? 짠테크형?",
+        sub: "지금 통장 잔액이 말해주는 내 소비 성향. 재미로 보는 돈 관리 심리테스트.",
+        tags: ["금전 감각 체크", "플렉스 vs 짠테크", "오늘의 소비 운세"],
+        label: "금전/소비 성향 심테"
       }
-      const gradient = 'linear-gradient(135deg,#e0f2fe,#f5d0fe)';
-      return `background-image:${gradient}`;
-    }
+    ];
 
-    function goPlay(test) {
-      if (!test || !test.id) return;
-      location.href = `/index.html?testId=${encodeURIComponent(test.id)}`;
-    }
+    let heroIndex = 0;
+    let testsCache = [];
 
-    // ---------- 카테고리 탭 ----------
-    const categoryTabs = document.getElementById('categoryTabs');
-    categoryTabs.querySelectorAll('.category-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        categoryTabs.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        selectedCategoryKey = tab.dataset.key;
-        renderSections();
+    function applyHeroSlide(idx) {
+      const slide = HERO_SLIDES[idx];
+      document.getElementById("hero-pill-text").textContent = slide.pill;
+      document.getElementById("hero-title").textContent = slide.title;
+      document.getElementById("hero-sub").textContent = slide.sub;
+      document.getElementById("hero-slide-label").textContent = slide.label;
+
+      const tagsWrap = document.getElementById("hero-tags");
+      tagsWrap.innerHTML = "";
+      slide.tags.forEach(t => {
+        const span = document.createElement("div");
+        span.className = "hero-tag";
+        span.textContent = t;
+        tagsWrap.appendChild(span);
       });
-    });
 
-    // ---------- 메인 데이터 로드 ----------
-    async function loadData() {
+      const dotsWrap = document.getElementById("hero-dots");
+      dotsWrap.innerHTML = "";
+      HERO_SLIDES.forEach((_, i) => {
+        const d = document.createElement("span");
+        d.className = "hero-dot" + (i === idx ? " active" : "");
+        dotsWrap.appendChild(d);
+      });
+    }
+
+    function startHeroSlider() {
+      applyHeroSlide(heroIndex);
+      setInterval(() => {
+        heroIndex = (heroIndex + 1) % HERO_SLIDES.length;
+        applyHeroSlide(heroIndex);
+      }, 5000);
+    }
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      window.scrollTo({ top: el.offsetTop - 16, behavior: "smooth" });
+    }
+
+    // --- 테스트 카드 렌더링 ---
+
+    function getImageUrl(test) {
+      if (test.imageUrl && test.imageUrl.trim() !== "") return test.imageUrl;
+      return null; // 기본 플래이스홀더 사용
+    }
+
+    function createCard(test, badgeText) {
+      const card = document.createElement("article");
+      card.className = "card";
+      card.onclick = () => {
+        if (!test.id) return;
+        window.location.href = `/index.html?testid=${encodeURIComponent(test.id)}`;
+      };
+
+      const thumb = document.createElement("div");
+      thumb.className = "card-thumb";
+
+      const imgUrl = getImageUrl(test);
+      if (imgUrl) {
+        const img = document.createElement("img");
+        img.src = imgUrl;
+        img.alt = test.title || "심리테스트 썸네일";
+        img.loading = "lazy";
+        thumb.appendChild(img);
+      } else {
+        const placeholder = document.createElement("div");
+        placeholder.className = "thumb-placeholder";
+        placeholder.textContent = (test.title || "심리테스트").slice(0, 18);
+        thumb.appendChild(placeholder);
+      }
+
+      if (badgeText) {
+        const badge = document.createElement("div");
+        badge.className = "card-badge";
+        badge.textContent = badgeText;
+        thumb.appendChild(badge);
+      }
+
+      const body = document.createElement("div");
+      body.className = "card-body";
+
+      const category = document.createElement("div");
+      category.className = "card-category";
+      category.textContent = test.category || "기타 심리테스트";
+
+      const title = document.createElement("div");
+      title.className = "card-title";
+      title.textContent = test.title || "제목 없는 심리테스트";
+
+      const tagsWrap = document.createElement("div");
+      tagsWrap.className = "card-tags";
+      const tags = Array.isArray(test.tags) ? test.tags : [];
+      tags.slice(0,3).forEach(t => {
+        const tag = document.createElement("span");
+        tag.className = "card-tag";
+        tag.textContent = t;
+        tagsWrap.appendChild(tag);
+      });
+
+      const meta = document.createElement("div");
+      meta.className = "card-meta";
+      const left = document.createElement("span");
+      left.textContent = "참여 ";
+      const plays = document.createElement("strong");
+      plays.textContent = (test.plays || 0).toLocaleString() + "명";
+      left.appendChild(plays);
+
+      const right = document.createElement("span");
+      const views = (test.views || 0).toLocaleString();
+      right.innerHTML = `조회 <strong>${views}</strong>회`;
+
+      meta.appendChild(left);
+      meta.appendChild(right);
+
+      body.appendChild(category);
+      body.appendChild(title);
+      if (tagsWrap.children.length) body.appendChild(tagsWrap);
+      body.appendChild(meta);
+
+      card.appendChild(thumb);
+      card.appendChild(body);
+      return card;
+    }
+
+    function renderSections(tests) {
+      const hotBox = document.getElementById("hot-list");
+      const latestBox = document.getElementById("latest-list");
+      hotBox.innerHTML = "";
+      latestBox.innerHTML = "";
+
+      if (!tests || !tests.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-box";
+        empty.textContent = "아직 등록된 심리테스트가 없습니다. 관리자 페이지에서 첫 심테를 등록해 보세요!";
+        latestBox.appendChild(empty);
+        return;
+      }
+
+      // 최신순
+      const sortedByDate = [...tests].sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+      const latest = sortedByDate.slice(0,6);
+
+      latest.forEach(t => {
+        latestBox.appendChild(createCard(t, "NEW"));
+      });
+
+      // HOT (isHot true or plays 상위)
+      const hotCandidates = tests.filter(t => t.isHot).length
+        ? tests.filter(t => t.isHot)
+        : [...tests].sort((a,b) => (b.plays || 0) - (a.plays || 0));
+
+      const hot = hotCandidates.slice(0,6);
+      hot.forEach((t, idx) => {
+        const label = idx === 0 ? "HOT 1위" : "HOT";
+        hotBox.appendChild(createCard(t, label));
+      });
+
+      // 통계 갱신
+      document.getElementById("hero-stats").textContent =
+        `전체 등록 ${tests.length}개 · 오늘 업데이트 ${getTodayCount(tests)}개`;
+
+      document.getElementById("badge-all").textContent = tests.length;
+      document.getElementById("badge-love").textContent =
+        tests.filter(t => (t.category || "").includes("연애")).length;
+      document.getElementById("badge-mbti").textContent =
+        tests.filter(t => (t.category || "").includes("성격") || (t.category || "").includes("MBTI")).length;
+      document.getElementById("badge-money").textContent =
+        tests.filter(t => (t.category || "").includes("금전") || (t.category || "").includes("소비")).length;
+      document.getElementById("badge-work").textContent =
+        tests.filter(t => (t.category || "").includes("직장") || (t.category || "").includes("커리어")).length;
+      document.getElementById("badge-friend").textContent =
+        tests.filter(t => (t.category || "").includes("우정") || (t.category || "").includes("대인")).length;
+      document.getElementById("badge-life").textContent =
+        tests.filter(t => (t.category || "").includes("라이프")).length;
+    }
+
+    function getTodayCount(tests) {
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      return tests.filter(t => {
+        if (!t.createdAt) return false;
+        const d = new Date(t.createdAt);
+        d.setHours(0,0,0,0);
+        return d.getTime() === today.getTime();
+      }).length;
+    }
+
+    async function loadTests(categoryFilter = "all") {
       try {
-        const [testsRes, bannersRes] = await Promise.all([
-          fetch('/api/tests'),
-          fetch('/api/banners')
-        ]);
+        const res = await fetch("/api/tests");
+        if (!res.ok) throw new Error("failed");
+        const data = await res.json();
+        testsCache = Array.isArray(data) ? data : [];
 
-        if (testsRes.ok) {
-          allTests = await testsRes.json();
-        } else {
-          allTests = [];
+        let filtered = testsCache;
+        if (categoryFilter !== "all") {
+          filtered = testsCache.filter(t => (t.category || "").includes(categoryFilter));
         }
-
-        const today = new Date();
-        const todayStr = today.toISOString().slice(0, 10);
-
-        // 통계
-        document.getElementById('statTotal').textContent = allTests.length;
-        const todays = allTests.filter(t => (t.createdAt || '').slice(0, 10) === todayStr);
-        document.getElementById('statNew').textContent = todays.length;
-
-        renderSections();
-
-        // 배너
-        if (bannersRes.ok) {
-          const banners = await bannersRes.json();
-          initBannerSlider(banners.filter(b => b.isActive));
-        } else {
-          initBannerSlider([]);
-        }
+        renderSections(filtered);
       } catch (e) {
-        console.error('loadData error', e);
-        allTests = [];
-        renderSections();
-        initBannerSlider([]);
+        console.error(e);
+        const latestBox = document.getElementById("latest-list");
+        latestBox.innerHTML = "";
+        const empty = document.createElement("div");
+        empty.className = "empty-box";
+        empty.textContent = "테스트 목록을 불러오는 중 오류가 발생했습니다. 잠시 후 새로고침 해 주세요.";
+        latestBox.appendChild(empty);
       }
     }
 
-    function renderSections() {
-      renderPopular();
-      renderLatest();
-    }
-
-    // ---------- 인기 TOP ----------
-    function renderPopular() {
-      const wrap = document.getElementById('popularList');
-      const empty = document.getElementById('popularEmpty');
-      wrap.innerHTML = '';
-
-      const filtered = allTests.filter(t => matchCategory(t, selectedCategoryKey));
-      if (!filtered.length) {
-        empty.style.display = 'block';
-        return;
-      }
-      empty.style.display = 'none';
-
-      // views desc, createdAt desc
-      const sorted = [...filtered].sort((a, b) => {
-        const vA = a.views || 0;
-        const vB = b.views || 0;
-        if (vB !== vA) return vB - vA;
-        const dA = new Date(a.createdAt || 0).getTime();
-        const dB = new Date(b.createdAt || 0).getTime();
-        return dB - dA;
-      });
-
-      const top = sorted.slice(0, 6);
-      for (const t of top) {
-        const card = document.createElement('button');
-        card.type = 'button';
-        card.className = 'test-card';
-        card.innerHTML = `
-          <div class="test-thumb" style="${cardThumbnailStyle(t)}">
-            <span class="test-thumb-label">${t.category || '심리테스트'}</span>
-            <span class="test-thumb-chip">참여 ${t.views || 0}회</span>
-            <span>${getEmojiByCategory(t)}</span>
-          </div>
-          <div class="test-title">${t.title || '제목 없는 테스트'}</div>
-          <div class="test-desc">${t.description || '클릭해서 바로 테스트를 시작해 보세요.'}</div>
-          <div class="test-meta-row">
-            <div class="test-meta-left">${formatDate(t.createdAt)} · ${t.tag || '엔터테인먼트'}</div>
-            <div class="test-meta-right">
-              ${t.isHot ? '<span class="hot-badge">HOT</span>' : ''}
-              <span>조회 ${t.views || 0}</span>
-            </div>
-          </div>
-        `;
-        card.addEventListener('click', () => goPlay(t));
-        wrap.appendChild(card);
-      }
-    }
-
-    // ---------- 최신 테스트 ----------
-    function renderLatest() {
-      const wrap = document.getElementById('latestList');
-      const empty = document.getElementById('latestEmpty');
-      wrap.innerHTML = '';
-
-      const filtered = allTests.filter(t => matchCategory(t, selectedCategoryKey));
-      if (!filtered.length) {
-        empty.style.display = 'block';
-        return;
-      }
-      empty.style.display = 'none';
-
-      const sorted = [...filtered].sort((a, b) => {
-        const dA = new Date(a.createdAt || 0).getTime();
-        const dB = new Date(b.createdAt || 0).getTime();
-        return dB - dA;
-      });
-
-      const top = sorted.slice(0, 6);
-      for (const t of top) {
-        const card = document.createElement('button');
-        card.type = 'button';
-        card.className = 'test-card';
-        card.innerHTML = `
-          <div class="test-thumb" style="${cardThumbnailStyle(t)}">
-            <span class="test-thumb-label">${t.category || '심리테스트'}</span>
-            ${t.isHot ? '<span class="test-thumb-chip">HOT</span>' : ''}
-            <span>${getEmojiByCategory(t)}</span>
-          </div>
-          <div class="test-title">${t.title || '제목 없는 테스트'}</div>
-          <div class="test-desc">${t.description || '친구들과 함께 돌려보면 더 재밌는 테스트!'}</div>
-          <div class="test-meta-row">
-            <div class="test-meta-left">${formatDate(t.createdAt)} · ${t.tag || '엔터테인먼트'}</div>
-            <div class="test-meta-right">
-              <span>조회 ${t.views || 0}</span>
-            </div>
-          </div>
-        `;
-        card.addEventListener('click', () => goPlay(t));
-        wrap.appendChild(card);
-      }
-    }
-
-    // ---------- 배너 슬라이더 ----------
-    let bannerIndex = 0;
-    let bannerTimer = null;
-
-    function initBannerSlider(banners) {
-      const content = document.getElementById('bannerContent');
-      const dotsWrap = document.getElementById('bannerDots');
-      if (!banners.length) {
-        dotsWrap.innerHTML = '';
-        return;
-      }
-
-      function renderBanner() {
-        const b = banners[bannerIndex];
-        content.innerHTML = `
-          <div class="banner-title">${b.title}</div>
-          <div class="banner-sub">${b.subtitle || ''}</div>
-        `;
-        if (b.link) {
-          content.style.cursor = 'pointer';
-          content.onclick = () => {
-            if (b.link.startsWith('http')) {
-              window.open(b.link, '_blank');
-            } else {
-              location.href = b.link;
-            }
-          };
-        } else {
-          content.style.cursor = 'default';
-          content.onclick = null;
-        }
-
-        dotsWrap.innerHTML = '';
-        banners.forEach((_, idx) => {
-          const dot = document.createElement('div');
-          dot.className = 'dot' + (idx === bannerIndex ? ' active' : '');
-          dotsWrap.appendChild(dot);
+    function setupCategoryFilter() {
+      const pills = document.querySelectorAll(".category-pill");
+      pills.forEach(pill => {
+        pill.addEventListener("click", () => {
+          pills.forEach(p => p.classList.remove("active"));
+          pill.classList.add("active");
+          const cat = pill.dataset.cat;
+          if (cat === "all") loadTests("all");
+          else loadTests(cat);
         });
-      }
-
-      renderBanner();
-
-      if (bannerTimer) clearInterval(bannerTimer);
-      bannerTimer = setInterval(() => {
-        bannerIndex = (bannerIndex + 1) % banners.length;
-        renderBanner();
-      }, 6000);
+      });
     }
 
-    // 초기 로드
-    loadData();
+    document.addEventListener("DOMContentLoaded", () => {
+      startHeroSlider();
+      setupCategoryFilter();
+      loadTests("all");
+    });
   </script>
 </body>
 </html>
